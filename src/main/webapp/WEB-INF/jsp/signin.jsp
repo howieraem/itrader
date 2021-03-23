@@ -16,8 +16,8 @@
     密码：<input type="password" name="password"><br>
 
     <input type="submit" value="登录"><br>
-    <a href="${pageContext.request.contextPath}/signup.jsp">注册</a><br>
-    <a href="signup.jsp">注册</a>
+    <a href="${pageContext.request.contextPath}/signup">注册</a><br>
+    <a href="signup">注册</a>
 
 </form>
 </body>

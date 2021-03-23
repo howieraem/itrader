@@ -3,9 +3,9 @@ package com.jlumine.itrader.service;
 import com.jlumine.itrader.model.User;
 
 public interface UserService {
-    void sign_up(User user);
+    void signUp(User user);
 
-    User sign_in(User user);
+    User signIn(User user);
 }
 
 // UserService

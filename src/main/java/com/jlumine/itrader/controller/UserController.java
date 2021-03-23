@@ -16,14 +16,28 @@ public class UserController {
 
     @RequestMapping(value = "signin", method = RequestMethod.POST)
     @ResponseBody
-    public User sign_in(User user){
-        return userService.sign_in(user);
+    public String sign_in(User user){
+        try {
+            return userService.signIn(user).toString();
+        } catch (RuntimeException re) {
+            return re.getMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Internal Error: " + e.getMessage();
+        }
     }
 
     @RequestMapping(value = "signup", method = RequestMethod.POST)
     @ResponseBody
     public String sign_up(User user){
-        userService.sign_up(user);
-        return "Sign up successful!";
+        try {
+            userService.signUp(user);
+            return "Sign up successful!";
+        } catch (RuntimeException re) {
+            return re.getMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Internal Error: " + e.getMessage();
+        }
     }
 }
