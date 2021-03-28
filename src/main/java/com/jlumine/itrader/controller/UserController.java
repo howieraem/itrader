@@ -16,7 +16,7 @@ public class UserController {
 
     @RequestMapping(value = "signin", method = RequestMethod.POST)
     @ResponseBody
-    public String sign_in(User user){
+    public String signIn(User user){
         try {
             return userService.signIn(user).toString();
         } catch (RuntimeException re) {
@@ -29,10 +29,10 @@ public class UserController {
 
     @RequestMapping(value = "signup", method = RequestMethod.POST)
     @ResponseBody
-    public String sign_up(User user){
+    public String signUp(User user){
         try {
             userService.signUp(user);
-            return "Sign up successful!";
+            return "Sign up successful! You are given an initial $5000 fund to start with.";
         } catch (RuntimeException re) {
             return re.getMessage();
         } catch (Exception e) {

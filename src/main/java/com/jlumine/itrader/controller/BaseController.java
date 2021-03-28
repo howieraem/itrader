@@ -7,16 +7,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class BaseController {
     @RequestMapping("/")
     public String index() {
-        return "index";
-    }
-
-    @RequestMapping("/signin")
-    public String signin() {
         return "signin";
     }
 
+//    @RequestMapping("/signin")
+//    public String signIn() {
+//        return "signin";
+//    }
+
     @RequestMapping("/signup")
-    public String signup() {
+    public String signUp() {
         return "signup";
     }
 }

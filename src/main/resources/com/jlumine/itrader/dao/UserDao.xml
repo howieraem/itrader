@@ -6,9 +6,11 @@
         select * from user where username = #{username}
     </select>
 
-    <insert id="save" parameterType="com.jlumine.itrader.model.User">
-        insert into user values (#{id}, #{username}, #{password});
-        insert into balance values (#{id}, 5000)
+    <insert id="save" parameterType="com.jlumine.itrader.model.User" useGeneratedKeys="true" keyProperty="id">
+        insert into user values (#{id}, #{username}, #{password})
     </insert>
 
+    <insert id="initInfo" parameterType="com.jlumine.itrader.model.User">
+        insert into balance values (#{id}, 5000)
+    </insert>
 </mapper>

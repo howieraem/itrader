@@ -53,6 +53,8 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Username has already been registered. Please modify.");
         }
         userDao.save(user);
+//        System.out.println(user.getId());
+        userDao.initInfo(user);
     }
 
     private static boolean checkUsernameInvalid(String username) {

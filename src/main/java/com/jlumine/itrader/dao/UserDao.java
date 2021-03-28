@@ -8,5 +8,7 @@ import com.jlumine.itrader.model.User;
 public interface UserDao {
     User findByName(String name);
 
-    void save(User user);
+    long save(User user);
+
+    void initInfo(User user);
 }
