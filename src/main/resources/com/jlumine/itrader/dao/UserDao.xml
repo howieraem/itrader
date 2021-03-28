@@ -3,11 +3,12 @@
 <mapper namespace="com.jlumine.itrader.dao.UserDao">
 
     <select id="findByName" parameterType="java.lang.String" resultType="com.jlumine.itrader.model.User">
-        select * from user where username =#{username}
+        select * from user where username = #{username}
     </select>
 
     <insert id="save" parameterType="com.jlumine.itrader.model.User">
-        insert into user values (#{id}, #{username}, #{password})
+        insert into user values (#{id}, #{username}, #{password});
+        insert into balance values (#{id}, 5000)
     </insert>
 
 </mapper>

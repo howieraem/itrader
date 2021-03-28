@@ -3,6 +3,6 @@ import lombok.Data;
 
 @Data
 public class Balance {
-    private String username;
+    private long userid;
     private long balance;
 }
