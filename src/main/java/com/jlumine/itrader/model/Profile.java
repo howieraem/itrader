@@ -2,7 +2,7 @@ package com.jlumine.itrader.model;
 import lombok.Data;
 
 @Data
-public class Balance {
+public class Profile {
     private long userid;
-    private long balance;
+    private double balance;
 }

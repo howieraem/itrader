@@ -11,6 +11,6 @@
     </insert>
 
     <insert id="initInfo" parameterType="com.jlumine.itrader.model.User">
-        insert into balance values (#{id}, 5000)
+        insert into profile values (#{id}, 5000)
     </insert>
 </mapper>
