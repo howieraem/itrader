@@ -34,5 +34,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.2.2",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2016": "^6.24.1"
   }
 }
