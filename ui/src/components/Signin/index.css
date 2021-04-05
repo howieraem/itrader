@@ -1,0 +1,12 @@
+
+.login-content{
+    width: 40%;
+    margin: 0 auto;
+}
+
+.func-btn{
+    display: flex;
+    justify-content: space-around;
+    width: 80%;
+    margin: 0 auto;
+}

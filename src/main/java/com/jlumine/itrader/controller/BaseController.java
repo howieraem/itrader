@@ -10,11 +10,6 @@ public class BaseController {
         return "signin";
     }
 
-//    @RequestMapping("/signin")
-//    public String signIn() {
-//        return "signin";
-//    }
-
     @RequestMapping("/signup")
     public String signUp() {
         return "signup";
