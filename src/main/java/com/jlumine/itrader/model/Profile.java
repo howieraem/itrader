@@ -5,4 +5,5 @@ import lombok.Data;
 public class Profile {
     private long userid;
     private double balance;
+    private String avatar;
 }

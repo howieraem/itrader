@@ -8,11 +8,12 @@ import InputBase from '@material-ui/core/InputBase';
 import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import MenuIcon from '@material-ui/icons/Menu';
+// import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
+import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -57,9 +58,9 @@ const useStyles = makeStyles((theme) => ({
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
     // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    // paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
     transition: theme.transitions.create('width'),
-    width: '100%',
+    width: '80%',
     [theme.breakpoints.up('md')]: {
       width: '20ch',
     },
@@ -131,32 +132,24 @@ export default function PrimarySearchAppBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      {/* <MenuItem>
-        <IconButton aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="secondary">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem> */}
       <MenuItem>
-        <IconButton aria-label="show new notifications" color="inherit">
+        {/* <IconButton aria-label="show new notifications" color="inherit">
           <Badge color="secondary">
             <NotificationsIcon />
           </Badge>
-        </IconButton>
+        </IconButton> */}
         <p>Notifications</p>
       </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
+        {/* <IconButton
           aria-label="account of current user"
           aria-controls="primary-search-account-menu"
           aria-haspopup="true"
           color="inherit"
         >
           <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
+        </IconButton> */}
+        <p>Account</p>
       </MenuItem>
     </Menu>
   );
@@ -165,15 +158,15 @@ export default function PrimarySearchAppBar() {
     <div className={classes.grow}>
       <AppBar style={{ background: '#00a6b6' }}>
         <Toolbar>
-          <IconButton
+          {/* <IconButton
             edge="start"
             className={classes.menuButton}
             color="inherit"
             aria-label="open drawer"
           >
             <MenuIcon />
-          </IconButton>
-          <Typography className={classes.title} variant="h6" noWrap>
+          </IconButton> */}
+          <Typography className={classes.title} variant="h5" noWrap>
             ITrader
           </Typography>
           <div className={classes.grow} />
@@ -182,7 +175,7 @@ export default function PrimarySearchAppBar() {
               <SearchIcon />
             </div> */}
             <InputBase
-              placeholder="TSLA"
+              placeholder="COIN"
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,
@@ -193,17 +186,29 @@ export default function PrimarySearchAppBar() {
           </div>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            {/* <IconButton aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <MailIcon />
-              </Badge>
-            </IconButton> */}
-            <IconButton aria-label="show new notifications" color="inherit">
+            <Button 
+              aria-label="show new notifications" 
+              color="inherit"
+              style={{textTransform: 'none', fontSize: 18}}
+            >
+              Notifications
+            </Button>
+            {/* <IconButton aria-label="show new notifications" color="inherit">
               <Badge color="secondary">
                 <NotificationsIcon />
               </Badge>
-            </IconButton>
-            <IconButton
+            </IconButton> */}
+            <Button 
+              color="inherit"
+              aria-label="account of current user"
+              aria-controls={menuId}
+              aria-haspopup="true"
+              onClick={handleProfileMenuOpen}
+              style={{textTransform: 'none', fontSize: 18}}
+            >
+              Account
+            </Button>
+            {/* <IconButton
               edge="end"
               aria-label="account of current user"
               aria-controls={menuId}
@@ -212,7 +217,7 @@ export default function PrimarySearchAppBar() {
               color="inherit"
             >
               <AccountCircle />
-            </IconButton>
+            </IconButton> */}
           </div>
           <div className={classes.sectionMobile}>
             <IconButton

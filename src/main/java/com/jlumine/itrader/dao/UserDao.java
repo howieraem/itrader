@@ -6,7 +6,7 @@ import com.jlumine.itrader.model.User;
 
 @Mapper
 public interface UserDao {
-    User findByName(String name);
+    User findByEmail(String name);
 
     long save(User user);
 

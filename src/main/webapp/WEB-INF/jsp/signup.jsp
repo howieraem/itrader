@@ -11,9 +11,11 @@
 <body>
 <form action="${pageContext.request.contextPath}/user/signup" method="post">
 
-    用户名：<input type="text" name="username"><br>
+    邮箱：<input type="text" name="email"><br>
 
     密码：<input type="password" name="password"><br>
+
+    交易密钥：<input type="password" name="pin"><br>
 
     <input type="submit" value="注册">
 </form>

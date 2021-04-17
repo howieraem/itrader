@@ -19,55 +19,64 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User signIn(User user) {
-        String username = user.getUsername();
-        if (checkUsernameInvalid(username)) {
-            throw new RuntimeException(
-                    "Username can be neither empty nor contain characters other than letters and digits.");
+        String email = user.getEmail();
+        if (checkEmailInvalid(email)) {
+            throw new RuntimeException("Email address format is invalid.");
         }
         if (checkPasswordInvalid(user.getPassword())) {
             throw new RuntimeException(
                     "The password entered either is less than 6 characters long or contains spaces.");
         }
-        User userInDB = userDao.findByName(username);
+        if (checkPinInvalid(user.getPin())) {
+            throw new RuntimeException("The pin must be 4 digits.");
+        }
+        User userInDB = userDao.findByEmail(email);
         if (userInDB != null) {
-            if (StringUtils.equals(userInDB.getPassword(), user.getPassword())) {
+            if (StringUtils.equals(userInDB.getPassword(), user.getPassword()) &&
+                    StringUtils.equals(userInDB.getPin(), user.getPin())) {
                 return userInDB;
             }
-            throw new RuntimeException(String.format("Incorrect password entered for username %s.", username));
+            throw new RuntimeException(String.format("Incorrect password or pin entered for email %s.", email));
         }
-        throw new RuntimeException(String.format("Username \"%s\" does not exist.", username));
+        throw new RuntimeException(String.format("Email \"%s\" does not exist.", email));
     }
 
     @Override
     public void signUp(User user) {
-        String username = user.getUsername();
-        if (checkUsernameInvalid(username)) {
+        String email = user.getEmail();
+        if (checkEmailInvalid(email)) {
             throw new RuntimeException(
-                    "Username can be neither empty nor contain characters other than letters and digits.");
+                    "Email can be neither empty nor contain characters other than letters and digits.");
         }
         if (checkPasswordInvalid(user.getPassword())) {
             throw new RuntimeException(
                     "The password must be at least 6 characters long without spaces.");
         }
-        if (userDao.findByName(username) != null) {
-            throw new RuntimeException("Username has already been registered. Please modify.");
+        if (checkPinInvalid(user.getPin())) {
+            throw new RuntimeException("The pin must be 4 digits.");
+        }
+        if (userDao.findByEmail(email) != null) {
+            throw new RuntimeException("Email has already been registered. Please use another one or sign in.");
         }
         userDao.save(user);
-//        System.out.println(user.getId());
         userDao.initInfo(user);
     }
 
-    private static boolean checkUsernameInvalid(String username) {
-        if (username == null || username.trim().isEmpty()) {
+    private static boolean checkEmailInvalid(String email) {
+        if (email == null || email.trim().isEmpty()) {
             return true;
         }
         Pattern p = Pattern.compile("[^A-Za-z0-9]");
-        Matcher m = p.matcher(username);
+        Matcher m = p.matcher(email);
         return m.find();
     }
 
     private static boolean checkPasswordInvalid(String password) {
         return password.length() < 6 || password.contains(" ");
+    }
+
+    private static boolean checkPinInvalid(String pin) {
+        return !pin.matches("[0-9]+") || pin.length() != 4;
     }
 }
 
