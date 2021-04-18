@@ -5,13 +5,9 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
-// import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-// import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
-// import AccountCircle from '@material-ui/icons/AccountCircle';
-// import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
@@ -144,16 +140,6 @@ export default function PrimarySearchAppBar() {
     <div className={classes.grow}>
       <AppBar style={{ background: '#00a6b6' }}>
         <Toolbar>
-          {/* 
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="open drawer"
-          >
-            <MenuIcon />
-          </IconButton> 
-          */}
           <Typography className={classes.title} variant="h5" noWrap>
             <Link href="#" color="inherit" style={{textDecoration: 'none'}}>ITrader</Link>
           </Typography>
@@ -174,42 +160,12 @@ export default function PrimarySearchAppBar() {
             <Button 
               aria-label="show new notifications" 
               color="inherit"
+              m={1}
               style={{textTransform: 'none', fontSize: 18}}
             >
               Notifications
             </Button>
-            {/* 
-            <IconButton aria-label="show new notifications" color="inherit">
-              <Badge color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton> 
-            */}
             <AccountMenu />
-            {/* 
-            <Button 
-              color="inherit"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              style={{textTransform: 'none', fontSize: 18}}
-            >
-              Account
-            </Button> 
-            */}
-            {/* 
-            <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton> 
-            */}
           </div>
           <div className={classes.sectionMobile}>
             <IconButton
