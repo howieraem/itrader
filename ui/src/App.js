@@ -72,14 +72,21 @@ class App extends React.Component {
         <Grid item xs={12} align="left">
           <ChartComponent />
         </Grid>
-        <Grid item xs={6}>
-          <header className="App-region2">
-            <Clock date={this.state.date} />
+        <Grid item xs={4}>
+          <header className="Symbol-stats">
+            Symbol stats
           </header>
         </Grid>
-
-        <Grid item xs={12} style={{backgroundColor: '#ffd83b'}}>
-          test
+        <Grid item xs={8}>
+          <header className="Misc">
+            Misc
+          </header>
+        </Grid>
+        <Grid item xs={12} style={{ backgroundColor: '#ffd83b' }} align="center">
+          <Clock date={this.state.date} />
+        </Grid>
+        <Grid item xs={12} style={{ backgroundColor: '#eeeeee' }}>
+          Copyright © 2021 · HL
         </Grid>
       </Grid>
     );
