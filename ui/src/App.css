@@ -15,9 +15,20 @@
   }
 }
 
-.App-region1 {
+.Symbol-title {
   background-color: #32a852;
-  min-height: 20vh;
+  min-height: 15vh;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.Symbol-icons {
+  background-color: #a14fff;
+  min-height: 15vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -37,11 +48,13 @@
   color: white;
 }
 
+/* 
 .App-link {
   color: #61dafb;
 }
+ */
 
-@keyframes App-logo-spin {
+ @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
   }

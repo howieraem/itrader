@@ -29,35 +29,61 @@ class ChartComponent extends React.Component {
 }
 
 
-function App() {
-  let date = new Date();
-  return (
-    <Grid container spacing={0}>
-      <Grid item xs={12}>
-        <PrimarySearchAppBar/>
-      </Grid>
-      <Grid item xs={12}> 
-        test
-      </Grid>
-      <Grid item xs={12} align="left">
-        <ChartComponent />
-      </Grid>
-      <Grid item xs={6}> 
-        <header className="App-region1">
-          Work in progress...
-        </header>
-      </Grid>
-      <Grid item xs={6}>
-        <header className="App-region2">
-          <p>{'UTC+' + (0 - date.getTimezoneOffset() / 60)} {date.toLocaleTimeString()}</p>
-        </header>
-      </Grid>
+const Clock = ({ date }) => (
+  <div>{'UTC+' + (0 - date.getTimezoneOffset() / 60) + ' ' + date.toLocaleTimeString()}</div>
+)
 
-      <Grid item xs={12} style={{backgroundColor: '#ffd83b'}}>
-        test
+
+class App extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      date: new Date()
+    }
+  }
+
+  componentWillMount() {
+    this.interval = setInterval(
+      () => this.setState({ date: new Date() }),
+      1000
+    )
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval)
+  }
+
+  render() {
+    return (
+      <Grid container spacing={0}>
+        <Grid item xs={12}>
+          <PrimarySearchAppBar />
+        </Grid>
+        <Grid item xs={6} style={{ marginTop: 30 }}> 
+          <header className="Symbol-title">
+            {"COIN - Coinbase Inc."}
+          </header>
+        </Grid>
+        <Grid item xs={6} style={{ marginTop: 30 }}>
+          <header className="Symbol-icons">
+            Work in progress...
+          </header>
+        </Grid>
+        <Grid item xs={12} align="left">
+          <ChartComponent />
+        </Grid>
+        <Grid item xs={6}>
+          <header className="App-region2">
+            <Clock date={this.state.date} />
+          </header>
+        </Grid>
+
+        <Grid item xs={12} style={{backgroundColor: '#ffd83b'}}>
+          test
+        </Grid>
       </Grid>
-    </Grid>
-  );
+    );
+  }
 }
 
 export default App;
