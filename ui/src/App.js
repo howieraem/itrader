@@ -2,11 +2,11 @@
 import './App.css';
 import React from 'react'
 import Grid from '@material-ui/core/Grid';
-import { TypeChooser } from "react-stockcharts/lib/helper";
+// import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import PrimarySearchAppBar from './components/bar/AppBar';
 import Chart from './components/chart/CandleStickChart';
-import { getData } from "./components/chart/utils"
+import { getData } from "./components/chart/utils";
 
 
 class ChartComponent extends React.Component {
@@ -20,9 +20,10 @@ class ChartComponent extends React.Component {
 			return <div>Loading...</div>
 		}
 		return (
-			<TypeChooser>
-				{type => <Chart type={type} data={this.state.data} />}
-			</TypeChooser>
+			// <TypeChooser>
+			// 	{type => <Chart type={type} data={this.state.data} />}
+			// </TypeChooser>
+      <Chart type="hybrid" data={this.state.data}/>
 		)
 	}
 }
@@ -31,25 +32,31 @@ class ChartComponent extends React.Component {
 function App() {
   let date = new Date();
   return (
-    <div className="App">
-      <Grid container spacing={0}>
-        <Grid item xs={12}>
-          <PrimarySearchAppBar/>
-        </Grid>
-        <Grid item xs={10}>
-          <ChartComponent />
-          {/* 
-          <header className="App-region1">
-          </header>
-           */}
-        </Grid>
-        <Grid item xs={2}>
-          <header className="App-region2">
-            <p>{'UTC+' + (0 - date.getTimezoneOffset() / 60)} {date.toLocaleTimeString()}</p>
-          </header>
-        </Grid>
+    <Grid container spacing={0}>
+      <Grid item xs={12}>
+        <PrimarySearchAppBar/>
       </Grid>
-    </div>
+      <Grid item xs={12}> 
+        test
+      </Grid>
+      <Grid item xs={12} align="left">
+        <ChartComponent />
+      </Grid>
+      <Grid item xs={6}> 
+        <header className="App-region1">
+          Work in progress...
+        </header>
+      </Grid>
+      <Grid item xs={6}>
+        <header className="App-region2">
+          <p>{'UTC+' + (0 - date.getTimezoneOffset() / 60)} {date.toLocaleTimeString()}</p>
+        </header>
+      </Grid>
+
+      <Grid item xs={12} style={{backgroundColor: '#ffd83b'}}>
+        test
+      </Grid>
+    </Grid>
   );
 }
 

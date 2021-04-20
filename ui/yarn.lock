@@ -10393,6 +10393,11 @@ react-transition-group@^4.4.0:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
+react-use-dimensions@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.npm.taobao.org/react-use-dimensions/download/react-use-dimensions-1.2.1.tgz#eb1561db7b06c393209d2bffa449931dd93f7870"
+  integrity sha1-6xVh23sGw5MgnSv/pEmTHdk/eHA=
+
 react@^17.0.1:
   version "17.0.2"
   resolved "https://registry.npm.taobao.org/react/download/react-17.0.2.tgz#d0b5cc516d29eb3eee383f75b62864cfb6800037"
