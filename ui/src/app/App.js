@@ -1,12 +1,12 @@
-// import logo from './logo.svg';
 import './App.css';
 import React from 'react'
 import Grid from '@material-ui/core/Grid';
-// import { TypeChooser } from "react-stockcharts/lib/helper";
 
-import PrimarySearchAppBar from './components/bar/AppBar';
-import Chart from './components/chart/CandleStickChart';
-import { getData } from "./components/chart/utils";
+import PrimarySearchAppBar from '../components/bar/AppBar';
+import Chart from '../components/chart/CandleStickChart';
+import { getData } from "../components/chart/utils";
+import { ACCESS_TOKEN } from "../constants";
+import { getCurrentUser } from '../utils/APIUtils';
 
 
 class ChartComponent extends React.Component {
@@ -20,9 +20,6 @@ class ChartComponent extends React.Component {
 			return <div>Loading...</div>
 		}
 		return (
-			// <TypeChooser>
-			// 	{type => <Chart type={type} data={this.state.data} />}
-			// </TypeChooser>
       <Chart type="hybrid" data={this.state.data}/>
 		)
 	}
@@ -38,8 +35,40 @@ class App extends React.Component {
   constructor() {
     super()
     this.state = {
-      date: new Date()
+      date: new Date(),
+      authenticated: false,
+      curUser: null,
+      loading: false
     }
+    this.loadCurrentlyLoggedInUser = this.loadCurrentlyLoggedInUser.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
+  }
+
+  loadCurrentlyLoggedInUser() {
+    this.setState({
+      loading: true
+    });
+
+    getCurrentUser()
+    .then(response => {
+      this.setState({
+        currentUser: response,
+        authenticated: true,
+        loading: false
+      });
+    }).catch(error => {
+      this.setState({
+        loading: false
+      });  
+    });    
+  }
+
+  handleLogout() {
+    localStorage.removeItem(ACCESS_TOKEN);
+    this.setState({
+      authenticated: false,
+      currentUser: null
+    });
   }
 
   componentWillMount() {
@@ -47,6 +76,10 @@ class App extends React.Component {
       () => this.setState({ date: new Date() }),
       1000
     )
+  }
+
+  componentDidMount() {
+    this.loadCurrentlyLoggedInUser();
   }
 
   componentWillUnmount() {

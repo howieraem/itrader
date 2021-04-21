@@ -9,7 +9,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import MoreIcon from '@material-ui/icons/MoreVert';
-import Button from '@material-ui/core/Button';
+// import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 
 import AccountMenu from './AccountMenu';
@@ -131,7 +131,7 @@ export default function PrimarySearchAppBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>Notifications</MenuItem>
+      {/* <MenuItem>Notifications</MenuItem> */}
       <MenuItem onClick={handleProfileMenuOpen}>Account</MenuItem>
     </Menu>
   );
@@ -157,6 +157,7 @@ export default function PrimarySearchAppBar() {
           </div>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
+            {/* 
             <Button 
               aria-label="show new notifications" 
               color="inherit"
@@ -165,6 +166,7 @@ export default function PrimarySearchAppBar() {
             >
               Notifications
             </Button>
+             */}
             <AccountMenu />
           </div>
           <div className={classes.sectionMobile}>
