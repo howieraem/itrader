@@ -63,10 +63,9 @@ public class AuthController {
         // Creating user's account
         User user = new User();
         user.setEmail(signUpRequest.getEmail());
-        user.setPassword(signUpRequest.getPassword());
-        user.setPin(signUpRequest.getPin());
+        user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+        user.setPin(passwordEncoder.encode(signUpRequest.getPin()));
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         User result = userRepository.save(user);
 
@@ -77,5 +76,4 @@ public class AuthController {
         return ResponseEntity.created(location)
                 .body(new ApiResponse(true, "User registered successfully!"));
     }
-
 }

@@ -8,19 +8,20 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class UserPrincipal implements UserDetails {
     private Long id;
     private String email;
     private String password;
+    private String pin;
     private Collection<? extends GrantedAuthority> authorities;
-    private Map<String, Object> attributes;
 
-    public UserPrincipal(Long id, String email, String password, Collection<? extends GrantedAuthority> authorities) {
+    public UserPrincipal(Long id, String email, String password, String pin,
+                         Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.email = email;
         this.password = password;
+        this.pin = pin;
         this.authorities = authorities;
     }
 
@@ -32,6 +33,7 @@ public class UserPrincipal implements UserDetails {
                 user.getId(),
                 user.getEmail(),
                 user.getPassword(),
+                user.getPin(),
                 authorities
         );
     }
