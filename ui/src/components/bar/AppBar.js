@@ -1,5 +1,5 @@
 import React from 'react';
-import { fade, makeStyles } from '@material-ui/core/styles';
+import { fade, withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -9,12 +9,12 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import MoreIcon from '@material-ui/icons/MoreVert';
-// import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 
 import AccountMenu from './AccountMenu';
 
-const useStyles = makeStyles((theme) => ({
+
+const useStyles = theme => ({
   grow: {
     flexGrow: 1,
   },
@@ -76,114 +76,118 @@ const useStyles = makeStyles((theme) => ({
       display: 'none',
     },
   },
-}));
+});
 
-export default function PrimarySearchAppBar() {
-  const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
-  const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+class PrimarySearchAppBar extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      anchorEl: null,
+      mobileMoreAnchorEl: null
+    };
+    this.handleMobileMenuOpen = this.handleMobileMenuOpen.bind(this);
+    this.handleProfileMenuOpen = this.handleProfileMenuOpen.bind(this);
+    this.handleMobileMenuClose = this.handleMobileMenuClose.bind(this);
+    this.handleMenuClose = this.handleMenuClose.bind(this);
+  }
 
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+  handleProfileMenuOpen(event) {
+    this.anchorEl = event.currentTarget;
   };
 
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
+  handleMobileMenuOpen(event) {
+    this.mobileMoreAnchorEl = event.currentTarget;
   };
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
+  handleMobileMenuClose() {
+    this.mobileMoreAnchorEl = null;
   };
 
-  const handleMobileMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget);
+  handleMenuClose() {
+    this.anchorEl = null;
+    this.handleMobileMenuClose();
   };
 
-  const menuId = 'primary-search-account-menu';
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Log out</MenuItem>
-    </Menu>
-  );
+  render() {
+    const {classes} = this.props;
 
-  const mobileMenuId = 'primary-search-account-menu-mobile';
-  const renderMobileMenu = (
-    <Menu
-      anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      id={mobileMenuId}
-      keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={isMobileMenuOpen}
-      onClose={handleMobileMenuClose}
-    >
-      {/* <MenuItem>Notifications</MenuItem> */}
-      <MenuItem onClick={handleProfileMenuOpen}>Account</MenuItem>
-    </Menu>
-  );
+    const isMenuOpen = Boolean(this.anchorEl);
+    const isMobileMenuOpen = Boolean(this.mobileMoreAnchorEl);
 
-  return (
-    <div className={classes.grow}>
-      <AppBar style={{ background: '#00a6b6' }}>
-        <Toolbar>
-          <Typography className={classes.title} variant="h5" noWrap>
-            <Link href="#" color="inherit" style={{textDecoration: 'none'}}>ITrader</Link>
-          </Typography>
-          <div className={classes.grow} />
-          <div className={classes.search}>
-            <InputBase
-              placeholder="COIN"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-              startAdornment={<SearchIcon/>}
-            />
-          </div>
-          <div className={classes.grow} />
-          <div className={classes.sectionDesktop}>
-            {/* 
-            <Button 
-              aria-label="show new notifications" 
-              color="inherit"
-              m={1}
-              style={{textTransform: 'none', fontSize: 18}}
-            >
-              Notifications
-            </Button>
-             */}
-            <AccountMenu />
-          </div>
-          <div className={classes.sectionMobile}>
-            <IconButton
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </div>
-        </Toolbar>
-      </AppBar>
-      {renderMobileMenu}
-      {renderMenu}
-    </div>
-  );
-}
+    const menuId = 'primary-search-account-menu';
+    const renderMenu = (
+      <Menu
+        anchorEl={this.anchorEl}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        id={menuId}
+        keepMounted
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={isMenuOpen}
+        onClose={this.handleMenuClose}
+      >
+        <MenuItem onClick={this.handleMenuClose}>Profile</MenuItem>
+        <MenuItem onClick={this.handleMenuClose}>Settings</MenuItem>
+        <MenuItem onClick={this.handleMenuClose}>Log out</MenuItem>
+      </Menu>
+    );
+
+    const mobileMenuId = 'primary-search-account-menu-mobile';
+    const renderMobileMenu = (
+      <Menu
+        anchorEl={this.mobileMoreAnchorEl}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        id={mobileMenuId}
+        keepMounted
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={isMobileMenuOpen}
+        onClose={this.handleMobileMenuClose}
+      >
+        <MenuItem onClick={this.handleProfileMenuOpen}>Account</MenuItem>
+      </Menu>
+    );
+
+    return (
+      <div className={classes.grow}>
+        <AppBar style={{ background: '#00a6b6' }}>
+          <Toolbar>
+            <Typography className={classes.title} variant="h5" noWrap>
+              <Link href="#" color="inherit" style={{textDecoration: 'none'}}>ITrader</Link>
+            </Typography>
+            <div className={classes.grow} />
+            <div className={classes.search}>
+              <InputBase
+                placeholder="COIN"
+                classes={{
+                  root: classes.inputRoot,
+                  input: classes.inputInput,
+                }}
+                inputProps={{ 'aria-label': 'search' }}
+                startAdornment={<SearchIcon/>}
+              />
+            </div>
+            <div className={classes.grow} />
+            <div className={classes.sectionDesktop}>
+              <AccountMenu />
+            </div>
+            <div className={classes.sectionMobile}>
+              <IconButton
+                aria-label="show more"
+                aria-controls={mobileMenuId}
+                aria-haspopup="true"
+                onClick={this.handleMobileMenuOpen}
+                color="inherit"
+              >
+                <MoreIcon />
+              </IconButton>
+            </div>
+          </Toolbar>
+        </AppBar>
+        {renderMobileMenu}
+        {renderMenu}
+      </div>
+    );
+  }
+};
+
+export default withStyles(useStyles)(PrimarySearchAppBar);
