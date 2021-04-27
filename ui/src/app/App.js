@@ -9,6 +9,12 @@ import { getData } from "../components/chart/utils";
 import { ACCESS_TOKEN } from "../constants";
 import { getCurrentUser } from '../utils/APIUtils';
 
+import Login from '../user/login/Login';
+import Signup from '../user/signup/Signup';
+import Profile from '../user/profile/Profile';
+import NotFound from '../common/NotFound';
+import PrivateRoute from '../common/PrivateRoute';
+
 
 class ChartComponent extends React.Component {
 	componentDidMount() {
@@ -128,6 +134,13 @@ class App extends React.Component {
         </Grid>
         <Switch>
             <Route exact path="/" render={(props) => <Home {...props} />}></Route>  
+            <PrivateRoute path="/profile" authenticated={this.state.authenticated} currentUser={this.state.currentUser}
+              component={Profile}></PrivateRoute>
+            <Route path="/login"
+              render={(props) => <Login authenticated={this.state.authenticated} {...props} />}></Route>
+            <Route path="/signup"
+              render={(props) => <Signup authenticated={this.state.authenticated} {...props} />}></Route>
+            <Route component={NotFound}></Route>
         </Switch>
         
         <Grid item xs={12} style={{ backgroundColor: '#ffd83b' }} align="center">

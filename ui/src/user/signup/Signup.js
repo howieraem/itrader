@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
 import './Signup.css';
 import { Link, Redirect } from 'react-router-dom'
-import { GOOGLE_AUTH_URL, FACEBOOK_AUTH_URL, GITHUB_AUTH_URL } from '../../constants';
-import { signup } from '../../util/APIUtils';
-import fbLogo from '../../img/fb-logo.png';
-import googleLogo from '../../img/google-logo.png';
-import githubLogo from '../../img/github-logo.png';
-import Alert from 'react-s-alert';
+import { signup } from '../../utils/APIUtils';
+import Grid from '@material-ui/core/Grid';
 
 class Signup extends Component {
     render() {
@@ -19,33 +15,15 @@ class Signup extends Component {
         }
 
         return (
-            <div className="signup-container">
-                <div className="signup-content">
-                    <h1 className="signup-title">Signup with SpringSocial</h1>
-                    <SocialSignup />
-                    <div className="or-separator">
-                        <span className="or-text">OR</span>
+            <Grid container spacing={0}>
+                <Grid item xs={12} align="center">
+                    <div className="signup-content">
+                        <h1 className="signup-title">Signup with ITrader</h1>
+                        <SignupForm {...this.props} />
+                        <span className="login-link">Already have an account? <Link to="/login">Login!</Link></span>
                     </div>
-                    <SignupForm {...this.props} />
-                    <span className="login-link">Already have an account? <Link to="/login">Login!</Link></span>
-                </div>
-            </div>
-        );
-    }
-}
-
-
-class SocialSignup extends Component {
-    render() {
-        return (
-            <div className="social-signup">
-                <a className="btn btn-block social-btn google" href={GOOGLE_AUTH_URL}>
-                    <img src={googleLogo} alt="Google" /> Sign up with Google</a>
-                <a className="btn btn-block social-btn facebook" href={FACEBOOK_AUTH_URL}>
-                    <img src={fbLogo} alt="Facebook" /> Sign up with Facebook</a>
-                <a className="btn btn-block social-btn github" href={GITHUB_AUTH_URL}>
-                    <img src={githubLogo} alt="Github" /> Sign up with Github</a>
-            </div>
+                </Grid>
+            </Grid>
         );
     }
 }
@@ -54,9 +32,9 @@ class SignupForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: '',
             email: '',
-            password: ''
+            password: '',
+            pin: '',
         }
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -79,21 +57,18 @@ class SignupForm extends Component {
 
         signup(signUpRequest)
         .then(response => {
-            Alert.success("You're successfully registered. Please login to continue!");
+            console.log("successfully registered.");
+            // Alert.success("You're successfully registered. Please login to continue!");
             this.props.history.push("/login");
         }).catch(error => {
-            Alert.error((error && error.message) || 'Oops! Something went wrong. Please try again!');            
+            console.log(error.message);
+            // Alert.error((error && error.message) || 'Oops! Something went wrong. Please try again!');            
         });
     }
 
     render() {
         return (
             <form onSubmit={this.handleSubmit}>
-                <div className="form-item">
-                    <input type="text" name="name" 
-                        className="form-control" placeholder="Name"
-                        value={this.state.name} onChange={this.handleInputChange} required/>
-                </div>
                 <div className="form-item">
                     <input type="email" name="email" 
                         className="form-control" placeholder="Email"
@@ -105,7 +80,12 @@ class SignupForm extends Component {
                         value={this.state.password} onChange={this.handleInputChange} required/>
                 </div>
                 <div className="form-item">
-                    <button type="submit" className="btn btn-block btn-primary" >Sign Up</button>
+                    <input type="text" name="pin" 
+                        className="form-control" placeholder="PIN"
+                        value={this.state.pin} onChange={this.handleInputChange} required/>
+                </div>
+                <div className="form-item">
+                    <button type="submit" className="btn btn-block btn-primary">Sign Up</button>
                 </div>
             </form>                    
 
