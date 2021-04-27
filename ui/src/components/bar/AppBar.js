@@ -10,6 +10,7 @@ import Menu from '@material-ui/core/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Link from '@material-ui/core/Link';
+import Button from '@material-ui/core/Button';
 
 import AccountMenu from './AccountMenu';
 
@@ -126,9 +127,12 @@ class PrimarySearchAppBar extends React.Component {
         open={isMenuOpen}
         onClose={this.handleMenuClose}
       >
-        <MenuItem onClick={this.handleMenuClose}>Profile</MenuItem>
-        <MenuItem onClick={this.handleMenuClose}>Settings</MenuItem>
-        <MenuItem onClick={this.handleMenuClose}>Log out</MenuItem>
+        <MenuItem onClick={this.handleMenuClose}>
+          <Link href="/profile" color="inherit" style={{textDecoration: 'none'}}>Details</Link>
+        </MenuItem>
+        <MenuItem onClick={this.handleMenuClose}>
+          <Link href="/settings" color="inherit" style={{textDecoration: 'none'}}>Settings</Link>
+        </MenuItem>
       </Menu>
     );
 
@@ -143,7 +147,17 @@ class PrimarySearchAppBar extends React.Component {
         open={isMobileMenuOpen}
         onClose={this.handleMobileMenuClose}
       >
-        <MenuItem onClick={this.handleProfileMenuOpen}>Account</MenuItem>
+        {this.props.authenticated ? (
+          <div>
+            <MenuItem onClick={this.handleProfileMenuOpen}>Profile</MenuItem>
+            <MenuItem onClick={this.props.onLogout}>Logout</MenuItem>
+          </div>
+        ) : (
+          <div>
+            <MenuItem><Link href="/login" color="inherit" style={{textDecoration: 'none'}}>Login</Link></MenuItem>
+            <MenuItem><Link href="/signup" color="inherit" style={{textDecoration: 'none'}}>Signup</Link></MenuItem>
+          </div>
+        )}
       </Menu>
     );
 
@@ -152,7 +166,7 @@ class PrimarySearchAppBar extends React.Component {
         <AppBar style={{ background: '#00a6b6' }}>
           <Toolbar>
             <Typography className={classes.title} variant="h5" noWrap>
-              <Link href="#" color="inherit" style={{textDecoration: 'none'}}>ITrader</Link>
+              <Link href="/" color="inherit" style={{textDecoration: 'none'}}>ITrader</Link>
             </Typography>
             <div className={classes.grow} />
             <div className={classes.search}>
@@ -168,7 +182,39 @@ class PrimarySearchAppBar extends React.Component {
             </div>
             <div className={classes.grow} />
             <div className={classes.sectionDesktop}>
-              <AccountMenu />
+              { this.props.authenticated ? (
+                <div>
+                  <AccountMenu />
+                  <Button 
+                    aria-label="logout" 
+                    color="inherit"
+                    m={6}
+                    style={{textTransform: 'none', fontSize: 18}}
+                    onClick={this.props.onLogout}
+                  >
+                    Logout
+                  </Button>
+                </div>
+              ) : (
+                <div>
+                  <Button 
+                    aria-label="login" 
+                    color="inherit"
+                    m={6}
+                    style={{textTransform: 'none', fontSize: 18}}
+                  >
+                    <Link href="/login" color="inherit" style={{textDecoration: 'none'}}>Login</Link>
+                  </Button>
+                  <Button 
+                    aria-label="signup" 
+                    color="inherit"
+                    m={6}
+                    style={{textTransform: 'none', fontSize: 18}}
+                  >
+                    <Link href="/signup" color="inherit" style={{textDecoration: 'none'}}>Signup</Link>
+                  </Button>
+                </div>
+              )}
             </div>
             <div className={classes.sectionMobile}>
               <IconButton

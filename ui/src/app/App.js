@@ -1,7 +1,8 @@
 import './App.css';
 import React from 'react'
-import Grid from '@material-ui/core/Grid';
+import { Route, Switch } from 'react-router-dom';
 
+import Grid from '@material-ui/core/Grid';
 import PrimarySearchAppBar from '../components/bar/AppBar';
 import Chart from '../components/chart/CandleStickChart';
 import { getData } from "../components/chart/utils";
@@ -23,6 +24,39 @@ class ChartComponent extends React.Component {
       <Chart type="hybrid" data={this.state.data}/>
 		)
 	}
+}
+
+
+class Home extends React.Component {
+  render() {
+    return (
+      <Grid container spacing={0}>
+        <Grid item xs={6} style={{ marginTop: 30 }}> 
+          <header className="Symbol-title">
+            {"COIN - Coinbase Inc."}
+          </header>
+        </Grid>
+        <Grid item xs={6} style={{ marginTop: 30 }}>
+          <header className="Symbol-icons">
+            Work in progress...
+          </header>
+        </Grid>
+        <Grid item xs={12} align="left">
+          <ChartComponent />
+        </Grid>
+        <Grid item xs={4}>
+          <header className="Symbol-stats">
+            Symbol stats
+          </header>
+        </Grid>
+        <Grid item xs={8}>
+          <header className="Misc">
+            Misc
+          </header>
+        </Grid>
+      </Grid>
+    )
+  }
 }
 
 
@@ -90,31 +124,12 @@ class App extends React.Component {
     return (
       <Grid container spacing={0}>
         <Grid item xs={12}>
-          <PrimarySearchAppBar />
+          <PrimarySearchAppBar authenticated={this.state.authenticated} onLogout={this.handleLogout} />
         </Grid>
-        <Grid item xs={6} style={{ marginTop: 30 }}> 
-          <header className="Symbol-title">
-            {"COIN - Coinbase Inc."}
-          </header>
-        </Grid>
-        <Grid item xs={6} style={{ marginTop: 30 }}>
-          <header className="Symbol-icons">
-            Work in progress...
-          </header>
-        </Grid>
-        <Grid item xs={12} align="left">
-          <ChartComponent />
-        </Grid>
-        <Grid item xs={4}>
-          <header className="Symbol-stats">
-            Symbol stats
-          </header>
-        </Grid>
-        <Grid item xs={8}>
-          <header className="Misc">
-            Misc
-          </header>
-        </Grid>
+        <Switch>
+            <Route exact path="/" render={(props) => <Home {...props} />}></Route>  
+        </Switch>
+        
         <Grid item xs={12} style={{ backgroundColor: '#ffd83b' }} align="center">
           <Clock date={this.state.date} />
         </Grid>

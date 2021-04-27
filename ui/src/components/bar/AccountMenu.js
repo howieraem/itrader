@@ -7,6 +7,7 @@ import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
+import Link from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
@@ -55,7 +56,7 @@ export default function AccountMenu() {
   return (
     <div className={classes.root}>
       <div>
-        <Box m={1}>
+        <Box m={6}>
           <Button
             ref={anchorRef}
             color="inherit"
@@ -65,7 +66,7 @@ export default function AccountMenu() {
             onClick={handleToggle}
             style={{textTransform: 'none', fontSize: 18}}
           >
-            Account
+            Profile
           </Button>
         </Box>
         <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
@@ -77,9 +78,12 @@ export default function AccountMenu() {
               <Paper>
                 <ClickAwayListener onClickAway={handleClose}>
                   <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                    <MenuItem onClick={handleClose}>Profile</MenuItem>
-                    <MenuItem onClick={handleClose}>Settings</MenuItem>
-                    <MenuItem onClick={handleClose}>Logout</MenuItem>
+                    <MenuItem onClick={handleClose}>
+                      <Link href="/profile" color="inherit" style={{textDecoration: 'none'}}>Details</Link>
+                    </MenuItem>
+                    <MenuItem onClick={handleClose}>
+                      <Link href="/settings" color="inherit" style={{textDecoration: 'none'}}>Settings</Link>
+                    </MenuItem>
                   </MenuList>
                 </ClickAwayListener>
               </Paper>
