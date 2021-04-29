@@ -1,5 +1,4 @@
 import React from 'react';
-import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Grow from '@material-ui/core/Grow';
@@ -56,19 +55,18 @@ export default function AccountMenu() {
   return (
     <div className={classes.root}>
       <div>
-        <Box m={6}>
-          <Button
-            ref={anchorRef}
-            color="inherit"
-            aria-label="account of current user"
-            aria-controls={open ? 'menu-list-grow' : undefined}
-            aria-haspopup="true"
-            onClick={handleToggle}
-            style={{textTransform: 'none', fontSize: 18}}
-          >
-            Profile
-          </Button>
-        </Box>
+        <Button
+          ref={anchorRef}
+          color="inherit"
+          aria-label="account of current user"
+          aria-controls={open ? 'menu-list-grow' : undefined}
+          aria-haspopup="true"
+          onClick={handleToggle}
+          m={2}
+          style={{textTransform: 'none', fontSize: 18}}
+        >
+          Profile
+        </Button>
         <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
           {({ TransitionProps, placement }) => (
             <Grow

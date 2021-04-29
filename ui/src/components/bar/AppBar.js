@@ -183,37 +183,37 @@ class PrimarySearchAppBar extends React.Component {
             <div className={classes.grow} />
             <div className={classes.sectionDesktop}>
               { this.props.authenticated ? (
-                <div>
-                  <AccountMenu />
-                  <Button 
-                    aria-label="logout" 
-                    color="inherit"
-                    m={6}
-                    style={{textTransform: 'none', fontSize: 18}}
-                    onClick={this.props.onLogout}
-                  >
-                    Logout
-                  </Button>
-                </div>
+                <AccountMenu />
               ) : (
-                <div>
-                  <Button 
-                    aria-label="login" 
-                    color="inherit"
-                    m={6}
-                    style={{textTransform: 'none', fontSize: 18}}
-                  >
-                    <Link href="/login" color="inherit" style={{textDecoration: 'none'}}>Login</Link>
-                  </Button>
-                  <Button 
-                    aria-label="signup" 
-                    color="inherit"
-                    m={6}
-                    style={{textTransform: 'none', fontSize: 18}}
-                  >
-                    <Link href="/signup" color="inherit" style={{textDecoration: 'none'}}>Signup</Link>
-                  </Button>
-                </div>
+                <Button 
+                  aria-label="login" 
+                  color="inherit"
+                  m={2}
+                  style={{textTransform: 'none', fontSize: 18}}
+                >
+                  <Link href="/login" color="inherit" style={{textDecoration: 'none'}}>Login</Link>
+                </Button>
+              )}
+
+              { this.props.authenticated ? (
+                <Button 
+                  aria-label="logout" 
+                  color="inherit"
+                  m={2}
+                  style={{textTransform: 'none', fontSize: 18}}
+                  onClick={this.props.onLogout}
+                >
+                  Logout
+                </Button>
+              ) : (
+                <Button 
+                  aria-label="signup" 
+                  color="inherit"
+                  m={2}
+                  style={{textTransform: 'none', fontSize: 18}}
+                >
+                  <Link href="/signup" color="inherit" style={{textDecoration: 'none'}}>Signup</Link>
+                </Button>
               )}
             </div>
             <div className={classes.sectionMobile}>

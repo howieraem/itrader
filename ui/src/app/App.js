@@ -109,6 +109,7 @@ class App extends React.Component {
       authenticated: false,
       currentUser: null
     });
+    console.log("logged out");
   }
 
   componentWillMount() {
@@ -125,7 +126,7 @@ class App extends React.Component {
   componentWillUnmount() {
     clearInterval(this.interval)
   }
-
+  
   render() {
     return (
       <Grid container spacing={0}>

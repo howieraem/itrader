@@ -1,43 +1,25 @@
 package com.jlumine.itrader.controller;
 
+import com.jlumine.itrader.exception.ResourceNotFoundException;
 import com.jlumine.itrader.model.User;
-import com.jlumine.itrader.service.UserService;
+import com.jlumine.itrader.repository.UserRepository;
+import com.jlumine.itrader.security.CurrentUser;
+import com.jlumine.itrader.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-@RequestMapping("user")
+@RestController
 public class UserController {
+
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
-    @RequestMapping(value = "signin", method = RequestMethod.POST)
-    @ResponseBody
-    public String signIn(User user){
-        try {
-            return userService.signIn(user).toString();
-        } catch (RuntimeException re) {
-            return re.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Internal Error: " + e.getMessage();
-        }
-    }
-
-    @RequestMapping(value = "signup", method = RequestMethod.POST)
-    @ResponseBody
-    public String signUp(User user){
-        try {
-            userService.signUp(user);
-            return "Sign up successful! You are given an initial $5000 fund to start with.";
-        } catch (RuntimeException re) {
-            return re.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Internal Error: " + e.getMessage();
-        }
+    @GetMapping("/user/me")
+    @PreAuthorize("hasRole('USER')")
+    public User getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
+        return userRepository.findById(userPrincipal.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
     }
 }
