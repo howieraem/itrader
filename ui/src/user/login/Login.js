@@ -77,6 +77,7 @@ class LoginForm extends Component {
             console.log("successfully logged in");
             // Alert.success("You're successfully logged in!");
             this.props.history.push("/");
+            window.location.reload();
         }).catch(error => {
             console.log(error.message);
             // Alert.error((error && error.message) || 'Oops! Something went wrong. Please try again!');

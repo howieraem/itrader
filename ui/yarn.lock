@@ -1930,10 +1930,10 @@
   resolved "https://registry.npm.taobao.org/@types/node/download/@types/node-14.14.37.tgz?cache=0&sync_timestamp=1616803582959&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fnode%2Fdownload%2F%40types%2Fnode-14.14.37.tgz#a3dd8da4eb84a996c36e331df98d82abd76b516e"
   integrity sha1-o92NpOuEqZbDbjMd+Y2Cq9drUW4=
 
-"@types/node@^13.7.0":
-  version "13.13.48"
-  resolved "https://registry.npm.taobao.org/@types/node/download/@types/node-13.13.48.tgz?cache=0&sync_timestamp=1616803582959&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fnode%2Fdownload%2F%40types%2Fnode-13.13.48.tgz#46a3df718aed5217277f2395a682e055a487e341"
-  integrity sha1-RqPfcYrtUhcnfyOVpoLgVaSH40E=
+"@types/node@>=13.7.0":
+  version "15.0.2"
+  resolved "https://registry.nlark.com/@types/node/download/@types/node-15.0.2.tgz?cache=0&sync_timestamp=1620169720944&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40types%2Fnode%2Fdownload%2F%40types%2Fnode-15.0.2.tgz#51e9c0920d1b45936ea04341aa3e2e58d339fb67"
+  integrity sha1-UenAkg0bRZNuoENBqj4uWNM5+2c=
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -7166,6 +7166,11 @@ isobject@^3.0.0, isobject@^3.0.1:
   resolved "https://registry.npm.taobao.org/isobject/download/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
   integrity sha1-TkMekrEalzFjaqH5yNHMvP2reN8=
 
+isomorphic-ws@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.npm.taobao.org/isomorphic-ws/download/isomorphic-ws-4.0.1.tgz#55fd4cd6c5e6491e76dc125938dd863f5cd4f2dc"
+  integrity sha1-Vf1M1sXmSR523BJZON2GP1zU8tw=
+
 isstream@~0.1.2:
   version "0.1.2"
   resolved "https://registry.npm.taobao.org/isstream/download/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
@@ -9995,9 +10000,9 @@ prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, 
     react-is "^16.8.1"
 
 protobufjs@^6.10.2:
-  version "6.10.2"
-  resolved "https://registry.npm.taobao.org/protobufjs/download/protobufjs-6.10.2.tgz#b9cb6bd8ec8f87514592ba3fdfd28e93f33a469b"
-  integrity sha1-uctr2OyPh1FFkro/39KOk/M6Rps=
+  version "6.11.2"
+  resolved "https://registry.nlark.com/protobufjs/download/protobufjs-6.11.2.tgz?cache=0&sync_timestamp=1619804443465&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fprotobufjs%2Fdownload%2Fprotobufjs-6.11.2.tgz#de39fabd4ed32beaa08e9bb1e30d08544c1edf8b"
+  integrity sha1-3jn6vU7TK+qgjpux4w0IVEwe34s=
   dependencies:
     "@protobufjs/aspromise" "^1.1.2"
     "@protobufjs/base64" "^1.1.2"
@@ -10010,7 +10015,7 @@ protobufjs@^6.10.2:
     "@protobufjs/pool" "^1.1.0"
     "@protobufjs/utf8" "^1.1.0"
     "@types/long" "^4.0.1"
-    "@types/node" "^13.7.0"
+    "@types/node" ">=13.7.0"
     long "^4.0.0"
 
 proxy-addr@~2.0.5:
@@ -11462,13 +11467,14 @@ stealthy-require@^1.1.1:
   resolved "https://registry.npm.taobao.org/stealthy-require/download/stealthy-require-1.1.1.tgz#35b09875b4ff49f26a777e509b3090a3226bf24b"
   integrity sha1-NbCYdbT/SfJqd35QmzCQoyJr8ks=
 
-stocksocket@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.npm.taobao.org/stocksocket/download/stocksocket-2.0.0.tgz#a2b8d46296783535c1fdef61a0fdd593a366cec7"
-  integrity sha1-orjUYpZ4NTXB/e9hoP3Vk6Nmzsc=
+stocksocket@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.nlark.com/stocksocket/download/stocksocket-2.1.0.tgz#1f33e43261b28848f57b1c65b57e7f95322023bd"
+  integrity sha1-HzPkMmGyiEj1exxltX5/lTIgI70=
   dependencies:
+    isomorphic-ws "^4.0.1"
     protobufjs "^6.10.2"
-    ws "^7.4.4"
+    ws "^7.4.5"
 
 stream-browserify@^2.0.1:
   version "2.0.2"
@@ -12844,6 +12850,11 @@ ws@^7.4.4:
   version "7.4.4"
   resolved "https://registry.npm.taobao.org/ws/download/ws-7.4.4.tgz?cache=0&sync_timestamp=1615063746103&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fws%2Fdownload%2Fws-7.4.4.tgz#383bc9742cb202292c9077ceab6f6047b17f2d59"
   integrity sha1-ODvJdCyyAikskHfOq29gR7F/LVk=
+
+ws@^7.4.5:
+  version "7.4.5"
+  resolved "https://registry.npm.taobao.org/ws/download/ws-7.4.5.tgz#a484dd851e9beb6fdb420027e3885e8ce48986c1"
+  integrity sha1-pITdhR6b62/bQgAn44hejOSJhsE=
 
 xml-name-validator@^3.0.0:
   version "3.0.0"

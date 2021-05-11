@@ -14,6 +14,16 @@ import Signup from '../user/signup/Signup';
 import Profile from '../user/profile/Profile';
 import NotFound from '../common/NotFound';
 import PrivateRoute from '../common/PrivateRoute';
+import LoadingIndicator from '../common/LoadingIndicator';
+
+const StockSocket = require("stocksocket");
+
+StockSocket.addTicker("TSLA", stockPriceChanged);
+
+function stockPriceChanged(data) {
+  //Choose what to do with your data as it comes in.
+  console.log(data);
+}
 
 
 class ChartComponent extends React.Component {
@@ -78,7 +88,8 @@ class App extends React.Component {
       date: new Date(),
       authenticated: false,
       curUser: null,
-      loading: false
+      loading: false,
+      initialized: false
     }
     this.loadCurrentlyLoggedInUser = this.loadCurrentlyLoggedInUser.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
@@ -94,12 +105,14 @@ class App extends React.Component {
       this.setState({
         currentUser: response,
         authenticated: true,
-        loading: false
+        loading: false,
+        initialized: true
       });
     }).catch(error => {
       this.setState({
-        loading: false
-      });  
+        loading: false,
+        initialized: true
+      });
     });    
   }
 
@@ -110,6 +123,7 @@ class App extends React.Component {
       currentUser: null
     });
     console.log("logged out");
+    window.location.reload();
   }
 
   componentWillMount() {
@@ -128,19 +142,22 @@ class App extends React.Component {
   }
   
   render() {
+    if (this.state.loading) {
+      return <LoadingIndicator />
+    }
     return (
       <Grid container spacing={0}>
         <Grid item xs={12}>
           <PrimarySearchAppBar authenticated={this.state.authenticated} onLogout={this.handleLogout} />
         </Grid>
         <Switch>
-            <Route exact path="/" render={(props) => <Home {...props} />}></Route>  
-            <PrivateRoute path="/profile" authenticated={this.state.authenticated} currentUser={this.state.currentUser}
-              component={Profile}></PrivateRoute>
+            <Route exact path="/" render={(props) => <Home {...props} />}></Route>
             <Route path="/login"
               render={(props) => <Login authenticated={this.state.authenticated} {...props} />}></Route>
             <Route path="/signup"
               render={(props) => <Signup authenticated={this.state.authenticated} {...props} />}></Route>
+            <PrivateRoute path="/profile" authenticated={this.state.authenticated} initialized={this.state.initialized} currentUser={this.state.currentUser}
+              component={Profile}></PrivateRoute>
             <Route component={NotFound}></Route>
         </Switch>
         
