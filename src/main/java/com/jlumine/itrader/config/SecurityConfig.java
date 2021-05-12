@@ -24,6 +24,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
         prePostEnabled = true
 )
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    private static final String[] SWAGGER_WHITELIST = {
+            "/swagger-ui.html",
+            "/swagger-ui/*",
+            "/swagger-resources/**",
+            "/v2/api-docs",
+            "/v3/api-docs",
+            "/webjars/**",
+            "/doc.html",
+    };
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
@@ -82,6 +91,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     "/**/*.js")
                     .permitAll()
                 .antMatchers("/auth/**", "/oauth2/**")
+                    .permitAll()
+                .antMatchers(SWAGGER_WHITELIST)
                     .permitAll()
                 .anyRequest()
                     .authenticated();
