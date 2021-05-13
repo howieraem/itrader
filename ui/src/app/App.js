@@ -16,15 +16,6 @@ import NotFound from '../common/NotFound';
 import PrivateRoute from '../common/PrivateRoute';
 import LoadingIndicator from '../common/LoadingIndicator';
 
-const StockSocket = require("stocksocket");
-
-StockSocket.addTicker("TSLA", stockPriceChanged);
-
-function stockPriceChanged(data) {
-  //Choose what to do with your data as it comes in.
-  console.log(data);
-}
-
 
 class ChartComponent extends React.Component {
 	componentDidMount() {
@@ -44,18 +35,51 @@ class ChartComponent extends React.Component {
 
 
 class Home extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      loaded: false,
+      symbol: "COIN",
+      price: 0.,
+      change: 0.,
+      changePercent: 0.,
+      dayVolume: 0.,
+      prePrice: 0.,
+    }
+    this.stockSocket = require("stocksocket");
+    this.stockSocket.addTicker(this.state.symbol, stockData => {
+      console.log(stockData);
+      if (this.state.loaded) {
+        this.setState({
+          prePrice: this.state.price,
+          price: stockData.price,
+          change: stockData.change,
+          changePercent: stockData.changePercent,
+          dayVolume: stockData.dayVolume,
+        });
+      }
+    });
+  }
+
+  componentDidMount() {
+    this.setState({loaded: true});
+  }
+
   render() {
     return (
       <Grid container spacing={0}>
         <Grid item xs={6} style={{ marginTop: 30 }}> 
           <header className="Symbol-title">
-            {"COIN - Coinbase Inc."}
+            {this.state.symbol}
           </header>
         </Grid>
         <Grid item xs={6} style={{ marginTop: 30 }}>
           <header className="Symbol-icons">
             Work in progress...
           </header>
+        </Grid>
+        <Grid item xs={12} style={{ backgroundColor: '#ff6b6b' }} align="center">
+          {this.state.price}
         </Grid>
         <Grid item xs={12} align="left">
           <ChartComponent />
@@ -82,17 +106,21 @@ const Clock = ({ date }) => (
 
 
 class App extends React.Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       date: new Date(),
       authenticated: false,
       curUser: null,
       loading: false,
-      initialized: false
+      initialized: false,
     }
     this.loadCurrentlyLoggedInUser = this.loadCurrentlyLoggedInUser.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
+    this.interval = setInterval(
+      () => this.setState({ date: new Date() }),
+      1000
+    )
   }
 
   loadCurrentlyLoggedInUser() {
@@ -126,13 +154,6 @@ class App extends React.Component {
     window.location.reload();
   }
 
-  componentWillMount() {
-    this.interval = setInterval(
-      () => this.setState({ date: new Date() }),
-      1000
-    )
-  }
-
   componentDidMount() {
     this.loadCurrentlyLoggedInUser();
   }
@@ -160,7 +181,7 @@ class App extends React.Component {
               component={Profile}></PrivateRoute>
             <Route component={NotFound}></Route>
         </Switch>
-        
+
         <Grid item xs={12} style={{ backgroundColor: '#ffd83b' }} align="center">
           <Clock date={this.state.date} />
         </Grid>
