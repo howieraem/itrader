@@ -165,6 +165,7 @@ class PrimarySearchAppBar extends React.Component {
       <div className={classes.grow}>
         <AppBar style={{ background: '#00a6b6' }}>
           <Toolbar>
+            <div className={classes.grow} />
             <Typography className={classes.title} variant="h5" noWrap>
               <Link href="/" color="inherit" style={{textDecoration: 'none'}}>ITrader</Link>
             </Typography>
@@ -216,6 +217,7 @@ class PrimarySearchAppBar extends React.Component {
                 </Button>
               )}
             </div>
+            <div className={classes.grow} />
             <div className={classes.sectionMobile}>
               <IconButton
                 aria-label="show more"
