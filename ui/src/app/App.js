@@ -10,14 +10,14 @@ import { withStyles } from '@material-ui/core/styles';
 
 import PrimarySearchAppBar from '../components/bar/AppBar';
 import Dashboard from '../components/dashboard/Dashboard';
-import { ACCESS_TOKEN } from "../constants";
-import { getCurrentUser } from '../utils/APIUtils';
-import SignIn from '../user/login/SignIn';
-import SignUp from '../user/signup/SignUp';
-import Profile from '../user/profile/Profile';
+import SignIn from '../components/auth/SignIn';
+import SignUp from '../components/auth/SignUp';
+import Profile from '../components/profile/Profile';
 import NotFound from '../common/NotFound';
 import PrivateRoute from '../common/PrivateRoute';
 import LoadingIndicator from '../common/LoadingIndicator';
+import { ACCESS_TOKEN } from "../constants";
+import { getCurrentUser } from '../utils/APIUtils';
 
 
 const useStyles = (theme => ({

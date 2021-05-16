@@ -10,7 +10,7 @@ class Profile extends Component {
                         <div className="profile-avatar">
                             {
                                 <div className="text-avatar">
-                                    <span>{this.props.currentUser.email}</span>
+                                    <span>{this.props.currentUser.email[0]}</span>
                                 </div>
                             }
                         </div>

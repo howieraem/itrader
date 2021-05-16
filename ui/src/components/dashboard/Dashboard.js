@@ -75,23 +75,23 @@ class Dashboard extends React.Component {
     return (
       <Grid container spacing={0}>
         <Grid container spacing={0}>
-          <Grid item xs style={{ marginTop: 50 }}><header className="Symbol-title"></header></Grid>
-          <Grid item xs={4} style={{ marginTop: 50 }}> 
+          <Grid item xs><header className="Symbol-title"></header></Grid>
+          <Grid item xs={4}> 
             <header className="Symbol-title">
               {this.state.symbol} -- {this.state.companyName}
             </header>
           </Grid>
-          <Grid item xs={3} style={{ marginTop: 50 }}> 
+          <Grid item xs={3}> 
             <header className="Symbol-title">
               $ {this.state.price}
             </header>
           </Grid>
-          <Grid item xs={3} style={{ marginTop: 50 }}> 
+          <Grid item xs={3}> 
             <header className="Symbol-title">
               {this.state.change} ({this.state.changePercent} %)
             </header>
           </Grid>
-          <Grid item xs style={{ marginTop: 50 }}><header className="Symbol-title"></header></Grid>
+          <Grid item><header className="Symbol-title"></header></Grid>
         </Grid>
 
         <Grid container spacing={0}>
