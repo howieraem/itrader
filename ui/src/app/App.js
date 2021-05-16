@@ -3,19 +3,40 @@ import React from 'react'
 import { Route, Switch } from 'react-router-dom';
 
 import Container from '@material-ui/core/Container';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles';
+
 import PrimarySearchAppBar from '../components/bar/AppBar';
 import Dashboard from '../components/dashboard/Dashboard';
 import { ACCESS_TOKEN } from "../constants";
 import { getCurrentUser } from '../utils/APIUtils';
-
-
 import SignIn from '../user/login/SignIn';
 import SignUp from '../user/signup/SignUp';
 import Profile from '../user/profile/Profile';
 import NotFound from '../common/NotFound';
 import PrivateRoute from '../common/PrivateRoute';
 import LoadingIndicator from '../common/LoadingIndicator';
+
+
+const useStyles = (theme => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '100vh',
+  },
+  main: {
+    marginTop: theme.spacing(8),
+    marginBottom: theme.spacing(2),
+  },
+  footer: {
+    padding: theme.spacing(3, 2),
+    marginTop: 'auto',
+    backgroundColor: "#005480"
+      // theme.palette.type === 'light' ? theme.palette.grey[200] : theme.palette.grey[800],
+  },
+}));
 
 
 class App extends React.Component {
@@ -67,38 +88,48 @@ class App extends React.Component {
   }
   
   render() {
+    const { classes } = this.props;
     if (this.state.loading) {
       return <LoadingIndicator />
     }
     return (
-      <Container>
-        <Grid container spacing={0}>
-          <Grid item xs>
-            <PrimarySearchAppBar authenticated={this.state.authenticated} onLogout={this.handleLogout} />
-          </Grid>
+      <div className={classes.root}>
+        <CssBaseline />
+        <Container component="main" className={classes.main} maxWidth="lg">
+          <Grid container spacing={0}>
+            <Grid item xs>
+              <PrimarySearchAppBar authenticated={this.state.authenticated} onLogout={this.handleLogout} />
+            </Grid>
 
-          <Switch>
-              <Route exact path="/" render={(props) => <Dashboard {...props} />}></Route>
-              <Route path="/login"
-                // render={(props) => <Login authenticated={this.state.authenticated} {...props} />}>
-                render={(props) => <SignIn authenticated={this.state.authenticated} {...props} />}>
-              </Route>
-              <Route path="/signup"
-                render={(props) => <SignUp authenticated={this.state.authenticated} {...props} />}>
-              </Route>
-              <PrivateRoute path="/profile" authenticated={this.state.authenticated} initialized={this.state.initialized} currentUser={this.state.currentUser}
-                component={Profile}>
-              </PrivateRoute>
-              <Route component={NotFound}></Route>
-          </Switch>
-
-          <Grid item xs={12} style={{ backgroundColor: '#cccccc', marginTop: '30px', marginBottom: '10px' }} align="center">
-            Copyright © HL {new Date().getFullYear()}.
+            <Switch>
+                <Route exact path="/" render={(props) => <Dashboard {...props} />}></Route>
+                <Route path="/login"
+                  // render={(props) => <Login authenticated={this.state.authenticated} {...props} />}>
+                  render={(props) => <SignIn authenticated={this.state.authenticated} {...props} />}>
+                </Route>
+                <Route path="/signup"
+                  render={(props) => <SignUp authenticated={this.state.authenticated} {...props} />}>
+                </Route>
+                <PrivateRoute path="/profile" authenticated={this.state.authenticated} initialized={this.state.initialized} currentUser={this.state.currentUser}
+                  component={Profile}>
+                </PrivateRoute>
+                <Route component={NotFound}></Route>
+            </Switch>
           </Grid>
-        </Grid>
-      </Container>
+        </Container>
+        <footer className={classes.footer}>
+          <Container maxWidth="lg">
+            <Typography variant="body1" style={{color: "#ffffff"}}>Lumine.</Typography>
+            <Typography variant="body2" style={{color: "#dddddd"}}>
+              {'Copyright © HL '}
+              {new Date().getFullYear()}
+              {'.'}
+            </Typography>
+          </Container>
+        </footer>
+      </div>
     );
   }
 }
 
-export default App;
+export default withStyles(useStyles)(App);

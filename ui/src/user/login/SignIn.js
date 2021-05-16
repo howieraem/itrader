@@ -7,9 +7,8 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { withStyles } from '@material-ui/styles';
 import { Redirect } from 'react-router-dom';
 import { ACCESS_TOKEN } from '../../constants';
 import { login } from '../../utils/APIUtils';
@@ -100,8 +99,8 @@ class SignIn extends React.Component {
     const { classes } = this.props;
     return (
       <Grid item xs={12}>
+        <CssBaseline />
         <Container component="main" maxWidth="xs">
-          <CssBaseline />
           <Grid item xs={12} style={{ minHeight: "10vh" }}></Grid>
           <div className={classes.paper}>
             <Typography component="h1" variant="h5">
