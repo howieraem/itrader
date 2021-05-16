@@ -2,30 +2,26 @@ import './App.css';
 import React from 'react'
 import { Route, Switch } from 'react-router-dom';
 
+import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import PrimarySearchAppBar from '../components/bar/AppBar';
 import Dashboard from '../components/dashboard/Dashboard';
 import { ACCESS_TOKEN } from "../constants";
 import { getCurrentUser } from '../utils/APIUtils';
 
-import Login from '../user/login/Login';
-import Signup from '../user/signup/Signup';
+
+import SignIn from '../user/login/SignIn';
+import SignUp from '../user/signup/SignUp';
 import Profile from '../user/profile/Profile';
 import NotFound from '../common/NotFound';
 import PrivateRoute from '../common/PrivateRoute';
 import LoadingIndicator from '../common/LoadingIndicator';
 
 
-const Clock = ({ date }) => (
-  <div>{'UTC+' + (0 - date.getTimezoneOffset() / 60) + ' ' + date.toLocaleTimeString()}</div>
-)
-
-
 class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      date: new Date(),
       authenticated: false,
       curUser: null,
       loading: false,
@@ -33,10 +29,6 @@ class App extends React.Component {
     }
     this.loadCurrentlyLoggedInUser = this.loadCurrentlyLoggedInUser.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
-    this.interval = setInterval(
-      () => this.setState({ date: new Date() }),
-      1000
-    )
   }
 
   loadCurrentlyLoggedInUser() {
@@ -73,39 +65,38 @@ class App extends React.Component {
   componentDidMount() {
     this.loadCurrentlyLoggedInUser();
   }
-
-  componentWillUnmount() {
-    clearInterval(this.interval)
-  }
   
   render() {
     if (this.state.loading) {
       return <LoadingIndicator />
     }
     return (
-      <Grid container spacing={0}>
-        <Grid item xs={12}>
-          <PrimarySearchAppBar authenticated={this.state.authenticated} onLogout={this.handleLogout} />
-        </Grid>
+      <Container>
+        <Grid container spacing={0}>
+          <Grid item xs>
+            <PrimarySearchAppBar authenticated={this.state.authenticated} onLogout={this.handleLogout} />
+          </Grid>
 
-        <Switch>
-            <Route exact path="/" render={(props) => <Dashboard {...props} />}></Route>
-            <Route path="/login"
-              render={(props) => <Login authenticated={this.state.authenticated} {...props} />}></Route>
-            <Route path="/signup"
-              render={(props) => <Signup authenticated={this.state.authenticated} {...props} />}></Route>
-            <PrivateRoute path="/profile" authenticated={this.state.authenticated} initialized={this.state.initialized} currentUser={this.state.currentUser}
-              component={Profile}></PrivateRoute>
-            <Route component={NotFound}></Route>
-        </Switch>
+          <Switch>
+              <Route exact path="/" render={(props) => <Dashboard {...props} />}></Route>
+              <Route path="/login"
+                // render={(props) => <Login authenticated={this.state.authenticated} {...props} />}>
+                render={(props) => <SignIn authenticated={this.state.authenticated} {...props} />}>
+              </Route>
+              <Route path="/signup"
+                render={(props) => <SignUp authenticated={this.state.authenticated} {...props} />}>
+              </Route>
+              <PrivateRoute path="/profile" authenticated={this.state.authenticated} initialized={this.state.initialized} currentUser={this.state.currentUser}
+                component={Profile}>
+              </PrivateRoute>
+              <Route component={NotFound}></Route>
+          </Switch>
 
-        <Grid item xs={12} style={{ backgroundColor: '#ffd83b' }} align="center">
-          <Clock date={this.state.date} />
+          <Grid item xs={12} style={{ backgroundColor: '#cccccc', marginTop: '30px', marginBottom: '10px' }} align="center">
+            Copyright © HL {new Date().getFullYear()}.
+          </Grid>
         </Grid>
-        <Grid item xs={12} style={{ backgroundColor: '#eeeeee' }}>
-          Copyright © 2021 · HL
-        </Grid>
-      </Grid>
+      </Container>
     );
   }
 }

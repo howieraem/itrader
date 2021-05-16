@@ -74,52 +74,43 @@ class Dashboard extends React.Component {
   render() {
     return (
       <Grid container spacing={0}>
-
-        <Grid item xs={2} style={{ marginTop: 50 }}> 
-          <header className="Symbol-title">
-          </header>
-        </Grid>
-        <Grid item xs={4} style={{ marginTop: 50 }}> 
-          <header className="Symbol-title">
-            {this.state.symbol} -- {this.state.companyName}
-          </header>
-        </Grid>
-        <Grid item xs={2} style={{ marginTop: 50 }}> 
-          <header className="Symbol-title">
-            $ {this.state.price}
-          </header>
-        </Grid>
-        <Grid item xs={2} style={{ marginTop: 50 }}> 
-          <header className="Symbol-title">
-            {this.state.change} ({this.state.changePercent} %)
-          </header>
-        </Grid>
-        <Grid item xs={2} style={{ marginTop: 50 }}> 
-          <header className="Symbol-title">
-          </header>
+        <Grid container spacing={0}>
+          <Grid item xs style={{ marginTop: 50 }}><header className="Symbol-title"></header></Grid>
+          <Grid item xs={4} style={{ marginTop: 50 }}> 
+            <header className="Symbol-title">
+              {this.state.symbol} -- {this.state.companyName}
+            </header>
+          </Grid>
+          <Grid item xs={3} style={{ marginTop: 50 }}> 
+            <header className="Symbol-title">
+              $ {this.state.price}
+            </header>
+          </Grid>
+          <Grid item xs={3} style={{ marginTop: 50 }}> 
+            <header className="Symbol-title">
+              {this.state.change} ({this.state.changePercent} %)
+            </header>
+          </Grid>
+          <Grid item xs style={{ marginTop: 50 }}><header className="Symbol-title"></header></Grid>
         </Grid>
 
-        <Grid item xs={2} style={{ backgroundColor: '#ff6b6b' }}></Grid>
-        <Grid item xs={8} style={{ backgroundColor: '#ff6b6b' }} align="center">
-          <div>
-            {this.state.curData ? (Object.keys(this.state.curData).map(key => 
-              <DataItem k={key} v={this.state.curData[key]} />
-            )) : ("pending...")}
-          </div>
-        </Grid>
-        <Grid item xs={2} style={{ backgroundColor: '#ff6b6b' }}></Grid>
-
-        <Grid item xs={12} style={{ marginTop: 0 }}>
-          <header className="Symbol-icons">
-            Work in progress...
-          </header>
+        <Grid container spacing={0}>
+          <Grid item xs style={{ backgroundColor: '#ff6b6b' }} align="center">
+            <div className="Symbol-icons">
+              {this.state.curData ? (Object.keys(this.state.curData).map(key => 
+                <DataItem k={key} v={this.state.curData[key]} />
+              )) : ("pending...")}
+            </div>
+          </Grid>
         </Grid>
 
-        <Grid item xs={2}></Grid>
-        <Grid item xs={8} align="left">
-          <ChartComponent />
+        <Grid container>
+          <Grid item xs></Grid>
+          <Grid item xs={11} align="left">
+            <ChartComponent />
+          </Grid>
+          <Grid item xs></Grid>
         </Grid>
-        <Grid item xs={2}></Grid>
 
         <Grid item xs={4}>
           <header className="Symbol-stats">

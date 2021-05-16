@@ -2,6 +2,8 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -9,7 +11,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { withStyles } from '@material-ui/styles';
 import { Redirect } from 'react-router-dom';
-import { signup } from '../../utils/APIUtils';
+import { ACCESS_TOKEN } from '../../constants';
+import { login } from '../../utils/APIUtils';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -37,37 +40,10 @@ class SignIn extends React.Component {
     super(props);
     this.state = {
         email: '',
-        password: '',
-        pin: '',
-    }
+        password: ''
+    };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-}
-
-  handleInputChange(event) {
-    const target = event.target;
-    const inputName = target.name;        
-    const inputValue = target.value;
-
-    this.setState({
-        [inputName] : inputValue
-    });        
-  }
-
-  handleSubmit(event) {
-    event.preventDefault();   
-
-    const signUpRequest = Object.assign({}, this.state);
-
-    signup(signUpRequest)
-    .then(response => {
-      console.log("successfully registered.");
-      // Alert.success("You're successfully registered. Please login to continue!");
-      this.props.history.push("/login");
-    }).catch(error => {
-      console.log(error.message);
-      // Alert.error((error && error.message) || 'Oops! Something went wrong. Please try again!');
-    });
   }
 
   componentDidMount() {
@@ -83,6 +59,34 @@ class SignIn extends React.Component {
             });
         }, 100);
     }
+  }
+
+  handleInputChange(event) {
+    const target = event.target;
+    const inputName = target.name;        
+    const inputValue = target.value;
+
+    this.setState({
+        [inputName] : inputValue
+    });        
+  }
+
+  handleSubmit(event) {
+      event.preventDefault();   
+
+      const loginRequest = Object.assign({}, this.state);
+
+      login(loginRequest)
+      .then(response => {
+          localStorage.setItem(ACCESS_TOKEN, response.accessToken);
+          console.log("successfully logged in");
+          // Alert.success("You're successfully logged in!");
+          this.props.history.push("/");
+          window.location.reload();
+      }).catch(error => {
+          console.log(error.message);
+          // Alert.error((error && error.message) || 'Oops! Something went wrong. Please try again!');
+      });
   }
 
   render() {
@@ -101,7 +105,7 @@ class SignIn extends React.Component {
           <Grid item xs={12} style={{ minHeight: "10vh" }}></Grid>
           <div className={classes.paper}>
             <Typography component="h1" variant="h5">
-              Sign up with ITrader
+              Sign in to ITrader
             </Typography>
             <form className={classes.form} noValidate>
               <TextField
@@ -112,6 +116,7 @@ class SignIn extends React.Component {
                 id="email"
                 label="Email Address"
                 name="email"
+                autoComplete="email"
                 autoFocus
                 onChange={this.handleInputChange}
               />
@@ -124,18 +129,12 @@ class SignIn extends React.Component {
                 label="Password"
                 type="password"
                 id="password"
+                autoComplete="current-password"
                 onChange={this.handleInputChange}
               />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                name="pin"
-                label="Trading PIN (4-digit)"
-                type="password"
-                id="pin"
-                onChange={this.handleInputChange}
+              <FormControlLabel
+                control={<Checkbox value="remember" color="primary" />}
+                label="Remember me"
               />
               <Button
                 type="submit"
@@ -143,15 +142,20 @@ class SignIn extends React.Component {
                 variant="contained"
                 color="primary"
                 className={classes.submit}
-                style={{textTransform: 'none', background: '#005480', marginTop: '5px'}}
+                style={{textTransform: 'none', background: '#005480'}}
                 onClick={this.handleSubmit}
               >
-                Sign Up
+                Sign In
               </Button>
-              <Grid container justify="flex-end">
-                <Grid item style={{marginTop: '5px'}}>
-                  <Link href="/login" variant="body2">
-                    Already have an account? Sign in!
+              <Grid container>
+                <Grid item xs style={{marginTop: "5px"}}>
+                  <Link href="/forgot" variant="body2">
+                    Forgot password?
+                  </Link>
+                </Grid>
+                <Grid item style={{marginTop: "5px"}}>
+                  <Link href="/signup" variant="body2">
+                    {"New user? Sign Up!"}
                   </Link>
                 </Grid>
               </Grid>

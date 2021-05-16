@@ -15,12 +15,17 @@ import Button from '@material-ui/core/Button';
 import AccountMenu from './AccountMenu';
 
 
+const Clock = ({ date }) => (
+  <div>{'UTC+' + (0 - date.getTimezoneOffset() / 60) + ' ' + date.toLocaleTimeString()}</div>
+)
+
+
 const useStyles = theme => ({
   grow: {
     flexGrow: 1,
   },
   menuButton: {
-    marginRight: theme.spacing(2),
+    marginRight: theme.spacing(3),
   },
   title: {
     display: 'none',
@@ -85,12 +90,17 @@ class PrimarySearchAppBar extends React.Component {
     super(props);
     this.state = {
       anchorEl: null,
-      mobileMoreAnchorEl: null
+      mobileMoreAnchorEl: null,
+      date: new Date(),
     };
     this.handleMobileMenuOpen = this.handleMobileMenuOpen.bind(this);
     this.handleProfileMenuOpen = this.handleProfileMenuOpen.bind(this);
     this.handleMobileMenuClose = this.handleMobileMenuClose.bind(this);
     this.handleMenuClose = this.handleMenuClose.bind(this);
+    this.interval = setInterval(
+      () => this.setState({ date: new Date() }),
+      1000
+    )
   }
 
   handleProfileMenuOpen(event) {
@@ -109,6 +119,10 @@ class PrimarySearchAppBar extends React.Component {
     this.anchorEl = null;
     this.handleMobileMenuClose();
   };
+
+  componentWillUnmount() {
+    clearInterval(this.interval)
+  }
 
   render() {
     const {classes} = this.props;
@@ -155,7 +169,7 @@ class PrimarySearchAppBar extends React.Component {
         ) : (
           <div>
             <MenuItem><Link href="/login" color="inherit" style={{textDecoration: 'none'}}>Login</Link></MenuItem>
-            <MenuItem><Link href="/signup" color="inherit" style={{textDecoration: 'none'}}>Signup</Link></MenuItem>
+            <MenuItem><Link href="/signup" color="inherit" style={{textDecoration: 'none'}}>Sign Up</Link></MenuItem>
           </div>
         )}
       </Menu>
@@ -163,7 +177,7 @@ class PrimarySearchAppBar extends React.Component {
 
     return (
       <div className={classes.grow}>
-        <AppBar style={{ background: '#00a6b6' }}>
+        <AppBar style={{ background: '#005480' }}>
           <Toolbar>
             <div className={classes.grow} />
             <Typography className={classes.title} variant="h5" noWrap>
@@ -181,6 +195,8 @@ class PrimarySearchAppBar extends React.Component {
                 startAdornment={<SearchIcon/>}
               />
             </div>
+            <div className={classes.grow} />
+            <Clock date={this.state.date} />
             <div className={classes.grow} />
             <div className={classes.sectionDesktop}>
               { this.props.authenticated ? (
@@ -213,7 +229,7 @@ class PrimarySearchAppBar extends React.Component {
                   m={2}
                   style={{textTransform: 'none', fontSize: 18}}
                 >
-                  <Link href="/signup" color="inherit" style={{textDecoration: 'none'}}>Signup</Link>
+                  <Link href="/signup" color="inherit" style={{textDecoration: 'none'}}>Sign Up</Link>
                 </Button>
               )}
             </div>
