@@ -11,25 +11,29 @@ import Title from './Title';
 const useStyles = makeStyles({
   profileInfo: {
     align: "center",
-    textAlign: "center"
+    textAlign: "center",
   },
   profileAvatar: {
     horizontalAlign: "middle",
     borderRadius: "50%",
-    maxWidth: "160px"
+    maxWidth: "120px"
   },
   textAvatar: {
-    width: "120px",
-    height: "120px",
+    width: "100px",
+    height: "100px",
     margin: "0 auto",
-    marginLeft: "50px",
+    marginTop: "10px",
+    marginLeft: "60px",
+    position: "relative",
+    left: "50%",
+    transform: "translateX(-50%)",
     verticalAlign: "middle",
     textAlign: "center",
     borderRadius: "50%",
     background: "#005480",
   },
   textAvatarSpan: {
-    lineHeight: "120px",
+    lineHeight: "100px",
     color: "#ffffff",
     fontSize: "3em"
   }
@@ -48,11 +52,13 @@ export default function Balance(props) {
           }
         </div>
         <Title>{props.currentUser.email}</Title>
+
+        <Title>Current Balance</Title>
+        <Typography component="p" variant="h4">
+          $5000.00
+        </Typography>
       </div>
-      <Title>Current Balance</Title>
-      <Typography component="p" variant="h4">
-        $5000.00
-      </Typography>
     </React.Fragment>
+    
   );
 }
