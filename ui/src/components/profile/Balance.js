@@ -4,9 +4,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Title from './Title';
 
-// function preventDefault(event) {
-//   event.preventDefault();
-// }
 
 const useStyles = makeStyles({
   profileInfo: {

@@ -29,8 +29,8 @@ class DataItem extends React.Component {
 }
 
 
-function roundNumber(number) {
-  return parseFloat(number.toFixed(4))
+function roundNumber(number, places=4) {
+  return parseFloat(number.toFixed(places))
 }
 
 
@@ -50,37 +50,46 @@ class Dashboard extends React.Component {
       prePrice: 0.,
       time: 0,
     }
+    this.updateData = this.updateData.bind(this);
     this.stockSocket = require("stocksocket");
-    this.stockSocket.addTicker(this.state.symbol, liveData => {
-      if (this.state.loaded) {
-        this.setState({
-          preData: this.state.curData,
-          prePrice: this.state.price,
-          curData: liveData,
-          price: roundNumber(liveData.price),
-          change: roundNumber(liveData.change),
-          changePercent: roundNumber(liveData.changePercent),
-          dayVolume: liveData.dayVolume,
-          time: liveData.time,
-        });
-      }
-    });
+    this.stockSocket.addTicker(this.state.symbol, this.updateData);
+
+    this.yahooFinance = require('yahoo-finance');
+  }
+
+  updateData(liveData) {
+    if (this.state.loaded) {
+      this.setState({
+        preData: this.state.curData,
+        prePrice: this.state.price,
+        curData: liveData,
+        price: roundNumber(liveData.price),
+        change: roundNumber(liveData.change),
+        changePercent: roundNumber(liveData.changePercent, 2),
+        dayVolume: liveData.dayVolume,
+        time: liveData.time,
+      });
+    }
   }
 
   componentDidMount() {
     this.setState({loaded: true});
   }
 
+  componentWillUnmount() {
+    this.stockSocket.removeAllTickers();
+  }
+
   render() {
     return (
       <Grid container spacing={0}>
         <Grid container spacing={0}>
-          <Grid item xs><header className="Symbol-title"></header></Grid>
           <Grid item xs={4}> 
             <header className="Symbol-title">
               {this.state.symbol} -- {this.state.companyName}
             </header>
           </Grid>
+          <Grid item xs><header className="Symbol-title"></header></Grid>
           <Grid item xs={3}> 
             <header className="Symbol-title">
               $ {this.state.price}
@@ -95,13 +104,14 @@ class Dashboard extends React.Component {
         </Grid>
 
         <Grid container spacing={0}>
-          <Grid item xs style={{ backgroundColor: '#ff6b6b' }} align="center">
+          <Grid item xs={6} style={{ backgroundColor: '#ff6b6b' }} align="center">
             <div className="Symbol-icons">
               {this.state.curData ? (Object.keys(this.state.curData).map(key => 
                 <DataItem k={key} v={this.state.curData[key]} />
               )) : ("pending...")}
             </div>
           </Grid>
+          <Grid item xs={6} style={{ backgroundColor: '#ff6b6b' }} align="center"></Grid>
         </Grid>
 
         <Grid container>
