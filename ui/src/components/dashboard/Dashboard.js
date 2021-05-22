@@ -39,8 +39,8 @@ class Dashboard extends React.Component {
     super(props)
     this.state = {
       loaded: false,
-      symbol: "COIN",
-      companyName: "Coinbase Global, Inc.",
+      symbol: "TSLA",
+      companyName: "Tesla, Inc.",
       curData: null,
       preData: null,
       price: 0.,
@@ -50,11 +50,35 @@ class Dashboard extends React.Component {
       prePrice: 0.,
       time: 0,
     }
+    /* 
+    live data:
+    id
+    price
+    time
+    exchange
+    quoteType
+    marketHours
+    changePercent
+    dayVolume
+    change
+    lastSize
+    priceHint
+    */
     this.updateData = this.updateData.bind(this);
     this.stockSocket = require("stocksocket");
     this.stockSocket.addTicker(this.state.symbol, this.updateData);
-
+    
     this.yahooFinance = require('yahoo-finance');
+    this.yahooFinance.quote({
+      symbol: 'AAPL',
+      modules: [ 'price', 'summaryDetail' ] // see the docs for the full list
+    }, function (err, quotes) {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      console.log(quotes);
+    });
   }
 
   updateData(liveData) {
