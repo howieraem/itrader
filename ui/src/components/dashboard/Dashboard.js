@@ -3,6 +3,8 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Chart from '../chart/CandleStickChart';
 import { getData } from "../chart/utils";
+import { addTicker, removeAllTickers } from 'stocksocket';
+import { getSingleStockInfo } from '../../yahoo-finance-webscraper';
 
 
 class ChartComponent extends React.Component {
@@ -65,19 +67,10 @@ class Dashboard extends React.Component {
     priceHint
     */
     this.updateData = this.updateData.bind(this);
-    this.stockSocket = require("stocksocket");
-    this.stockSocket.addTicker(this.state.symbol, this.updateData);
-    
-    this.yahooFinance = require('yahoo-finance');
-    this.yahooFinance.quote({
-      symbol: 'AAPL',
-      modules: [ 'price', 'summaryDetail' ] // see the docs for the full list
-    }, function (err, quotes) {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      console.log(quotes);
+
+    addTicker(this.state.symbol, this.updateData);
+    getSingleStockInfo(this.state.symbol, 'http://127.0.0.1:8096').then(data => {
+      console.log(data)
     });
   }
 
@@ -101,7 +94,7 @@ class Dashboard extends React.Component {
   }
 
   componentWillUnmount() {
-    this.stockSocket.removeAllTickers();
+    removeAllTickers();
   }
 
   render() {
