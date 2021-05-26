@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Chart from '../chart/CandleStickChart';
 import { getData } from "../chart/utils";
 import { addTicker, removeAllTickers } from 'stocksocket';
-import { getSingleStockInfo } from '../../yahoo-finance-webscraper';
+import { getStockBasicInfo } from '../../yahoo-finance-webscraper';
 
 
 class ChartComponent extends React.Component {
@@ -37,10 +37,11 @@ function roundNumber(number, places=4) {
 
 
 class Dashboard extends React.Component {
+  _mounted = false
+
   constructor(props) {
     super(props)
     this.state = {
-      loaded: false,
       symbol: "TSLA",
       companyName: "Tesla, Inc.",
       curData: null,
@@ -51,7 +52,15 @@ class Dashboard extends React.Component {
       dayVolume: 0.,
       prePrice: 0.,
       time: 0,
+      basicInfo: null,
     }
+    this.interval = setInterval(
+      getStockBasicInfo(this.state.symbol).then(basicInfo => {
+        this.setState({basicInfo: basicInfo});
+      }),
+      5000
+    )
+
     /* 
     live data:
     id
@@ -69,13 +78,10 @@ class Dashboard extends React.Component {
     this.updateData = this.updateData.bind(this);
 
     addTicker(this.state.symbol, this.updateData);
-    getSingleStockInfo(this.state.symbol, 'http://127.0.0.1:8096').then(data => {
-      console.log(data)
-    });
   }
 
   updateData(liveData) {
-    if (this.state.loaded) {
+    if (this._mounted) {
       this.setState({
         preData: this.state.curData,
         prePrice: this.state.price,
@@ -90,10 +96,16 @@ class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({loaded: true});
+    this._mounted = true
+
+    // getStockBasicInfo(this.state.symbol).then(basicInfo => {
+    //   this.setState({basicInfo: basicInfo});
+    // });
   }
 
   componentWillUnmount() {
+    this._mounted = false;
+    clearInterval(this.interval);
     removeAllTickers();
   }
 
@@ -121,14 +133,20 @@ class Dashboard extends React.Component {
         </Grid>
 
         <Grid container spacing={0}>
-          <Grid item xs={6} style={{ backgroundColor: '#ff6b6b' }} align="center">
-            <div className="Symbol-icons">
+          <Grid item xs={6} align="center">
+            <div className="Symbol-info1">
               {this.state.curData ? (Object.keys(this.state.curData).map(key => 
                 <DataItem k={key} v={this.state.curData[key]} />
               )) : ("pending...")}
             </div>
           </Grid>
-          <Grid item xs={6} style={{ backgroundColor: '#ff6b6b' }} align="center"></Grid>
+          <Grid item xs={6} align="center">
+            <div className="Symbol-info1">
+              {this.state.basicInfo ? (Object.keys(this.state.basicInfo).map(key => 
+                <DataItem k={key} v={this.state.basicInfo[key]} />
+              )) : ("pending...")}
+            </div>
+          </Grid>
         </Grid>
 
         <Grid container>

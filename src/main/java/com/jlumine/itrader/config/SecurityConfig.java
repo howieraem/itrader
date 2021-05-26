@@ -25,13 +25,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 )
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String[] SWAGGER_WHITELIST = {
-            "/swagger-ui.html",
-            "/swagger-ui/*",
-            "/swagger-resources/**",
-            "/v2/api-docs",
-            "/v3/api-docs",
-            "/webjars/**",
-            "/doc.html",
+        "/swagger-ui.html",
+        "/swagger-ui/*",
+        "/swagger-resources/**",
+        "/v2/api-docs",
+        "/v3/api-docs",
+        "/webjars/**",
+        "/doc.html",
+    };
+
+    private static final String[] FINANCE_DATA_WHITELIST = {
+        "/stockBasic",
+        "/stockDetails",
     };
 
     @Autowired
@@ -93,6 +98,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/**", "/oauth2/**")
                     .permitAll()
                 .antMatchers(SWAGGER_WHITELIST)
+                    .permitAll()
+                .antMatchers(FINANCE_DATA_WHITELIST)
                     .permitAll()
                 .anyRequest()
                     .authenticated();

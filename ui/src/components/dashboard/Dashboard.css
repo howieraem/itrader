@@ -9,14 +9,14 @@
   color: white;
 }
 
-.Symbol-icons {
+.Symbol-info1 {
   background-color: #a14fff;
   min-height: 15vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: calc(6px + 1vmin);
   color: white;
 }
 

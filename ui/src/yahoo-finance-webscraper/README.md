@@ -6,13 +6,13 @@ $npm i yahoo-finance-webscraper
 
 ## Usage
 
-### getSingleStockInfo
+### getStockBasicInfo
 Retrieves information about a single stock symbol
 #### Single output
 ```js
 const yf = require('yahoo-finance-webscraper');
 
-yf.getSingleStockInfo('AAPL').then(data => {
+yf.getStockBasicInfo('AAPL').then(data => {
   console.log(data)
 });
 ```
