@@ -2,14 +2,14 @@ import './Dashboard.css';
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Chart from '../chart/CandleStickChart';
-import { getData } from "../chart/utils";
 import { addTicker, removeAllTickers } from 'stocksocket';
-import { getStockBasicInfo } from '../../yahoo-finance-webscraper';
+import { getStockBasicInfo, getStockHistory } from '../../utils/APIUtils';
 
 
 class ChartComponent extends React.Component {
 	componentDidMount() {
-		getData().then(data => {
+		getStockHistory(this.props.symbol).then(data => {
+      console.log(data)
 			this.setState({ data })
 		})
 	}
@@ -55,9 +55,11 @@ class Dashboard extends React.Component {
       basicInfo: null,
     }
     this.interval = setInterval(
-      getStockBasicInfo(this.state.symbol).then(basicInfo => {
-        this.setState({basicInfo: basicInfo});
-      }),
+      function() {
+        getStockBasicInfo(this.state.symbol).then(basicInfo => {
+          this.setState({basicInfo: basicInfo});
+        }
+      )}.bind(this),
       5000
     )
 
@@ -132,12 +134,22 @@ class Dashboard extends React.Component {
           <Grid item><header className="Symbol-title"></header></Grid>
         </Grid>
 
+        <Grid container>
+          <Grid item xs></Grid>
+          <Grid item xs={11} align="left">
+            <ChartComponent symbol={this.state.symbol} />
+          </Grid>
+          <Grid item xs></Grid>
+        </Grid>
+
         <Grid container spacing={0}>
           <Grid item xs={6} align="center">
             <div className="Symbol-info1">
-              {this.state.curData ? (Object.keys(this.state.curData).map(key => 
+              {/* {this.state.curData ? (Object.keys(this.state.curData).map(key => 
                 <DataItem k={key} v={this.state.curData[key]} />
-              )) : ("pending...")}
+              )) : ("pending...")} */}
+              <DataItem k={"time"} v={this.state.time} />
+              <DataItem k={"day vol"} v={this.state.dayVolume} />
             </div>
           </Grid>
           <Grid item xs={6} align="center">
@@ -149,13 +161,7 @@ class Dashboard extends React.Component {
           </Grid>
         </Grid>
 
-        <Grid container>
-          <Grid item xs></Grid>
-          <Grid item xs={11} align="left">
-            <ChartComponent />
-          </Grid>
-          <Grid item xs></Grid>
-        </Grid>
+        
 
         <Grid item xs={4}>
           <header className="Symbol-stats">

@@ -23,8 +23,10 @@ public class RestTemplateConfig {
         factory.setReadTimeout(5000);
 
         // Uncomment below should you need a proxy to access yahoo finance
+        /*
         Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 10809));
         factory.setProxy(proxy);
+         */
         return factory;
     }
 }
