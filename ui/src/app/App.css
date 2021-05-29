@@ -24,6 +24,10 @@
   }
 }
 
+.swal2-modal {
+  margin-top: 80px !important;
+}
+
 .swal2-shown {
-  font-size: 10px;
+  font-size: 10px !important;
 }

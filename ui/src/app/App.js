@@ -83,8 +83,8 @@ class App extends React.Component {
     // window.location.reload();
     // console.log("logged out");
     Swal.fire({
-      position: 'center-end',
-      // icon: 'success',
+      position: 'top-end',
+      icon: 'success',
       title: 'You\'ve logged out!',
       showConfirmButton: false,
       timer: 1500
