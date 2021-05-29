@@ -1,3 +1,11 @@
+.Chart-placeholder {
+  min-height: 20vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .Symbol-title {
   background-color: #32a852;
   min-height: 10vh;
@@ -20,20 +28,20 @@
   color: white;
 }
 
-.Symbol-stats {
-  background-color: #288ff0;
-  min-height: 20vh;
+.Dashboard-buttons {
+  /* background-color: #288ff0; */
+  min-height: 5vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  /* color: white; */
 }
 
 .Misc {
   background-color: #ff7b47;
-  min-height: 20vh;
+  min-height: 5vh;
   display: flex;
   flex-direction: column;
   align-items: center;

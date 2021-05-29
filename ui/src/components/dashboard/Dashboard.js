@@ -1,5 +1,6 @@
 import './Dashboard.css';
 import React from 'react';
+import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Chart from '../chart/CandleStickChart';
 import { addTicker, removeAllTickers } from 'stocksocket';
@@ -9,13 +10,12 @@ import { getStockBasicInfo, getStockHistory } from '../../utils/APIUtils';
 class ChartComponent extends React.Component {
 	componentDidMount() {
 		getStockHistory(this.props.symbol).then(data => {
-      console.log(data)
-			this.setState({ data })
-		})
+      this.setState({ data })
+		}).catch(err => { console.log(err) })
 	}
 	render() {
 		if (this.state == null) {
-			return <div>Loading...</div>
+			return <header className="Chart-placeholder">{"Loading chart..."}</header>
 		}
 		return (
       <Chart type="hybrid" data={this.state.data}/>
@@ -56,10 +56,11 @@ class Dashboard extends React.Component {
     }
     this.interval = setInterval(
       function() {
-        getStockBasicInfo(this.state.symbol).then(basicInfo => {
+        getStockBasicInfo(this.state.symbol)
+        .then(basicInfo => {
           this.setState({basicInfo: basicInfo});
-        }
-      )}.bind(this),
+        }).catch(err => { console.log(err) })
+      }.bind(this),
       5000
     )
 
@@ -98,11 +99,12 @@ class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    this._mounted = true
+    this._mounted = true;
 
-    // getStockBasicInfo(this.state.symbol).then(basicInfo => {
-    //   this.setState({basicInfo: basicInfo});
-    // });
+    getStockBasicInfo(this.state.symbol)
+    .then(basicInfo => {
+      this.setState({basicInfo: basicInfo});
+    }).catch(err => { console.log(err) })
   }
 
   componentWillUnmount() {
@@ -162,18 +164,28 @@ class Dashboard extends React.Component {
         </Grid>
 
         
-
-        <Grid item xs={4}>
-          <header className="Symbol-stats">
-            Symbol stats
-          </header>
+        <Grid container spacing={2} style={{marginTop: "15px"}}>
+          <Grid item xs></Grid>
+          <Grid item xs={3} align="left">
+            <Button 
+                variant="contained"
+                style={{textTransform: 'none', fontSize: 18, backgroundColor: "#0077b7", color: "white", borderRadius: 12,
+                        maxWidth: '150px', maxHeight: '50px', minWidth: '150px', minHeight: '50px'}}
+            >
+              Trade
+            </Button>
+          </Grid>
+          <Grid item xs={3} align="left">
+            <Button 
+                variant="contained"
+                style={{textTransform: 'none', fontSize: 18, backgroundColor: "#0077b7", color: "white", borderRadius: 12,
+                        maxWidth: '150px', maxHeight: '50px', minWidth: '150px', minHeight: '50px'}}
+            >
+              Insights
+            </Button>
+          </Grid>
+          <Grid item xs></Grid>
         </Grid>
-        <Grid item xs={8}>
-          <header className="Misc">
-            Misc
-          </header>
-        </Grid>
-
       </Grid>
     )
   }

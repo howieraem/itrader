@@ -23,3 +23,7 @@
     transform: rotate(360deg);
   }
 }
+
+.swal2-shown {
+  font-size: 10px;
+}

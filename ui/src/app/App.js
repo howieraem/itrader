@@ -7,6 +7,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
+import Swal from 'sweetalert2';
 
 import PrimarySearchAppBar from '../components/bar/AppBar';
 import Dashboard from '../components/dashboard/Dashboard';
@@ -79,8 +80,15 @@ class App extends React.Component {
       authenticated: false,
       currentUser: null
     });
-    console.log("logged out");
-    window.location.reload();
+    // window.location.reload();
+    // console.log("logged out");
+    Swal.fire({
+      position: 'center-end',
+      // icon: 'success',
+      title: 'You\'ve logged out!',
+      showConfirmButton: false,
+      timer: 1500
+    })
   }
 
   componentDidMount() {

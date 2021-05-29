@@ -8,16 +8,13 @@
 }
 
 .page-not-found .title {
-    font-size: 50px;
+    font-size: 60px;
     letter-spacing: 10px;
     margin-bottom: 10px;
+    color: #005480;
 }
 
 .page-not-found .desc {
     font-size: 20px;
     margin-bottom: 20px;
-}
-
-.go-back-btn {
-    min-width: 160px;
 }
