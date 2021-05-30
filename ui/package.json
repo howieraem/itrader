@@ -14,6 +14,7 @@
     "number-precision": "^1.5.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-router-dom": "4.3.1",
     "react-scripts": "4.0.3",
     "react-stockcharts": "^0.7.8",
     "reactstrap": "^8.9.0",
@@ -52,7 +53,6 @@
     "babel-core": "^6.26.3",
     "babel-polyfill": "^6.26.0",
     "babel-preset-es2016": "^6.24.1",
-    "http-proxy-middleware": "^1.1.0",
-    "react-router-dom": "^5.2.0"
+    "http-proxy-middleware": "^1.1.0"
   }
 }

@@ -36,6 +36,17 @@ function roundNumber(number, places=4) {
 }
 
 
+function sortByKey(unordered) {
+  return Object.keys(unordered).sort().reduce(
+    (obj, key) => { 
+      obj[key] = unordered[key]; 
+      return obj;
+    }, 
+    {}
+  );
+}
+
+
 class Dashboard extends React.Component {
   _mounted = false
 
@@ -58,7 +69,7 @@ class Dashboard extends React.Component {
       function() {
         getStockBasicInfo(this.state.symbol)
         .then(basicInfo => {
-          this.setState({basicInfo: basicInfo});
+          this.setState({basicInfo: sortByKey(basicInfo)});
         }).catch(err => { console.log(err) })
       }.bind(this),
       5000
@@ -88,7 +99,7 @@ class Dashboard extends React.Component {
       this.setState({
         preData: this.state.curData,
         prePrice: this.state.price,
-        curData: liveData,
+        curData: sortByKey(liveData),
         price: roundNumber(liveData.price),
         change: roundNumber(liveData.change),
         changePercent: roundNumber(liveData.changePercent, 2),
@@ -103,7 +114,7 @@ class Dashboard extends React.Component {
 
     getStockBasicInfo(this.state.symbol)
     .then(basicInfo => {
-      this.setState({basicInfo: basicInfo});
+      this.setState({basicInfo: sortByKey(basicInfo)});
     }).catch(err => { console.log(err) })
   }
 

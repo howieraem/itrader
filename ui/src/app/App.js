@@ -80,15 +80,15 @@ class App extends React.Component {
       authenticated: false,
       currentUser: null
     });
-    // window.location.reload();
-    // console.log("logged out");
     Swal.fire({
       position: 'top-end',
       icon: 'success',
-      title: 'You\'ve logged out!',
+      title: 'Successfully logged out!',
       showConfirmButton: false,
       timer: 1500
     })
+    // window.location.reload();
+    // console.log("logged out");
   }
 
   componentDidMount() {
@@ -112,7 +112,6 @@ class App extends React.Component {
             <Switch>
                 <Route exact path="/" render={(props) => <Dashboard {...props} />}></Route>
                 <Route path="/login"
-                  // render={(props) => <Login authenticated={this.state.authenticated} {...props} />}>
                   render={(props) => <SignIn authenticated={this.state.authenticated} {...props} />}>
                 </Route>
                 <Route path="/signup"
