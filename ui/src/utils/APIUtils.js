@@ -86,5 +86,8 @@ export function getStockHistory(symbol, from="0", to="9999999999", interval="1d"
 	const promise = fetch(`http://127.0.0.1:8092/stockHistory?symbol=${symbol}&from=${from}&to=${to}&interval=${interval}`)
 		.then(response => response.text())
 		.then(data => csvParse(data, parseRow))
+        .catch(err => { 
+            console.log(err) 
+        })
 	return promise;
 };
