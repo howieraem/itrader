@@ -3,6 +3,17 @@
   text-align: center;
 } 
 */
+/* body {
+  padding-right: 0 !important;
+} */
+
+.No-pad {
+  padding-right: 0 !important;
+}
+
+html {
+  overflow-y: auto;
+}
 
 .App-logo {
   height: 40vmin;
@@ -30,4 +41,5 @@
 
 .swal2-shown {
   font-size: 10px !important;
+  display: block; 
 }

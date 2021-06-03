@@ -7,8 +7,8 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
-import Swal from 'sweetalert2';
 
+import AlertMessage from '../common/Alert';
 import PrimarySearchAppBar from '../components/bar/AppBar';
 import Dashboard from '../components/dashboard/Dashboard';
 import SignIn from '../components/auth/SignIn';
@@ -33,6 +33,7 @@ const useStyles = (theme => ({
   },
   footer: {
     padding: theme.spacing(3, 2),
+    paddingRight: 0,
     marginTop: 'auto',
     backgroundColor: "#005480"
       // theme.palette.type === 'light' ? theme.palette.grey[200] : theme.palette.grey[800],
@@ -48,6 +49,8 @@ class App extends React.Component {
       curUser: null,
       loading: false,
       initialized: false,
+      justLoggedIn: false,
+      justLoggedOut: false,
     }
     this.loadCurrentlyLoggedInUser = this.loadCurrentlyLoggedInUser.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
@@ -78,23 +81,20 @@ class App extends React.Component {
     localStorage.removeItem(ACCESS_TOKEN);
     this.setState({
       authenticated: false,
-      currentUser: null
+      currentUser: null,
+      justLoggedOut: true,
     });
-    Swal.fire({
-      position: 'top-end',
-      icon: 'success',
-      title: 'Successfully logged out!',
-      showConfirmButton: false,
-      timer: 1500
-    })
     // window.location.reload();
-    // console.log("logged out");
+    // console.log("Successfully logged out!");
   }
 
   componentDidMount() {
+    this.setState({
+      justLoggedOut: false,
+    })
     this.loadCurrentlyLoggedInUser();
   }
-  
+
   render() {
     const { classes } = this.props;
     if (this.state.loading) {
@@ -122,6 +122,8 @@ class App extends React.Component {
                 </PrivateRoute>
                 <Route component={NotFound}></Route>
             </Switch>
+
+            { this.state.justLoggedOut ? <AlertMessage message={"Successfully logged out!"} severity={"success"} /> : null }
           </Grid>
         </Container>
         <footer className={classes.footer}>

@@ -10,7 +10,6 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Redirect } from 'react-router-dom';
-import Swal from 'sweetalert2';
 import { ACCESS_TOKEN } from '../../constants';
 import { login } from '../../utils/APIUtils';
 
@@ -47,13 +46,13 @@ class SignIn extends React.Component {
   }
 
   componentDidMount(){
-    if (this.props.authenticated){
+    if (this.props.authenticated) {
       this.props.history.push("/")
     }
   }
 
   componentDidUpdate(){
-    if (this.props.authenticated){
+    if (this.props.authenticated) {
       this.props.history.push("/")
     }
   }
@@ -77,26 +76,11 @@ class SignIn extends React.Component {
     .then(response => {
       localStorage.setItem(ACCESS_TOKEN, response.accessToken);
       this.props.history.push("/");
-      Swal.fire({
-        position: 'top-end',
-        icon: 'success',
-        title: 'Successfully logged in!',
-        showConfirmButton: false,
-        timer: 1500
-      }).then(confirmed => {
-        if (confirmed)  window.location.reload();
-      })
-      // console.log("successfully logged in");
+      // console.log("Successfully logged in!");
+      this.props.history.go();
+      // window.location.reload()
     }).catch(error => {
-      // console.log(error.message);
-      // Alert.error((error && error.message) || 'Oops! Something went wrong. Please try again!');
-      Swal.fire({
-        position: 'top-end',
-        icon: 'error',
-        title: (error && error.message) || 'Something went wrong. Please try again!',
-        showConfirmButton: false,
-        timer: 1500
-      })
+      // console.log((error && error.message) || 'Oops! Something went wrong. Please try again!');
     });
   }
 

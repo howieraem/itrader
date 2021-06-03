@@ -1,5 +1,6 @@
 package com.jlumine.itrader.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestFactory;
@@ -11,6 +12,15 @@ import java.net.Proxy;
 
 @Configuration
 public class RestTemplateConfig {
+    @Value("${app.proxy.enabled}")
+    private boolean useProxy;
+
+    @Value("${app.proxy.ip}")
+    private String proxyHost;
+
+    @Value("${app.proxy.port}")
+    private int proxyPort;
+
     @Bean
     public RestTemplate restTemplate(ClientHttpRequestFactory factory) {
         return new RestTemplate(factory);
@@ -22,11 +32,8 @@ public class RestTemplateConfig {
         factory.setConnectTimeout(10000);
         factory.setReadTimeout(5000);
 
-        // Uncomment below should you need a proxy to access yahoo finance
-        /*
-        Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 10809));
-        factory.setProxy(proxy);
-         */
+        if (useProxy)
+            factory.setProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)));
         return factory;
     }
 }

@@ -10,9 +10,11 @@ import { getStockBasicInfo, getStockHistory } from '../../utils/APIUtils';
 class ChartComponent extends React.Component {
 	componentDidMount() {
 		getStockHistory(this.props.symbol).then(data => {
-      this.setState({ data })
-		}).catch(err => { console.log(err) })
+      if (data) this.setState({ data });
+      else this.setState(null);
+		}).catch(err => { console.log(err); this.setState(null); })
 	}
+
 	render() {
 		if (this.state == null) {
 			return <header className="Chart-placeholder">{"Loading chart..."}</header>
@@ -148,11 +150,11 @@ class Dashboard extends React.Component {
         </Grid>
 
         <Grid container>
-          <Grid item xs></Grid>
+          <Grid item xs />
           <Grid item xs={11} align="left">
             <ChartComponent symbol={this.state.symbol} />
           </Grid>
-          <Grid item xs></Grid>
+          <Grid item xs />
         </Grid>
 
         <Grid container spacing={0}>
@@ -176,7 +178,7 @@ class Dashboard extends React.Component {
 
         
         <Grid container spacing={2} style={{marginTop: "15px"}}>
-          <Grid item xs></Grid>
+          <Grid item xs />
           <Grid item xs={3} align="left">
             <Button 
                 variant="contained"
@@ -192,10 +194,10 @@ class Dashboard extends React.Component {
                 style={{textTransform: 'none', fontSize: 18, backgroundColor: "#0077b7", color: "white", borderRadius: 12,
                         maxWidth: '150px', maxHeight: '50px', minWidth: '150px', minHeight: '50px'}}
             >
-              Insights
+              More Info
             </Button>
           </Grid>
-          <Grid item xs></Grid>
+          <Grid item xs />
         </Grid>
       </Grid>
     )
