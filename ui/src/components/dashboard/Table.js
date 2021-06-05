@@ -39,15 +39,15 @@ function tabulate(data, keysPerRow=3) {
   return results;
 }
 
-export default function InfoTable(props) {
+export default function InfoTable({ data }) {
   const classes = useStyles();
 
   return (
     <TableContainer component={Paper}>
-      { props.data ? (
+      { data ? (
         <Table className={classes.table} aria-label="info table">
           <TableBody>
-            {tabulate(props.data).map((row) => (
+            {tabulate(data).map((row) => (
               <TableRow>
                 <TableCell component="th" scope="row">
                   <strong>{row[0]}</strong>

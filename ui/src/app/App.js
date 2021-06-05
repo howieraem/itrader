@@ -21,7 +21,7 @@ import { ACCESS_TOKEN } from "../constants";
 import { getCurrentUser } from '../utils/APIUtils';
 
 
-const useStyles = (theme => ({
+const useStyles = theme => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
@@ -38,7 +38,7 @@ const useStyles = (theme => ({
     backgroundColor: "#005480"
       // theme.palette.type === 'light' ? theme.palette.grey[200] : theme.palette.grey[800],
   },
-}));
+});
 
 
 class App extends React.Component {
@@ -104,9 +104,7 @@ class App extends React.Component {
         <CssBaseline />
         <Container component="main" className={classes.main} maxWidth="lg">
           <Grid container spacing={0}>
-            <Grid item xs>
-              <PrimarySearchAppBar authenticated={this.state.authenticated} onLogout={this.handleLogout} />
-            </Grid>
+            <PrimarySearchAppBar authenticated={this.state.authenticated} onLogout={this.handleLogout} />
 
             { this.state.justLoggedOut && <AlertMessage message={"Successfully logged out!"} severity={"success"} /> }
 

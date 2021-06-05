@@ -11,12 +11,17 @@ import SearchIcon from '@material-ui/icons/Search';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Link from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
-
+import HomeIcon from '@material-ui/icons/Home';
 import AccountMenu from './AccountMenu';
 
 
 const Clock = ({ date }) => (
-  <div>{`${date.toDateString()}, UTC+${0 - date.getTimezoneOffset() / 60} ${date.toLocaleTimeString()}`}</div>
+  <div>{`${date.toDateString()} ${date.toLocaleTimeString()} UTC+${0 - date.getTimezoneOffset() / 60}`}</div>
+)
+
+
+const ClockMobile = ({ date }) => (
+  <div>{`${date.toLocaleTimeString()} +${0 - date.getTimezoneOffset() / 60}`}</div>
 )
 
 
@@ -33,6 +38,12 @@ const useStyles = theme => ({
       display: 'block',
     },
   },
+  titleMobile: {
+    display: 'block',
+    [theme.breakpoints.up('sm')]: {
+      display: 'none',
+    },
+  },
   search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
@@ -42,7 +53,7 @@ const useStyles = theme => ({
     },
     marginRight: theme.spacing(2),
     marginLeft: 0,
-    width: '100%',
+    width: '46%',
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(3),
       width: 'auto',
@@ -160,6 +171,8 @@ class PrimarySearchAppBar extends React.Component {
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         open={isMobileMenuOpen}
         onClose={this.handleMobileMenuClose}
+        // If false and a vertical scroll bar exists , the popover will add padding to body
+        MenuProps={{ disableScrollLock: true }}
       >
         {this.props.authenticated ? (
           <div>
@@ -183,6 +196,15 @@ class PrimarySearchAppBar extends React.Component {
             <Typography className={classes.title} variant="h5" noWrap>
               <Link href="/" color="inherit" style={{textDecoration: 'none'}}>ITrader</Link>
             </Typography>
+            <Button 
+              aria-label="login" 
+              color="inherit"
+              m={2}
+              className={classes.titleMobile}
+              style={{textTransform: 'none', fontSize: 18}}
+            >
+              <Link href="/" color="inherit" style={{textDecoration: 'none'}}><HomeIcon /></Link>
+            </Button>
             <div className={classes.grow} />
             <div className={classes.search}>
               <InputBase
@@ -195,9 +217,16 @@ class PrimarySearchAppBar extends React.Component {
                 startAdornment={<SearchIcon/>}
               />
             </div>
+
             <div className={classes.grow} />
-            <Clock date={this.state.date} />
+            <div className={classes.sectionDesktop}>
+              <Clock date={this.state.date} />
+            </div>
+            <div className={classes.sectionMobile}>
+              <ClockMobile date={this.state.date} />
+            </div>
             <div className={classes.grow} />
+
             <div className={classes.sectionDesktop}>
               { this.props.authenticated ? (
                 <AccountMenu />
@@ -233,7 +262,6 @@ class PrimarySearchAppBar extends React.Component {
                 </Button>
               )}
             </div>
-            <div className={classes.grow} />
             <div className={classes.sectionMobile}>
               <IconButton
                 aria-label="show more"
@@ -245,6 +273,7 @@ class PrimarySearchAppBar extends React.Component {
                 <MoreIcon />
               </IconButton>
             </div>
+            <div className={classes.grow} />
           </Toolbar>
         </AppBar>
         {renderMobileMenu}

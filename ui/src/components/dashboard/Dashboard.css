@@ -14,6 +14,8 @@
   align-items: center;
   justify-content: center;
   font-size: 18px;
+  margin-left: 50px;
+  margin-right: 50px;
 }
 
 .Symbol-title {
@@ -39,14 +41,15 @@
 }
 
 .Dashboard-buttons {
-  /* background-color: #288ff0; */
-  min-height: 5vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  /* color: white; */
+  text-transform: none;
+  font-size: 18;
+  background-color: #0077b7;
+  color: white;
+  border-radius: 12;
+  min-width: 150px;
+  max-width: 150px;
+  min-height: 50px;
+  max-height: 50px;
 }
 
 .Misc {

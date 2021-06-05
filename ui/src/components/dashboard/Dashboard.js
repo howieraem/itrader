@@ -2,32 +2,26 @@ import './Dashboard.css';
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import { withStyles } from '@material-ui/core/styles';
 import InfoTable from './Table';
-import Chart from '../chart/CandleStickChart';
+import MainChart from '../chart/MainChart';
 import { addTicker, removeAllTickers } from 'stocksocket';
-import { getStockBasicInfo, getStockHistory } from '../../utils/APIUtils';
-import LoadingIndicator from '../../common/LoadingIndicator';
+import { getStockBasicInfo } from '../../utils/APIUtils';
 
 
-class ChartComponent extends React.Component {
-	componentDidMount() {
-		getStockHistory(this.props.symbol).then(data => {
-      if (data) this.setState({ data });
-      else this.setState(null);
-		}).catch(err => { console.log(err); this.setState(null); })
-	}
-
-	render() {
-		return (
-      this.state ? <Chart type="hybrid" data={this.state.data}/> : (
-        <header className="Chart-placeholder">
-          {"Loading chart..."}
-          <LoadingIndicator />
-        </header>
-      )
-		)
-	}
-}
+const useStyles = theme => ({
+  buttons: {
+    textTransform: 'none', 
+    fontSize: 18, 
+    backgroundColor: "#0077b7", 
+    color: "white", 
+    borderRadius: 12,
+    maxWidth: '150px', 
+    maxHeight: '50px', 
+    minWidth: '150px', 
+    minHeight: '50px'
+  }
+})
 
 
 // class DataItem extends React.Component {
@@ -146,6 +140,7 @@ class Dashboard extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
     return (
       <Grid container spacing={0}>
         <Grid container spacing={0}>
@@ -171,7 +166,7 @@ class Dashboard extends React.Component {
         <Grid container>
           <Grid item xs />
           <Grid item xs={11} align="left">
-            <ChartComponent symbol={this.state.symbol} />
+            <MainChart symbol={this.state.symbol} />
           </Grid>
           <Grid item xs />
         </Grid>
@@ -191,21 +186,14 @@ class Dashboard extends React.Component {
 
         <Grid container spacing={2} style={{marginTop: "15px"}}>
           <Grid item xs />
-          <Grid item xs={3} align="left">
-            <Button 
-                variant="contained"
-                style={{textTransform: 'none', fontSize: 18, backgroundColor: "#0077b7", color: "white", borderRadius: 12,
-                        maxWidth: '150px', maxHeight: '50px', minWidth: '150px', minHeight: '50px'}}
-            >
+          <Grid item xs={3} align="center">
+            <Button variant="contained" className={classes.buttons}>
               Trade
             </Button>
           </Grid>
-          <Grid item xs={3} align="left">
-            <Button 
-                variant="contained"
-                style={{textTransform: 'none', fontSize: 18, backgroundColor: "#0077b7", color: "white", borderRadius: 12,
-                        maxWidth: '150px', maxHeight: '50px', minWidth: '150px', minHeight: '50px'}}
-            >
+          <Grid item xs={1} />
+          <Grid item xs={3} align="center">
+            <Button variant="contained" className={classes.buttons}>
               More Info
             </Button>
           </Grid>
@@ -216,4 +204,4 @@ class Dashboard extends React.Component {
   }
 }
 
-export default Dashboard;
+export default withStyles(useStyles)(Dashboard);
