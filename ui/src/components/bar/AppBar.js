@@ -16,7 +16,7 @@ import AccountMenu from './AccountMenu';
 
 
 const Clock = ({ date }) => (
-  <div>{date.toDateString() + ', UTC+' + (0 - date.getTimezoneOffset() / 60) + ' ' + date.toLocaleTimeString()}</div>
+  <div>{`${date.toDateString()}, UTC+${0 - date.getTimezoneOffset() / 60} ${date.toLocaleTimeString()}`}</div>
 )
 
 

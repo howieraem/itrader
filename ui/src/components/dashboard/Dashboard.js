@@ -2,9 +2,11 @@ import './Dashboard.css';
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import InfoTable from './Table';
 import Chart from '../chart/CandleStickChart';
 import { addTicker, removeAllTickers } from 'stocksocket';
 import { getStockBasicInfo, getStockHistory } from '../../utils/APIUtils';
+import LoadingIndicator from '../../common/LoadingIndicator';
 
 
 class ChartComponent extends React.Component {
@@ -16,21 +18,23 @@ class ChartComponent extends React.Component {
 	}
 
 	render() {
-		if (this.state == null) {
-			return <header className="Chart-placeholder">{"Loading chart..."}</header>
-		}
 		return (
-      <Chart type="hybrid" data={this.state.data}/>
+      this.state ? <Chart type="hybrid" data={this.state.data}/> : (
+        <header className="Chart-placeholder">
+          {"Loading chart..."}
+          <LoadingIndicator />
+        </header>
+      )
 		)
 	}
 }
 
 
-class DataItem extends React.Component {
-  render() {
-    return <div>{this.props.k + ": " + this.props.v}</div>;
-  }
-}
+// class DataItem extends React.Component {
+//   render() {
+//     return <div>{this.props.k + ": " + this.props.v}</div>;
+//   }
+// }
 
 
 function roundNumber(number, places=4) {
@@ -46,6 +50,21 @@ function sortByKey(unordered) {
     }, 
     {}
   );
+}
+
+
+function filterInfo(info) {
+  return {
+    "Currency": info.currency,
+    "Current EPS": info.epsCurrentYear,
+    "52-wk High": info.fiftyTwoWeekHigh,
+    "52-wk Low": info.fiftyTwoWeekLow,
+    "Full Name": info.longName,
+    "Market": info.market,
+    "Market State": info.marketState,
+    "Price Range": info.regularMarketDayRange,
+    "PE (Trailing)": info.trailingPE, 
+  }
 }
 
 
@@ -71,10 +90,10 @@ class Dashboard extends React.Component {
       function() {
         getStockBasicInfo(this.state.symbol)
         .then(basicInfo => {
-          this.setState({basicInfo: sortByKey(basicInfo)});
+          this.setState({basicInfo: filterInfo(basicInfo)});
         }).catch(err => { console.log(err) })
       }.bind(this),
-      5000
+      10000
     )
 
     /* 
@@ -116,7 +135,7 @@ class Dashboard extends React.Component {
 
     getStockBasicInfo(this.state.symbol)
     .then(basicInfo => {
-      this.setState({basicInfo: sortByKey(basicInfo)});
+      this.setState({basicInfo: filterInfo(basicInfo)});
     }).catch(err => { console.log(err) })
   }
 
@@ -157,26 +176,19 @@ class Dashboard extends React.Component {
           <Grid item xs />
         </Grid>
 
-        <Grid container spacing={0}>
-          <Grid item xs={6} align="center">
+        {/* <Grid container spacing={0}>
+          <Grid item xs align="center">
             <div className="Symbol-info1">
-              {/* {this.state.curData ? (Object.keys(this.state.curData).map(key => 
-                <DataItem k={key} v={this.state.curData[key]} />
-              )) : ("pending...")} */}
-              <DataItem k={"time"} v={this.state.time} />
-              <DataItem k={"day vol"} v={this.state.dayVolume} />
-            </div>
-          </Grid>
-          <Grid item xs={6} align="center">
-            <div className="Symbol-info1">
+              <DataItem k={"Day Volume"} v={this.state.dayVolume} />
               {this.state.basicInfo ? (Object.keys(this.state.basicInfo).map(key => 
                 <DataItem k={key} v={this.state.basicInfo[key]} />
               )) : ("pending...")}
             </div>
           </Grid>
-        </Grid>
+        </Grid> */}
 
-        
+        <InfoTable data={this.state.basicInfo} />
+
         <Grid container spacing={2} style={{marginTop: "15px"}}>
           <Grid item xs />
           <Grid item xs={3} align="left">

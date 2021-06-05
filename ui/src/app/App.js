@@ -49,7 +49,6 @@ class App extends React.Component {
       curUser: null,
       loading: false,
       initialized: false,
-      justLoggedIn: false,
       justLoggedOut: false,
     }
     this.loadCurrentlyLoggedInUser = this.loadCurrentlyLoggedInUser.bind(this);
@@ -67,14 +66,14 @@ class App extends React.Component {
         currentUser: response,
         authenticated: true,
         loading: false,
-        initialized: true
+        initialized: true,
       });
     }).catch(error => {
       this.setState({
         loading: false,
-        initialized: true
+        initialized: true,
       });
-    });    
+    });
   }
 
   handleLogout() {
@@ -109,6 +108,8 @@ class App extends React.Component {
               <PrimarySearchAppBar authenticated={this.state.authenticated} onLogout={this.handleLogout} />
             </Grid>
 
+            { this.state.justLoggedOut && <AlertMessage message={"Successfully logged out!"} severity={"success"} /> }
+
             <Switch>
                 <Route exact path="/" render={(props) => <Dashboard {...props} />}></Route>
                 <Route path="/login"
@@ -122,17 +123,13 @@ class App extends React.Component {
                 </PrivateRoute>
                 <Route component={NotFound}></Route>
             </Switch>
-
-            { this.state.justLoggedOut ? <AlertMessage message={"Successfully logged out!"} severity={"success"} /> : null }
           </Grid>
         </Container>
         <footer className={classes.footer}>
           <Container maxWidth="lg">
             <Typography variant="body1" style={{color: "#ffffff"}}>Lumine.</Typography>
             <Typography variant="body2" style={{color: "#dddddd"}}>
-              {'Copyright © HL '}
-              {new Date().getFullYear()}
-              {'.'}
+              {`Copyright © HL ${new Date().getFullYear()}.`}
             </Typography>
           </Container>
         </footer>

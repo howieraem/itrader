@@ -1,9 +1,19 @@
 .Chart-placeholder {
-  min-height: 20vh;
+  min-height: 400px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  font-size: 18px;
+}
+
+.Table-placeholder {
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
 }
 
 .Symbol-title {
