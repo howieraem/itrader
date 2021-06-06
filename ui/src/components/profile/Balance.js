@@ -1,4 +1,6 @@
 import React from 'react';
+import Avatar from '@material-ui/core/Avatar';
+import Box from "@material-ui/core/Box";
 // import Link from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -9,11 +11,13 @@ const useStyles = makeStyles({
   profileInfo: {
     align: "center",
     textAlign: "center",
+    horizontalAlign: "middle",
   },
   profileAvatar: {
-    horizontalAlign: "middle",
-    borderRadius: "50%",
-    maxWidth: "120px"
+    justifyContent: "center",
+    justifyItems: "center",
+    minWidth: "100px",
+    minHeight: "100px"
   },
   textAvatar: {
     width: "100px",
@@ -41,13 +45,19 @@ export default function Balance(props) {
   return (
     <React.Fragment>
       <div className={classes.profileInfo}>
-        <div className={classes.profileAvatar}>
-          {
-            <div className={classes.textAvatar}>
-              <span className={classes.textAvatarSpan}>{props.currentUser.email[0]}</span>
-            </div>
-          }
-        </div>
+        {/* <div className={classes.profileAvatar} >
+          <div className={classes.textAvatar}>
+            <span className={classes.textAvatarSpan}>{props.currentUser.email[0]}</span>
+          </div>
+        </div> */}
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Avatar className={classes.profileAvatar} />
+        </Box>
+        
         <Title>{props.currentUser.email}</Title>
 
         <Title>Current Balance</Title>

@@ -7,7 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Chart from './Chart';
 import Balance from './Balance';
-import Orders from './Orders';
+import Transactions from './Transactions';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
     display: 'flex',
-    overflow: 'auto',
+    overflowY: 'auto',
     flexDirection: 'column',
   },
   fixedHeight: {
@@ -85,10 +85,10 @@ export default function Profile(props) {
               </Paper>
             </Grid>
 
-            {/* Recent Orders */}
+            {/* Recent Transactions */}
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                <Orders />
+                <Transactions />
               </Paper>
             </Grid>
           </Grid>

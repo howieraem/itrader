@@ -9,9 +9,10 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import MoreIcon from '@material-ui/icons/MoreVert';
-import Link from '@material-ui/core/Link';
+// import Link from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
-import HomeIcon from '@material-ui/icons/Home';
+// import HomeIcon from '@material-ui/icons/Home';
+import Avatar from '@material-ui/core/Avatar';
 import AccountMenu from './AccountMenu';
 
 
@@ -33,17 +34,19 @@ const useStyles = theme => ({
     marginRight: theme.spacing(3),
   },
   title: {
+    color: 'white',
+    textDecoration: 'none',
     display: 'none',
     [theme.breakpoints.up('sm')]: {
       display: 'block',
     },
   },
-  titleMobile: {
-    display: 'block',
-    [theme.breakpoints.up('sm')]: {
-      display: 'none',
-    },
-  },
+  // titleMobile: {
+  //   display: 'block',
+  //   [theme.breakpoints.up('sm')]: {
+  //     display: 'none',
+  //   },
+  // },
   search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
@@ -152,11 +155,11 @@ class PrimarySearchAppBar extends React.Component {
         open={isMenuOpen}
         onClose={this.handleMenuClose}
       >
-        <MenuItem onClick={this.handleMenuClose}>
-          <Link href="/profile" color="inherit" style={{textDecoration: 'none'}}>Details</Link>
+        <MenuItem component="a" href="/profile" onClick={this.handleMenuClose}>
+          Details
         </MenuItem>
-        <MenuItem onClick={this.handleMenuClose}>
-          <Link href="/settings" color="inherit" style={{textDecoration: 'none'}}>Settings</Link>
+        <MenuItem component="a" href="/settings" onClick={this.handleMenuClose}>
+          Settings
         </MenuItem>
       </Menu>
     );
@@ -181,8 +184,8 @@ class PrimarySearchAppBar extends React.Component {
           </div>
         ) : (
           <div>
-            <MenuItem><Link href="/login" color="inherit" style={{textDecoration: 'none'}}>Login</Link></MenuItem>
-            <MenuItem><Link href="/signup" color="inherit" style={{textDecoration: 'none'}}>Sign Up</Link></MenuItem>
+            <MenuItem component="a" href="/login">Login</MenuItem>
+            <MenuItem component="a" href="/signup">Sign Up</MenuItem>
           </div>
         )}
       </Menu>
@@ -193,22 +196,22 @@ class PrimarySearchAppBar extends React.Component {
         <AppBar style={{ background: '#005480' }}>
           <Toolbar>
             <div className={classes.grow} />
-            <Typography className={classes.title} variant="h5" noWrap>
-              <Link href="/" color="inherit" style={{textDecoration: 'none'}}>ITrader</Link>
-            </Typography>
             <Button 
-              aria-label="login" 
+              aria-label="home" 
+              href="/"
               color="inherit"
               m={2}
-              className={classes.titleMobile}
-              style={{textTransform: 'none', fontSize: 18}}
-            >
-              <Link href="/" color="inherit" style={{textDecoration: 'none'}}><HomeIcon /></Link>
-            </Button>
+              // className={classes.titleMobile}
+              style={{textTransform: 'none', fontSize: 18, alignItems: 'center'}}
+              startIcon={<Avatar src={'./logo192.png'} />}
+            />
+            <Typography component="a" href="/" className={classes.title} variant="h5" noWrap>
+              ITrader
+            </Typography>
             <div className={classes.grow} />
             <div className={classes.search}>
               <InputBase
-                placeholder="COIN"
+                placeholder="TSLA"
                 classes={{
                   root: classes.inputRoot,
                   input: classes.inputInput,
@@ -233,11 +236,12 @@ class PrimarySearchAppBar extends React.Component {
               ) : (
                 <Button 
                   aria-label="login" 
+                  href="/login"
                   color="inherit"
                   m={2}
                   style={{textTransform: 'none', fontSize: 18}}
                 >
-                  <Link href="/login" color="inherit" style={{textDecoration: 'none'}}>Login</Link>
+                  Login
                 </Button>
               )}
 
@@ -254,11 +258,12 @@ class PrimarySearchAppBar extends React.Component {
               ) : (
                 <Button 
                   aria-label="signup" 
+                  href="/signup"
                   color="inherit"
                   m={2}
                   style={{textTransform: 'none', fontSize: 18}}
                 >
-                  <Link href="/signup" color="inherit" style={{textDecoration: 'none'}}>Sign Up</Link>
+                  Sign Up
                 </Button>
               )}
             </div>

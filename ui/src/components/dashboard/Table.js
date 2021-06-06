@@ -4,17 +4,26 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
-// import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import './Dashboard.css';
 import LoadingIndicator from '../../common/LoadingIndicator';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   table: {
+    display: 'none',
+    [theme.breakpoints.up('md')]: {
+      display: 'table',
+    },
     minWidth: 650,
   },
-});
+  tableMobile: {
+    display: 'table',
+    [theme.breakpoints.up('md')]: {
+      display: 'none',
+    },
+  }
+}));
 
 function tabulate(data, keysPerRow=3) {
   let pairs = Object.entries(data);
@@ -45,26 +54,44 @@ export default function InfoTable({ data }) {
   return (
     <TableContainer component={Paper}>
       { data ? (
-        <Table className={classes.table} aria-label="info table">
-          <TableBody>
-            {tabulate(data).map((row) => (
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  <strong>{row[0]}</strong>
-                </TableCell>
-                <TableCell align="left">{row[1]}</TableCell>
-                <TableCell component="th" scope="row">
-                  <strong>{row[2]}</strong>
-                </TableCell>
-                <TableCell align="left">{row[3]}</TableCell>
-                <TableCell component="th" scope="row">
-                  <strong>{row[4]}</strong>
-                </TableCell>
-                <TableCell align="left">{row[5]}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <div>
+          <Table className={classes.table} aria-label="info table">
+            <TableBody>
+              {tabulate(data, 3).map((row) => (
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    <strong>{row[0]}</strong>
+                  </TableCell>
+                  <TableCell align="left">{row[1]}</TableCell>
+                  <TableCell component="th" scope="row">
+                    <strong>{row[2]}</strong>
+                  </TableCell>
+                  <TableCell align="left">{row[3]}</TableCell>
+                  <TableCell component="th" scope="row">
+                    <strong>{row[4]}</strong>
+                  </TableCell>
+                  <TableCell align="left">{row[5]}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <Table className={classes.tableMobile} aria-label="info table">
+            <TableBody>
+              {tabulate(data, 2).map((row) => (
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    <strong>{row[0]}</strong>
+                  </TableCell>
+                  <TableCell align="left">{row[1]}</TableCell>
+                  <TableCell component="th" scope="row">
+                    <strong>{row[2]}</strong>
+                  </TableCell>
+                  <TableCell align="left">{row[3]}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       ) : (
         <div className="Table-placeholder">
           {"Loading stock info..."}

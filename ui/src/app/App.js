@@ -32,6 +32,9 @@ const useStyles = theme => ({
     marginBottom: theme.spacing(2),
   },
   footer: {
+    position: 'fixed',
+    bottom: 0,
+    width: '100%',
     padding: theme.spacing(3, 2),
     paddingRight: 0,
     marginTop: 'auto',
@@ -125,7 +128,7 @@ class App extends React.Component {
         </Container>
         <footer className={classes.footer}>
           <Container maxWidth="lg">
-            <Typography variant="body1" style={{color: "#ffffff"}}>Lumine.</Typography>
+            {/* <Typography variant="body1" style={{color: "#ffffff"}}>Lumine.</Typography> */}
             <Typography variant="body2" style={{color: "#dddddd"}}>
               {`Copyright © HL ${new Date().getFullYear()}.`}
             </Typography>
