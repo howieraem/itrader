@@ -32,9 +32,9 @@ const useStyles = theme => ({
     marginBottom: theme.spacing(2),
   },
   footer: {
-    position: 'fixed',
-    bottom: 0,
-    width: '100%',
+    // position: 'fixed',
+    // bottom: 0,
+    // width: '100%',
     padding: theme.spacing(3, 2),
     paddingRight: 0,
     marginTop: 'auto',
@@ -105,7 +105,7 @@ class App extends React.Component {
     return (
       <div className={classes.root}>
         <CssBaseline />
-        <Container component="main" className={classes.main} maxWidth="lg">
+        <Container component="main" className={classes.main} maxWidth="xl">
           <Grid container spacing={0}>
             <PrimarySearchAppBar authenticated={this.state.authenticated} onLogout={this.handleLogout} />
 
@@ -127,7 +127,7 @@ class App extends React.Component {
           </Grid>
         </Container>
         <footer className={classes.footer}>
-          <Container maxWidth="lg">
+          <Container>
             {/* <Typography variant="body1" style={{color: "#ffffff"}}>Lumine.</Typography> */}
             <Typography variant="body2" style={{color: "#dddddd"}}>
               {`Copyright © HL ${new Date().getFullYear()}.`}

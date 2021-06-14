@@ -195,7 +195,7 @@ class PrimarySearchAppBar extends React.Component {
       <div className={classes.grow}>
         <AppBar style={{ background: '#005480' }}>
           <Toolbar>
-            <div className={classes.grow} />
+            {/* <div className={classes.grow} /> */}
             <Button 
               aria-label="home" 
               href="/"
@@ -278,7 +278,7 @@ class PrimarySearchAppBar extends React.Component {
                 <MoreIcon />
               </IconButton>
             </div>
-            <div className={classes.grow} />
+            {/* <div className={classes.grow} /> */}
           </Toolbar>
         </AppBar>
         {renderMobileMenu}
