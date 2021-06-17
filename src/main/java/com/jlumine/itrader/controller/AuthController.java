@@ -66,8 +66,9 @@ public class AuthController {
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setPin(passwordEncoder.encode(signUpRequest.getPin()));
 
-
         User result = userRepository.save(user);
+//        System.out.println(result.getId());
+//        System.out.println(signUpRequest.getUsername());
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/user/me")

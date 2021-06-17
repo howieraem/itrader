@@ -16,7 +16,7 @@ public class FinanceDataController {
     // Note: crumb is not longer required for Yahoo Finance's new APIs
     private static final String URL_BASIC = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=%s";
     private static final String URL_SNAPSHOT = "https://query2.finance.yahoo.com/v10/finance/quoteSummary/%s?modules=%s";
-    private static final String URL_HISTORY = "https://query1.finance.yahoo.com/v7/finance/download/%s?period1=%s&period2=%s&interval=%s&events=history&includeAdjustedClose=true";
+    private static final String URL_HISTORY = "https://query1.finance.yahoo.com/v7/finance/download/%s?period1=%s&period2=%s&interval=%s&events=%s&includeAdjustedClose=true";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -43,7 +43,17 @@ public class FinanceDataController {
             @RequestParam(value = "from") String from,
             @RequestParam(value = "to") String to,
             @RequestParam(value = "interval") String interval) {
-        String url = String.format(URL_HISTORY, symbol, from, to, interval);
+        String url = String.format(URL_HISTORY, symbol, from, to, interval, "history");
+        ResponseEntity<String> results = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
+        return results.getBody();
+    }
+
+    @GetMapping("/stockDividend")
+    public String getStockDividend(
+            @RequestParam(value = "symbol") String symbol,
+            @RequestParam(value = "from") String from,
+            @RequestParam(value = "to") String to) {
+        String url = String.format(URL_HISTORY, symbol, from, to, "1d", "div");
         ResponseEntity<String> results = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
         return results.getBody();
     }

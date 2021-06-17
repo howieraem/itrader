@@ -1,6 +1,6 @@
 # ITrader Project
 
-An online trading simulation system built with Springboot and React.js.
+A paper trading system built with Springboot and React.js. Data from Yahoo Finance are used.
 
 ## Notes on Yahoo Finance APIs
 If you do not have access to Yahoo Finance in your region, you can try the following:

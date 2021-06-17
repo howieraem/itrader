@@ -60,7 +60,7 @@ class SignIn extends React.Component {
 
     signup(signUpRequest)
     .then(response => {
-      console.log("successfully registered.");
+      console.log("successfully registered!");
       // Alert.success("You're successfully registered. Please login to continue!");
       this.props.history.push("/login");
     }).catch(error => {
@@ -134,6 +134,17 @@ class SignIn extends React.Component {
                 label="Trading PIN (4-digit)"
                 type="password"
                 id="pin"
+                onChange={this.handleInputChange}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="username"
+                label="Username"
+                type="username"
+                id="username"
                 onChange={this.handleInputChange}
               />
               <Button

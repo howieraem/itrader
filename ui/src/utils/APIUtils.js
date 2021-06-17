@@ -82,8 +82,23 @@ function parseRow(d) {
 	}
 }
 
-export function getStockHistory(symbol, from="0", to="9999999999", interval="1d") {
+export function getStockHistory(symbol, interval="w", from="0", to="9999999999") {
+  switch (interval) {
+    case 'w': interval = '1wk'; break;
+    case 'm': interval = '1mo'; break;
+    default: interval = '1d'; break;
+  }
 	const promise = fetch(`http://127.0.0.1:8092/stockHistory?symbol=${symbol}&from=${from}&to=${to}&interval=${interval}`)
+		.then(response => response.text())
+		.then(data => csvParse(data, parseRow))
+        .catch(err => { 
+            console.log(err) 
+        })
+	return promise;
+};
+
+export function getStockDividend(symbol, from="0", to="9999999999") {
+	const promise = fetch(`http://127.0.0.1:8092/stockDividend?symbol=${symbol}&from=${from}&to=${to}`)
 		.then(response => response.text())
 		.then(data => csvParse(data, parseRow))
         .catch(err => { 

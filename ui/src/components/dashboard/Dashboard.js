@@ -4,7 +4,8 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import InfoTable from './Table';
-import MainChart from '../chart/MainChart';
+import MultiCharts from './MultiCharts';
+// import MainChart from '../chart/MainChart';
 import { addTicker, removeAllTickers } from 'stocksocket';
 import { getStockBasicInfo } from '../../utils/APIUtils';
 
@@ -163,13 +164,15 @@ class Dashboard extends React.Component {
           <Grid item><header className="Symbol-title"></header></Grid>
         </Grid>
 
-        <Grid container>
+        <MultiCharts symbol={this.state.symbol} />
+
+        {/* <Grid container>
           <Grid item xs />
           <Grid item xs={11} align="left">
-            <MainChart symbol={this.state.symbol} />
+            <MainChart symbol={this.state.symbol} interval="d" />
           </Grid>
           <Grid item xs />
-        </Grid>
+        </Grid> */}
 
         {/* <Grid container spacing={0}>
           <Grid item xs align="center">

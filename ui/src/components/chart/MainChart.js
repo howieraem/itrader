@@ -6,7 +6,7 @@ import LoadingIndicator from '../../common/LoadingIndicator';
 
 class MainChart extends React.Component {
 	componentDidMount() {
-		getStockHistory(this.props.symbol).then(data => {
+		getStockHistory(this.props.symbol, this.props.interval).then(data => {
       if (data && data.length) this.setState({ data });
       else this.setState(null);
 		}).catch(err => { console.log(err); this.setState(null); })

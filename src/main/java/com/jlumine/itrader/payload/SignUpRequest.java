@@ -15,6 +15,9 @@ public class SignUpRequest {
     @NotBlank
     private String pin;
 
+    @NotBlank
+    private String username;
+
     public String getEmail() {
         return email;
     }
@@ -37,5 +40,13 @@ public class SignUpRequest {
 
     public void setPin(String pin) {
         this.pin = pin;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
