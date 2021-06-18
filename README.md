@@ -24,3 +24,4 @@ If you do not have access to Yahoo Finance in your region, you can try the follo
 - [ ] Charts for other frequencies: 1week, 1month, 1year, etc
 - [ ] Stock details page (refer to yahoo finance API for all available fields)
 - [ ] User profile and settings (link to user details in backend)
+- [ ] Lazy-loading, especially chart data
