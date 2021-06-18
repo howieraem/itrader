@@ -19,6 +19,9 @@ import { ema } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
 import { last } from "react-stockcharts/lib/utils";
 
+import { appearance, candlesAppearance } from "./Appearance";
+
+
 const dateFormat = timeFormat("%Y-%m-%d");
 const numberFormat = format(".2f");
 
@@ -56,29 +59,25 @@ function tooltipContent(ys) {
 	};
 }
 
-const keyValues = ["high", "low"];
+// const keyValues = ["high", "low"];
 
 class CandleStickChartWithHoverTooltip extends React.Component {
-	removeRandomValues(data) {
-		return data.map(item => {
-			const newItem = { ...item };
-			const numberOfDeletion =
-				Math.floor(Math.random() * keyValues.length) + 1;
-			for (let i = 0; i < numberOfDeletion; i += 1) {
-				const randomKey =
-					keyValues[Math.floor(Math.random() * keyValues.length)];
-				newItem[randomKey] = undefined;
-			}
-			return newItem;
-		});
-	}
+	// removeRandomValues(data) {
+	// 	return data.map(item => {
+	// 		const newItem = { ...item };
+	// 		const numberOfDeletion =
+	// 			Math.floor(Math.random() * keyValues.length) + 1;
+	// 		for (let i = 0; i < numberOfDeletion; i += 1) {
+	// 			const randomKey =
+	// 				keyValues[Math.floor(Math.random() * keyValues.length)];
+	// 			newItem[randomKey] = undefined;
+	// 		}
+	// 		return newItem;
+	// 	});
+	// }
 
 	render() {
-		let { type, data: initialData, width, ratio } = this.props;
-
-		// remove some of the data to be able to see
-		// the tooltip resize
-		initialData = this.removeRandomValues(initialData);
+		let { type, data: initialData, symbol, width, ratio } = this.props;
 
 		const ema20 = ema()
 			.id(0)
@@ -96,49 +95,41 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 			})
 			.accessor(d => d.ema50);
 
-		const margin = { left: 80, right: 80, top: 30, bottom: 50 };
+		const margin = { left: 50, right: 50, top: 10, bottom: 30 };
 
 		const calculatedData = ema50(ema20(initialData));
-		const xScaleProvider = discontinuousTimeScaleProvider.inputDateAccessor(
-			d => d.date
-		);
-		const { data, xScale, xAccessor, displayXAccessor } = xScaleProvider(
-			calculatedData
-		);
+		const xScaleProvider = discontinuousTimeScaleProvider
+			.inputDateAccessor(d => d.date);
+    const {
+      data,
+      xScale,
+      xAccessor,
+      displayXAccessor,
+    } = xScaleProvider(calculatedData);
 
 		const start = xAccessor(last(data));
 		const end = xAccessor(data[Math.max(0, data.length - 150)]);
 		const xExtents = [start, end];
 
 		return (
-			<ChartCanvas
-				height={480}
-				width={width}
+      <ChartCanvas 
+        height={450}
 				ratio={ratio}
+				width={width}
 				margin={margin}
 				type={type}
-				seriesName="MSFT"
+				seriesName={symbol}
 				data={data}
 				xScale={xScale}
 				xAccessor={xAccessor}
 				displayXAccessor={displayXAccessor}
 				xExtents={xExtents}
 			>
-				<Chart
-					id={1}
-					yExtents={[
-						d => [d.high, d.low],
-						ema20.accessor(),
-						ema50.accessor()
-					]}
-					padding={{ top: 10, bottom: 20 }}
-				>
-					<XAxis axisAt="bottom" orient="bottom" />
-
+				<Chart id={1} height={300} yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]} >
 					<YAxis axisAt="right" orient="right" ticks={5} />
-
-					<CandlestickSeries />
-					<LineSeries
+					<XAxis axisAt="bottom" orient="bottom" showTicks={false} />
+					<CandlestickSeries {...candlesAppearance} />
+          <LineSeries
 						yAccessor={ema20.accessor()}
 						stroke={ema20.stroke()}
 					/>
@@ -152,7 +143,7 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 						orient="right"
 						edgeAt="right"
 						yAccessor={d => d.close}
-						fill={d => (d.close > d.open ? "#6BA583" : "#FF0000")}
+						{...appearance}
 					/>
 
 					<HoverTooltip
@@ -174,23 +165,10 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 						fontSize={15}
 					/>
 				</Chart>
-				<Chart
-					id={2}
-					yExtents={[d => d.volume]}
-					height={150}
-					origin={(w, h) => [0, h - 150]}
-				>
-					<YAxis
-						axisAt="left"
-						orient="left"
-						ticks={5}
-						tickFormat={format(".2s")}
-					/>
-
-					<BarSeries
-						yAccessor={d => d.volume}
-						fill={d => (d.close > d.open ? "#6BA583" : "#FF0000")}
-					/>
+				<Chart id={2} origin={(w, h) => [0, h - 100]} height={100} yExtents={d => d.volume}>
+					<XAxis axisAt="bottom" orient="bottom"/>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")}/>
+					<BarSeries yAccessor={d => d.volume} {...appearance} />
 				</Chart>
 			</ChartCanvas>
 		);

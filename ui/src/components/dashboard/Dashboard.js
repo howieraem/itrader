@@ -5,7 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import InfoTable from './Table';
 import MultiCharts from './MultiCharts';
-// import MainChart from '../chart/MainChart';
+// import HistoryChart from '../chart/HistoryChart';
 import { addTicker, removeAllTickers } from 'stocksocket';
 import { getStockBasicInfo } from '../../utils/APIUtils';
 
@@ -169,7 +169,7 @@ class Dashboard extends React.Component {
         {/* <Grid container>
           <Grid item xs />
           <Grid item xs={11} align="left">
-            <MainChart symbol={this.state.symbol} interval="d" />
+            <HistoryChart symbol={this.state.symbol} interval="d" />
           </Grid>
           <Grid item xs />
         </Grid> */}

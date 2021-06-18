@@ -39,6 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         "/stockDetails",
         "/stockHistory",
         "/stockDividend",
+        "/stockIntraday",
     };
 
     @Autowired

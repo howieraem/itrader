@@ -82,7 +82,28 @@ function parseRow(d) {
 	}
 }
 
+function parseIntraday(raw) {
+  let responseDetails = JSON.parse(raw).chart;
+  if (responseDetails.error)  throw new Error("Encountered error while fetching intraday data!");
+  let d = responseDetails.result[0];
+  let indicators = d.indicators.quote[0], time = d.timestamp;
+
+  let data = [];
+  for (let i = 0; i < time.length; ++i) {
+    data.push({
+      date: new Date(time[i] * 1000),
+      open: indicators.open[i],
+      high: indicators.high[i],
+      low: indicators.low[i],
+      close: indicators.close[i],
+      volume: indicators.volume[i],
+    })
+  }
+  return data;
+}
+
 export function getStockHistory(symbol, interval="w", from="0", to="9999999999") {
+  // TODO quarter and year
   switch (interval) {
     case 'w': interval = '1wk'; break;
     case 'm': interval = '1mo'; break;
@@ -101,6 +122,16 @@ export function getStockDividend(symbol, from="0", to="9999999999") {
 	const promise = fetch(`http://127.0.0.1:8092/stockDividend?symbol=${symbol}&from=${from}&to=${to}`)
 		.then(response => response.text())
 		.then(data => csvParse(data, parseRow))
+        .catch(err => { 
+            console.log(err) 
+        })
+	return promise;
+};
+
+export function getStockIntraday(symbol) {
+	const promise = fetch(`http://127.0.0.1:8092/stockIntraday?symbol=${symbol}`)
+		.then(response => response.text())
+    .then(data => parseIntraday(data))
         .catch(err => { 
             console.log(err) 
         })
