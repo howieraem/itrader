@@ -6,7 +6,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import IntradayChart from '../chart/IntradayChart';
+import MinuteChart from '../chart/MinuteChart';
 import HistoryChart from '../chart/HistoryChart';
 
 
@@ -62,14 +62,16 @@ export default function MultiCharts(props) {
     <div className={classes.root}>
       <AppBar position="static">
         <Tabs value={value} onChange={handleChange} aria-label="interval tabs">
-          <Tab label="Intraday" {...a11yProps(0)} style={{ textTransform: 'none' }} />
+          <Tab label="Minute" {...a11yProps(0)} style={{ textTransform: 'none' }} />
           <Tab label="Day" {...a11yProps(1)} style={{ textTransform: 'none' }} />
           <Tab label="Week" {...a11yProps(2)} style={{ textTransform: 'none' }} />
           <Tab label="Month" {...a11yProps(3)} style={{ textTransform: 'none' }} />
+          <Tab label="Quarter" {...a11yProps(4)} style={{ textTransform: 'none' }} />
+          <Tab label="Year" {...a11yProps(5)} style={{ textTransform: 'none' }} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <IntradayChart symbol={props.symbol} />
+        <MinuteChart symbol={props.symbol} />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <HistoryChart symbol={props.symbol} interval="d" />
@@ -79,6 +81,12 @@ export default function MultiCharts(props) {
       </TabPanel>
       <TabPanel value={value} index={3}>
         <HistoryChart symbol={props.symbol} interval="m" />
+      </TabPanel>
+      <TabPanel value={value} index={4}>
+        <HistoryChart symbol={props.symbol} interval="q" />
+      </TabPanel>
+      <TabPanel value={value} index={5}>
+        <HistoryChart symbol={props.symbol} interval="y" />
       </TabPanel>
     </div>
   );

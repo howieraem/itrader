@@ -1,13 +1,13 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Chart from './CandleStickChartIntraday';
-import { getStockIntraday } from '../../utils/APIUtils';
+import { getStockToday } from '../../utils/APIUtils';
 import LoadingIndicator from '../../common/LoadingIndicator';
 
 
-class IntradayChart extends React.Component {
+class MinuteChart extends React.Component {
 	componentDidMount() {
-		getStockIntraday(this.props.symbol).then(data => {
+		getStockToday(this.props.symbol).then(data => {
       if (data && data.length) this.setState({ data });
       else this.setState(null);
 		}).catch(err => { console.log(err); this.setState(null); })
@@ -32,4 +32,4 @@ class IntradayChart extends React.Component {
 	}
 }
 
-export default IntradayChart;
+export default MinuteChart;

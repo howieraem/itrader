@@ -18,10 +18,11 @@ If you do not have access to Yahoo Finance in your region, you can try the follo
 - [ ] Distributed computing (Advanced) 
 
 ### Frontend
-- [ ] Rearrange layout to have more containers with different functionalities
+- [ ] Rearrange the layout to have more containers with different functionalities
 - [ ] Order history (no matter filled or not) table
 - [ ] Alert
 - [ ] Charts for other frequencies: 1week, 1month, 1year, etc
 - [ ] Stock details page (refer to yahoo finance API for all available fields)
 - [ ] User profile and settings (link to user details in backend)
 - [ ] Lazy-loading, especially chart data
+- [ ] Auto-correct current (last) price of non-intraday charts with real-time data from websocket

@@ -69,7 +69,7 @@ export function getStockBasicInfo(symbol) {
     });
 }
 
-const parseDate = timeParse("%Y-%m-%d");
+export const parseDate = timeParse("%Y-%m-%d");
 
 function parseRow(d) {
 	return {
@@ -84,7 +84,7 @@ function parseRow(d) {
 
 function parseIntraday(raw) {
   let responseDetails = JSON.parse(raw).chart;
-  if (responseDetails.error)  throw new Error("Encountered error while fetching intraday data!");
+  if (responseDetails.error)  throw new Error(responseDetails.error.description);
   let d = responseDetails.result[0];
   let indicators = d.indicators.quote[0], time = d.timestamp;
 
@@ -103,10 +103,11 @@ function parseIntraday(raw) {
 }
 
 export function getStockHistory(symbol, interval="w", from="0", to="9999999999") {
-  // TODO quarter and year
   switch (interval) {
     case 'w': interval = '1wk'; break;
     case 'm': interval = '1mo'; break;
+    case 'q': interval = '3mo'; break;
+    case 'y': interval = '3mo'; break;  // TODO convert quarter to year
     default: interval = '1d'; break;
   }
 	const promise = fetch(`http://127.0.0.1:8092/stockHistory?symbol=${symbol}&from=${from}&to=${to}&interval=${interval}`)
@@ -128,8 +129,8 @@ export function getStockDividend(symbol, from="0", to="9999999999") {
 	return promise;
 };
 
-export function getStockIntraday(symbol) {
-	const promise = fetch(`http://127.0.0.1:8092/stockIntraday?symbol=${symbol}`)
+export function getStockToday(symbol, includePrePost=false) {
+	const promise = fetch(`http://127.0.0.1:8092/stockHistoryIntraday?symbol=${symbol}&interval=1m&range=1d&includePrePost=${includePrePost}`)
 		.then(response => response.text())
     .then(data => parseIntraday(data))
         .catch(err => { 
