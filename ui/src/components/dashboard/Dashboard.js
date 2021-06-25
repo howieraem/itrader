@@ -13,14 +13,18 @@ import { getStockBasicInfo } from '../../utils/APIUtils';
 const useStyles = theme => ({
   buttons: {
     textTransform: 'none', 
-    fontSize: 18, 
+    fontSize: 16, 
     backgroundColor: "#0077b7", 
     color: "white", 
     borderRadius: 12,
-    maxWidth: '150px', 
+    maxWidth: '130px', 
     maxHeight: '50px', 
-    minWidth: '150px', 
-    minHeight: '50px'
+    minWidth: '130px', 
+    minHeight: '50px',
+    marginTop: "5px"
+  },
+  topContainer: {
+    backgroundColor: '#fafaff',
   }
 })
 
@@ -142,37 +146,49 @@ class Dashboard extends React.Component {
 
   render() {
     const { classes } = this.props;
+    let priceLoaded = this.state.price > 0;
+    let changeSign = this.state.change > 0 ? "+" : "";
     return (
       <Grid container spacing={0}>
-        <Grid container spacing={0}>
-          <Grid item xs={4}> 
+        <Grid container spacing={2} className={classes.topContainer}>
+          {/* <Grid item xs={1} /> */}
+          <Grid item xs={2}> 
             <header className="Symbol-title">
               {this.state.symbol} -- {this.state.companyName}
             </header>
           </Grid>
-          <Grid item xs><header className="Symbol-title"></header></Grid>
-          <Grid item xs={3}> 
+          <Grid item xs={1}> 
             <header className="Symbol-title">
-              $ {this.state.price}
+              { priceLoaded ? ("$" + this.state.price) : "Loading price..." }
             </header>
           </Grid>
-          <Grid item xs={3}> 
+          <Grid item xs={2}> 
             <header className="Symbol-title">
-              {this.state.change} ({this.state.changePercent} %)
+              { priceLoaded ? (`${changeSign}${this.state.change} (${changeSign}${this.state.changePercent})`) : "" }
             </header>
           </Grid>
-          <Grid item><header className="Symbol-title"></header></Grid>
+          <Grid item xs />
+          <Grid item xs={2} align="center">
+            <Button variant="contained" className={classes.buttons}>
+              Trade
+            </Button>
+          </Grid>
+          {/* <Grid item xs /> */}
+          <Grid item xs={2} align="center">
+            <Button variant="contained" className={classes.buttons}>
+              More Info
+            </Button>
+          </Grid>
+          {/* <Grid item xs /> */}
         </Grid>
 
-        <MultiCharts symbol={this.state.symbol} />
-
-        {/* <Grid container>
-          <Grid item xs />
-          <Grid item xs={11} align="left">
-            <HistoryChart symbol={this.state.symbol} interval="d" />
+        <Grid container>
+          <Grid item xs={12}>
+            <MultiCharts symbol={this.state.symbol} />
           </Grid>
-          <Grid item xs />
-        </Grid> */}
+        </Grid>
+
+        <InfoTable data={this.state.basicInfo} />
 
         {/* <Grid container spacing={0}>
           <Grid item xs align="center">
@@ -183,25 +199,7 @@ class Dashboard extends React.Component {
               )) : ("pending...")}
             </div>
           </Grid>
-        </Grid> */}
-
-        <InfoTable data={this.state.basicInfo} />
-
-        <Grid container spacing={2} style={{marginTop: "15px"}}>
-          <Grid item xs />
-          <Grid item xs={3} align="center">
-            <Button variant="contained" className={classes.buttons}>
-              Trade
-            </Button>
-          </Grid>
-          <Grid item xs={1} />
-          <Grid item xs={3} align="center">
-            <Button variant="contained" className={classes.buttons}>
-              More Info
-            </Button>
-          </Grid>
-          <Grid item xs />
-        </Grid>
+        </Grid> */}        
       </Grid>
     )
   }

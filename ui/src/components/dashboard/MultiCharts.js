@@ -48,6 +48,13 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
   },
+  tab: {
+    textTransform: 'none',
+    minWidth: 10,
+  },
+  indicator: {
+    backgroundColor: 'white',
+  },
 }));
 
 export default function MultiCharts(props) {
@@ -61,17 +68,23 @@ export default function MultiCharts(props) {
   return (
     <div className={classes.root}>
       <AppBar position="static">
-        <Tabs value={value} onChange={handleChange} aria-label="interval tabs">
-          <Tab label="Minute" {...a11yProps(0)} style={{ textTransform: 'none' }} />
-          <Tab label="Day" {...a11yProps(1)} style={{ textTransform: 'none' }} />
-          <Tab label="Week" {...a11yProps(2)} style={{ textTransform: 'none' }} />
-          <Tab label="Month" {...a11yProps(3)} style={{ textTransform: 'none' }} />
-          <Tab label="Quarter" {...a11yProps(4)} style={{ textTransform: 'none' }} />
-          <Tab label="Year" {...a11yProps(5)} style={{ textTransform: 'none' }} />
+        <Tabs value={value} onChange={handleChange} aria-label="interval tabs" classes={{ indicator: classes.indicator }}>
+          <Tab label="Intraday" {...a11yProps(0)} className={classes.tab} />
+          <Tab label="Day" {...a11yProps(1)} className={classes.tab} />
+          <Tab label="Week" {...a11yProps(2)} className={classes.tab} />
+          <Tab label="Month" {...a11yProps(3)} className={classes.tab} />
+          <Tab label="Quarter" {...a11yProps(4)} className={classes.tab} />
+          <Tab label="Year" {...a11yProps(5)} className={classes.tab} />
+          <Tab label="1min" {...a11yProps(6)} className={classes.tab} />
+          <Tab label="5min" {...a11yProps(7)} className={classes.tab} />
+          <Tab label="15min" {...a11yProps(8)} className={classes.tab} />
+          <Tab label="30min" {...a11yProps(9)} className={classes.tab} />
+          <Tab label="60min" {...a11yProps(10)} className={classes.tab} />
+          <Tab label="90min" {...a11yProps(11)} className={classes.tab} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <MinuteChart symbol={props.symbol} />
+        Intraday chart in progress...
       </TabPanel>
       <TabPanel value={value} index={1}>
         <HistoryChart symbol={props.symbol} interval="d" />
@@ -87,6 +100,24 @@ export default function MultiCharts(props) {
       </TabPanel>
       <TabPanel value={value} index={5}>
         <HistoryChart symbol={props.symbol} interval="y" />
+      </TabPanel>
+      <TabPanel value={value} index={6}>
+        <MinuteChart symbol={props.symbol} minute={1} />
+      </TabPanel>
+      <TabPanel value={value} index={7}>
+        <MinuteChart symbol={props.symbol} minute={5} />
+      </TabPanel>
+      <TabPanel value={value} index={8}>
+        <MinuteChart symbol={props.symbol} minute={15} />
+      </TabPanel>
+      <TabPanel value={value} index={9}>
+        <MinuteChart symbol={props.symbol} minute={30} />
+      </TabPanel>
+      <TabPanel value={value} index={10}>
+        <MinuteChart symbol={props.symbol} minute={60} />
+      </TabPanel>
+      <TabPanel value={value} index={11}>
+        <MinuteChart symbol={props.symbol} minute={90} />
       </TabPanel>
     </div>
   );

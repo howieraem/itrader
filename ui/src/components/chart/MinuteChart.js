@@ -7,10 +7,24 @@ import LoadingIndicator from '../../common/LoadingIndicator';
 
 class MinuteChart extends React.Component {
 	componentDidMount() {
-		getStockToday(this.props.symbol).then(data => {
-      if (data && data.length) this.setState({ data });
-      else this.setState(null);
-		}).catch(err => { console.log(err); this.setState(null); })
+    let symbolKey = this.props.symbol + "_m" + this.props.minute;
+    let symbolCache = localStorage.getItem(symbolKey);
+    if (symbolCache) {
+      let data = JSON.parse(symbolCache);
+      data.forEach((entry) => {
+        // recover date format
+        entry.date = new Date(entry.date);
+      });
+      this.setState({ data })
+    } else {
+      getStockToday(this.props.symbol, this.props.minute).then(data => {
+        if (data && data.length) { 
+          this.setState({ data }); 
+          localStorage.setItem(symbolKey, JSON.stringify(data));
+        }
+        else this.setState(null);
+      }).catch(err => { console.log(err); this.setState(null); })
+    }
 	}
 
 	render() {
