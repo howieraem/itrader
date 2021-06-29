@@ -17,7 +17,6 @@ import Profile from '../components/profile/Profile';
 import NotFound from '../common/NotFound';
 import PrivateRoute from '../common/PrivateRoute';
 import LoadingIndicator from '../common/LoadingIndicator';
-import { ACCESS_TOKEN } from "../constants";
 import { getCurrentUser } from '../utils/APIUtils';
 
 
@@ -80,7 +79,7 @@ class App extends React.Component {
   }
 
   handleLogout() {
-    localStorage.removeItem(ACCESS_TOKEN);
+    localStorage.removeItem('accessToken');
     this.setState({
       authenticated: false,
       currentUser: null,
@@ -127,7 +126,7 @@ class App extends React.Component {
           </Grid>
         </Container>
         <footer className={classes.footer}>
-          <Container>
+          <Container maxWidth="xl">
             {/* <Typography variant="body1" style={{color: "#ffffff"}}>Lumine.</Typography> */}
             <Typography variant="body2" style={{color: "#dddddd"}}>
               {`Copyright © HL ${new Date().getFullYear()}.`}

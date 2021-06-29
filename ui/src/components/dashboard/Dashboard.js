@@ -11,6 +11,9 @@ import { getStockBasicInfo } from '../../utils/APIUtils';
 
 
 const useStyles = theme => ({
+  grow: {
+    flexGrow: 1,
+  },
   buttons: {
     textTransform: 'none', 
     fontSize: 16, 
@@ -152,29 +155,36 @@ class Dashboard extends React.Component {
       <Grid container spacing={0}>
         <Grid container spacing={2} className={classes.topContainer}>
           {/* <Grid item xs={1} /> */}
-          <Grid item xs={2}> 
+          <Grid item xs={1}> 
             <header className="Symbol-title">
-              {this.state.symbol} -- {this.state.companyName}
+              {this.state.symbol}
             </header>
           </Grid>
+          <Grid item xs={2}> 
+            <header className="Symbol-title">
+              {this.state.companyName}
+            </header>
+          </Grid>
+          <Grid item xs />
           <Grid item xs={1}> 
             <header className="Symbol-title">
               { priceLoaded ? ("$" + this.state.price) : "Loading price..." }
             </header>
           </Grid>
+          <Grid item xs />
           <Grid item xs={2}> 
             <header className="Symbol-title">
-              { priceLoaded ? (`${changeSign}${this.state.change} (${changeSign}${this.state.changePercent})`) : "" }
+              { priceLoaded ? (`${changeSign}${this.state.change} (${changeSign}${this.state.changePercent}%)`) : "" }
             </header>
           </Grid>
-          <Grid item xs />
-          <Grid item xs={2} align="center">
+          <Grid item className={classes.grow} />
+          <Grid item xs={2} align="right">
             <Button variant="contained" className={classes.buttons}>
               Trade
             </Button>
           </Grid>
           {/* <Grid item xs /> */}
-          <Grid item xs={2} align="center">
+          <Grid item xs={2} align="right">
             <Button variant="contained" className={classes.buttons}>
               More Info
             </Button>
@@ -184,7 +194,7 @@ class Dashboard extends React.Component {
 
         <Grid container>
           <Grid item xs={12}>
-            <MultiCharts symbol={this.state.symbol} />
+            <MultiCharts symbol={this.state.symbol} lastestPrice={this.state.price} />
           </Grid>
         </Grid>
 

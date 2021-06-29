@@ -10,7 +10,6 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Redirect } from 'react-router-dom';
-import { ACCESS_TOKEN } from '../../constants';
 import { login } from '../../utils/APIUtils';
 
 
@@ -74,7 +73,7 @@ class SignIn extends React.Component {
 
     login(loginRequest)
     .then(response => {
-      localStorage.setItem(ACCESS_TOKEN, response.accessToken);
+      localStorage.setItem('accessToken', response.accessToken);
       this.props.history.push("/");
       // console.log("Successfully logged in!");
       this.props.history.go();

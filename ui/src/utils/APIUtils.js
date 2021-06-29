@@ -1,4 +1,4 @@
-import { SERVER_URL, ACCESS_TOKEN } from '../constants';
+import { SERVER_URL } from '../constants';
 import axios from 'axios';
 import { csvParse } from "d3";
 import { timeParse } from "d3-time-format";
@@ -9,8 +9,8 @@ const request = (options) => {
         'Content-Type': 'application/json',
     })
     
-    if (localStorage.getItem(ACCESS_TOKEN)) {
-        headers.append('Authorization', 'Bearer ' + localStorage.getItem(ACCESS_TOKEN))
+    if (localStorage.getItem('accessToken')) {
+        headers.append('Authorization', 'Bearer ' + localStorage.getItem('accessToken'))
     }
 
     const defaults = {headers: headers};
@@ -28,7 +28,7 @@ const request = (options) => {
 };
 
 export function getCurrentUser() {
-    if (!localStorage.getItem(ACCESS_TOKEN)) {
+    if (!localStorage.getItem('accessToken')) {
         return Promise.reject("No access token set.");
     }
 
@@ -140,7 +140,7 @@ export function getStockToday(symbol, minuteInterval=1, includePrePost=false) {
         case 90: interval = "90m"; break;
         default: interval = "1m"; break;
     }
-	const promise = fetch(`http://127.0.0.1:8092/stockHistoryIntraday?symbol=${symbol}&interval=${interval}&range=1d&includePrePost=${includePrePost}`)
+	const promise = fetch(`http://127.0.0.1:8092/stockHistoryIntraday?symbol=${symbol}&interval=${interval}&range=7d&includePrePost=${includePrePost}`)
 		.then(response => response.text())
     .then(data => parseIntraday(data))
         .catch(err => { 
