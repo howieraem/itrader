@@ -78,7 +78,7 @@ export function getStockBasicInfo(symbol) {
     return new Promise((resolve, reject) => {
         if (!symbol) return reject(Error('Stock symbol cannot be empty.'));
 
-        let url = SERVER_URL + `/stockBasic?symbols=${symbol}`;
+        const url = SERVER_URL + `/stockBasic?symbols=${symbol}`;
         return axios.get(url).then((res) => {
             const { data } = res;
             if (!data || !data.quoteResponse || !data.quoteResponse.result || data.quoteResponse.result.length === 0) {
@@ -103,10 +103,10 @@ function parseRow(d) {
 }
 
 function parseIntraday(raw) {
-  let responseDetails = JSON.parse(raw).chart;
+  const responseDetails = JSON.parse(raw).chart;
   if (responseDetails.error)  throw new Error(responseDetails.error.description);
-  let d = responseDetails.result[0];
-  let indicators = d.indicators.quote[0], time = d.timestamp;
+  const d = responseDetails.result[0];
+  const indicators = d.indicators.quote[0], time = d.timestamp;
 
   let data = [];
   for (let i = 0; i < time.length; ++i) {

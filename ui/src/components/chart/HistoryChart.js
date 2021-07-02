@@ -7,8 +7,8 @@ import LoadingIndicator from '../../common/LoadingIndicator';
 
 class HistoryChart extends React.Component {
 	componentDidMount() {
-    let symbolKey = this.props.symbol + "_" + this.props.interval;
-    let symbolCache = localStorage.getItem(symbolKey);
+    const symbolKey = this.props.symbol + "_" + this.props.interval;
+    const symbolCache = localStorage.getItem(symbolKey);
     if (symbolCache) {
       let data = JSON.parse(symbolCache);
       data.forEach((entry) => {

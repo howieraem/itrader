@@ -7,8 +7,8 @@ import LoadingIndicator from '../../common/LoadingIndicator';
 
 class MinuteChart extends React.Component {
 	componentDidMount() {
-    let symbolKey = this.props.symbol + "_m" + this.props.minute;
-    let symbolCache = localStorage.getItem(symbolKey);
+    const symbolKey = this.props.symbol + "_m" + this.props.minute;
+    const symbolCache = localStorage.getItem(symbolKey);
     if (symbolCache) {
       let data = JSON.parse(symbolCache);
       data.forEach((entry) => {

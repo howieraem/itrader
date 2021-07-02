@@ -5,7 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import InfoTable from './Table';
 import MultiCharts from './MultiCharts';
-// import HistoryChart from '../chart/HistoryChart';
+import TradeDialog from './TradeDialog';
 import { addTicker, removeAllTickers } from 'stocksocket';
 import { getStockBasicInfo } from '../../utils/APIUtils';
 
@@ -148,8 +148,8 @@ class Dashboard extends React.Component {
 
   render() {
     const { classes } = this.props;
-    let priceLoaded = this.state.price > 0;
-    let changeSign = this.state.change > 0 ? "+" : "";
+    const priceLoaded = this.state.price > 0;
+    const changeSign = this.state.change > 0 ? "+" : "";
     return (
       <Grid container spacing={0}>
         <Grid container spacing={2} className={classes.topContainer}>
@@ -160,7 +160,7 @@ class Dashboard extends React.Component {
           </Grid>
           <Grid item xs={2}> 
             <header className="Symbol-title">
-              { this.state.basicInfo ? this.state.basicInfo.longName : "" }
+              { this.state.basicInfo ? this.state.basicInfo["Full Name"] : "" }
             </header>
           </Grid>
           <Grid item xs />
@@ -177,9 +177,10 @@ class Dashboard extends React.Component {
           </Grid>
           <Grid item className={classes.grow} />
           <Grid item xs={2} align="right">
-            <Button variant="contained" className={classes.buttons}>
+            {/* <Button variant="contained" className={classes.buttons}>
               Trade
-            </Button>
+            </Button> */}
+            <TradeDialog symbol={this.state.symbol} authenticated={this.props.authenticated} />
           </Grid>
           {/* <Grid item xs /> */}
           <Grid item xs={2} align="right">

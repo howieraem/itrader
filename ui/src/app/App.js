@@ -112,7 +112,7 @@ class App extends React.Component {
             { this.state.justLoggedOut && <AlertMessage message={"Successfully logged out!"} severity={"success"} /> }
 
             <Switch>
-                <Route exact path="/" render={(props) => <Dashboard {...props} />}></Route>
+                <Route exact path="/" render={(props) => <Dashboard authenticated={this.state.authenticated} {...props} />}></Route>
                 <Route path="/login"
                   render={(props) => <SignIn authenticated={this.state.authenticated} {...props} />}>
                 </Route>
