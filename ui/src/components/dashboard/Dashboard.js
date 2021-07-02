@@ -77,7 +77,6 @@ class Dashboard extends React.Component {
     super(props)
     this.state = {
       symbol: "TSLA",
-      companyName: "Tesla, Inc.",
       curData: null,
       preData: null,
       price: 0.,
@@ -154,7 +153,6 @@ class Dashboard extends React.Component {
     return (
       <Grid container spacing={0}>
         <Grid container spacing={2} className={classes.topContainer}>
-          {/* <Grid item xs={1} /> */}
           <Grid item xs={1}> 
             <header className="Symbol-title">
               {this.state.symbol}
@@ -162,7 +160,7 @@ class Dashboard extends React.Component {
           </Grid>
           <Grid item xs={2}> 
             <header className="Symbol-title">
-              {this.state.companyName}
+              { this.state.basicInfo ? this.state.basicInfo.longName : "" }
             </header>
           </Grid>
           <Grid item xs />

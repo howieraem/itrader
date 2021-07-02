@@ -4,13 +4,13 @@ import { csvParse } from "d3";
 import { timeParse } from "d3-time-format";
 
 
-const request = (options) => {
+const request = (options, token=null) => {
     const headers = new Headers({
         'Content-Type': 'application/json',
     })
     
-    if (localStorage.getItem('accessToken')) {
-        headers.append('Authorization', 'Bearer ' + localStorage.getItem('accessToken'))
+    if (token) {
+        headers.append('Authorization', 'Bearer ' + token);
     }
 
     const defaults = {headers: headers};
@@ -28,14 +28,18 @@ const request = (options) => {
 };
 
 export function getCurrentUser() {
-    if (!localStorage.getItem('accessToken')) {
-        return Promise.reject("No access token set.");
+    let token = localStorage.getItem('accessToken');
+    if (!token) {
+        token = sessionStorage.getItem('accessToken');
+    }
+    if (!token) {
+        return Promise.reject("No access token set. Please log in again.");
     }
 
     return request({
         url: SERVER_URL + "/user/me",
         method: 'GET'
-    });
+    }, token);
 }
 
 export function login(loginRequest) {
@@ -52,6 +56,22 @@ export function signup(signupRequest) {
         method: 'POST',
         body: JSON.stringify(signupRequest)
     });
+}
+
+export function trade(tradeRequest) {
+    let token = localStorage.getItem('accessToken');
+    if (!token) {
+        token = sessionStorage.getItem('accessToken');
+    }
+    if (!token) {
+        return Promise.reject("No access token set. Please log in again.");
+    }
+
+    return request({
+        url: SERVER_URL + "/trade",
+        method: 'POST',
+        body: JSON.stringify(tradeRequest)
+    }, token);
 }
 
 export function getStockBasicInfo(symbol) {  

@@ -37,11 +37,13 @@ class SignIn extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-        email: '',
-        password: '',
+      email: '',
+      password: '',
+      rememberMe: false,
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChecked = this.handleChecked.bind(this);
   }
 
   componentDidMount(){
@@ -62,8 +64,12 @@ class SignIn extends React.Component {
     const inputValue = target.value;
 
     this.setState({
-        [inputName] : inputValue
+      [inputName] : inputValue
     });        
+  }
+
+  handleChecked = event => {
+    this.setState({ rememberMe: event.target.checked });
   }
 
   handleSubmit(event) {
@@ -73,9 +79,14 @@ class SignIn extends React.Component {
 
     login(loginRequest)
     .then(response => {
-      localStorage.setItem('accessToken', response.accessToken);
-      this.props.history.push("/");
+      if (this.state.rememberMe) {
+        localStorage.setItem('accessToken', response.accessToken);
+      } else {
+        sessionStorage.setItem('accessToken', response.accessToken);
+      }
+
       // console.log("Successfully logged in!");
+      this.props.history.push("/");
       this.props.history.go();
       // window.location.reload()
     }).catch(error => {
@@ -86,9 +97,9 @@ class SignIn extends React.Component {
   render() {
     if (this.props.authenticated) {
       return <Redirect
-          to={{
-          pathname: "/",
-          state: { from: this.props.location }
+        to={{
+        pathname: "/",
+        state: { from: this.props.location }
       }}/>;            
     }
     const { classes } = this.props;
@@ -129,6 +140,7 @@ class SignIn extends React.Component {
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
+                onChange={this.handleChecked}
               />
               <Button
                 type="submit"
@@ -158,7 +170,6 @@ class SignIn extends React.Component {
         </Container>
         <Grid item xs={12} style={{ minHeight: "5vh" }}></Grid>
       </Grid>
-      
     );
   }
 }

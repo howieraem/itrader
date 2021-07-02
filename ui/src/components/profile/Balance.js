@@ -45,11 +45,6 @@ export default function Balance(props) {
   return (
     <React.Fragment>
       <div className={classes.profileInfo}>
-        {/* <div className={classes.profileAvatar} >
-          <div className={classes.textAvatar}>
-            <span className={classes.textAvatarSpan}>{props.currentUser.email[0]}</span>
-          </div>
-        </div> */}
         <Box
           display="flex"
           justifyContent="center"
@@ -58,14 +53,14 @@ export default function Balance(props) {
           <Avatar className={classes.profileAvatar} />
         </Box>
         
-        <Title>{props.currentUser.email}</Title>
+        <Title>{props.currentUser.username}</Title>
 
         <Title>Current Balance</Title>
         <Typography component="p" variant="h4">
-          $5000.00
+          ${props.currentUser.balance.toFixed(2)}
         </Typography>
       </div>
     </React.Fragment>
-    
+
   );
 }

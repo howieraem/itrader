@@ -211,7 +211,7 @@ class PrimarySearchAppBar extends React.Component {
             <div className={classes.grow} />
             <div className={classes.search}>
               <InputBase
-                placeholder="TSLA"
+                // placeholder="TSLA"
                 classes={{
                   root: classes.inputRoot,
                   input: classes.inputInput,

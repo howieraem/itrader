@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.net.URI;
 
 
@@ -57,7 +58,7 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            throw new BadRequestException("Email address already in use.");
+            throw new BadRequestException("This email address has already been registered.");
         }
 
         // Creating user's account
@@ -65,10 +66,10 @@ public class AuthController {
         user.setEmail(signUpRequest.getEmail());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setPin(passwordEncoder.encode(signUpRequest.getPin()));
+        user.setUsername(signUpRequest.getUsername());
+        user.setBalance(new BigDecimal(5000));
 
         User result = userRepository.save(user);
-//        System.out.println(result.getId());
-//        System.out.println(signUpRequest.getUsername());
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/user/me")

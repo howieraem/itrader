@@ -48,7 +48,7 @@ class App extends React.Component {
     super(props)
     this.state = {
       authenticated: false,
-      curUser: null,
+      currentUser: null,
       loading: false,
       initialized: false,
       justLoggedOut: false,
@@ -80,6 +80,7 @@ class App extends React.Component {
 
   handleLogout() {
     localStorage.removeItem('accessToken');
+    sessionStorage.removeItem('accessToken');
     this.setState({
       authenticated: false,
       currentUser: null,

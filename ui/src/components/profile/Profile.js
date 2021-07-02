@@ -69,7 +69,7 @@ export default function Profile(props) {
     <div className={classes.root}>
       <CssBaseline />
       <main className={classes.content}>
-        <Container maxWidth="lg" className={classes.container}>
+        <Container maxWidth="xl" className={classes.container}>
           <Grid container spacing={3}>
             {/* Recent Deposits */}
             <Grid item xs={12} md={4} lg={3}>

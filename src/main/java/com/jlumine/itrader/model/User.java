@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
+import java.math.BigDecimal;
 //import javax.validation.constraints.NotNull;
 
 @Entity
@@ -20,18 +21,29 @@ public class User {
     private long id;
 
     @Email
-    @Column(unique = true)
+    @Column(name = "email", unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(name = "pin", nullable = false)
     private String pin;
 
-    public User(String email, String password, String pin) {
+    @Column(name = "username", nullable = false)
+    private String username;
+
+    @Column(name = "balance", nullable = false)
+    private BigDecimal balance;
+
+    @Column(name = "avatar")
+    private String avatar;
+
+    public User(String email, String password, String pin, String username) {
         this.email = email;
         this.password = password;
         this.pin = pin;
+        this.username = username;
+        this.balance = new BigDecimal(5000);
     }
 }
