@@ -4,8 +4,8 @@ import { LineChart, Line, XAxis, YAxis, Label, ResponsiveContainer } from 'recha
 import Title from './Title';
 
 // Generate Sales Data
-function createData(time, amount) {
-  return { time, amount };
+function createData(time, net) {
+  return { time, net };
 }
 
 const data = [
@@ -25,7 +25,7 @@ export default function Chart() {
 
   return (
     <React.Fragment>
-      <Title>Balance Trend</Title>
+      <Title>Net Worth Trend</Title>
       <ResponsiveContainer>
         <LineChart
           data={data}
@@ -43,10 +43,10 @@ export default function Chart() {
               position="left"
               style={{ textAnchor: 'middle', fill: theme.palette.text.primary }}
             >
-              Balance ($)
+              Net ($)
             </Label>
           </YAxis>
-          <Line type="monotone" dataKey="amount" stroke={theme.palette.primary.main} dot={false} />
+          <Line type="monotone" dataKey="net" stroke={theme.palette.primary.main} dot={false} />
         </LineChart>
       </ResponsiveContainer>
     </React.Fragment>

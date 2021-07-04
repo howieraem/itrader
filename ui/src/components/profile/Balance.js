@@ -55,7 +55,7 @@ export default function Balance(props) {
         
         <Title>{props.currentUser.username}</Title>
 
-        <Title>Current Balance</Title>
+        <Title>Cash</Title>
         <Typography component="p" variant="h4">
           ${props.currentUser.balance.toFixed(2)}
         </Typography>

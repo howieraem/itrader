@@ -150,6 +150,7 @@ class Dashboard extends React.Component {
     const { classes } = this.props;
     const priceLoaded = this.state.price > 0;
     const changeSign = this.state.change > 0 ? "+" : "";
+    const marketClosed = this.state.basicInfo ? this.state.basicInfo["Market State"] === "CLOSED" : false;
     return (
       <Grid container spacing={0}>
         <Grid container spacing={2} className={classes.topContainer}>
@@ -166,7 +167,7 @@ class Dashboard extends React.Component {
           <Grid item xs />
           <Grid item xs={1}> 
             <header className="Symbol-title">
-              { priceLoaded ? ("$" + this.state.price) : "Loading price..." }
+              { marketClosed ? "Market closed" : priceLoaded ? ("$" + this.state.price) : "Loading price..." }
             </header>
           </Grid>
           <Grid item xs />
@@ -177,18 +178,14 @@ class Dashboard extends React.Component {
           </Grid>
           <Grid item className={classes.grow} />
           <Grid item xs={2} align="right">
-            {/* <Button variant="contained" className={classes.buttons}>
-              Trade
-            </Button> */}
             <TradeDialog symbol={this.state.symbol} authenticated={this.props.authenticated} />
           </Grid>
           {/* <Grid item xs /> */}
-          <Grid item xs={2} align="right">
+          {/* <Grid item xs={2} align="right">
             <Button variant="contained" className={classes.buttons}>
               More Info
             </Button>
-          </Grid>
-          {/* <Grid item xs /> */}
+          </Grid> */}
         </Grid>
 
         <Grid container>

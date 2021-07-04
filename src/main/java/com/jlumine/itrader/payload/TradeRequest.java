@@ -7,13 +7,13 @@ public class TradeRequest {
     private String symbol;
 
     @NotBlank
-    private String amount;
+    private String qty;
 
     public String getSymbol() {
         return symbol;
     }
 
-    public String getAmount() {
-        return amount;
+    public String getQty() {
+        return qty;
     }
 }

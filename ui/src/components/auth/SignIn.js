@@ -98,9 +98,10 @@ class SignIn extends React.Component {
     if (this.props.authenticated) {
       return <Redirect
         to={{
-        pathname: "/",
-        state: { from: this.props.location }
-      }}/>;            
+          pathname: "/",
+          state: { from: this.props.location }
+        }}
+      />;            
     }
     const { classes } = this.props;
     return (

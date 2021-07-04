@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
   symbolLabel: {
     fontSize: 16, 
     marginBottom: '10px',
+    fontWeight: 'bold'
   }
 }))
 
@@ -39,11 +40,18 @@ export default function TradeDialog(props) {
 
   const [open, setOpen] = React.useState(false);
 
-  const [amount, setAmount] = React.useState(0);
+  const [qty, setQty] = React.useState(0);
 
-  const handleAmountChange = (event) => {
-    // TODO value check, must be a positive integer
-    setAmount(event.target.value);
+  const [textFieldErr, setTextFieldErr] = React.useState(null);
+
+  const handleQtyChange = (event) => {
+    const qty = event.target.value;
+    if (isNaN(qty) || isNaN(parseInt(qty)) || qty <= 0) { 
+      setTextFieldErr("Quantity must be a positive integer!") 
+    } else {
+      setTextFieldErr(null);
+      setQty(qty);
+    }
   };
 
   const handleClickOpen = () => {
@@ -55,9 +63,10 @@ export default function TradeDialog(props) {
   };
 
   const handleTrade = (isBuy) => {
+    if (textFieldErr)  return;
     const tradeRequest = {
       'symbol': props.symbol,
-      'amount': amount * (isBuy ? 1 : -1),
+      'qty': qty * (isBuy ? 1 : -1),
     }
     trade(tradeRequest)
     .then(response => {
@@ -85,11 +94,13 @@ export default function TradeDialog(props) {
                 <Paper className={classes.symbolLabel}>Stock Symbol: {props.symbol}</Paper>
                 <TextField
                   autoFocus
-                  onChange={handleAmountChange}
+                  onChange={handleQtyChange}
                   variant="outlined"
                   margin="dense"
-                  id="dialogAmount"
-                  label="Amount (shares)"
+                  id="dialogQty"
+                  label="Quantity (shares)"
+                  error={textFieldErr}
+                  helperText={textFieldErr}
                   fullWidth
                 />
               </DialogContent>
@@ -112,8 +123,11 @@ export default function TradeDialog(props) {
                   Please log in first.
                 </DialogContentText>
                 <DialogActions>
+                  <Button href="/login" color="primary" className={classes.dialogButton}>
+                    Login
+                  </Button>
                   <Button onClick={handleClose} color="primary" className={classes.dialogButton}>
-                    OK
+                    Cancel
                   </Button>
                 </DialogActions>
               </DialogContent>
