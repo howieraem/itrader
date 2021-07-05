@@ -1,23 +1,20 @@
 package com.jlumine.itrader.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Objects;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 public class PositionId implements Serializable {
     private long userId;
     private String symbol;
-
-    public PositionId() {}
-
-    public PositionId(long userId, String symbol) {
-        this.userId = userId;
-        this.symbol = symbol;
-    }
 
     @Override
     public boolean equals(Object o) {

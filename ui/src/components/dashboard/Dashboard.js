@@ -1,6 +1,6 @@
 import './Dashboard.css';
 import React from 'react';
-import Button from '@material-ui/core/Button';
+// import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import InfoTable from './Table';
@@ -154,29 +154,28 @@ class Dashboard extends React.Component {
     return (
       <Grid container spacing={0}>
         <Grid container spacing={2} className={classes.topContainer}>
-          <Grid item xs={1}> 
-            <header className="Symbol-title">
+          <Grid item xs={2}> 
+            <header className="Symbol-title1">
               {this.state.symbol}
             </header>
-          </Grid>
-          <Grid item xs={2}> 
-            <header className="Symbol-title">
+            <header className="Symbol-title2">
               { this.state.basicInfo ? this.state.basicInfo["Full Name"] : "" }
             </header>
           </Grid>
+
           <Grid item xs />
-          <Grid item xs={1}> 
-            <header className="Symbol-title">
+
+          <Grid item xs={2}> 
+            <header className="Symbol-title1">
               { marketClosed ? "Market closed" : priceLoaded ? ("$" + this.state.price) : "Loading price..." }
             </header>
-          </Grid>
-          <Grid item xs />
-          <Grid item xs={2}> 
-            <header className="Symbol-title">
+            <header className="Symbol-title2">
               { priceLoaded ? (`${changeSign}${this.state.change} (${changeSign}${this.state.changePercent}%)`) : "" }
             </header>
           </Grid>
+          
           <Grid item className={classes.grow} />
+
           <Grid item xs={2} align="right">
             <TradeDialog symbol={this.state.symbol} authenticated={this.props.authenticated} />
           </Grid>

@@ -67,7 +67,7 @@ public class AuthController {
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setPin(passwordEncoder.encode(signUpRequest.getPin()));
         user.setUsername(signUpRequest.getUsername());
-        user.setBalance(new BigDecimal(5000));
+        user.setBalance(new BigDecimal(10000));
 
         User result = userRepository.save(user);
 

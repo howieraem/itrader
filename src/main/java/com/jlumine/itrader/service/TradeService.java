@@ -2,15 +2,15 @@ package com.jlumine.itrader.service;
 
 
 import com.jlumine.itrader.model.*;
-import com.jlumine.itrader.repository.BuyRepository;
 import com.jlumine.itrader.repository.PositionRepository;
-import com.jlumine.itrader.repository.SellRepository;
+import com.jlumine.itrader.repository.TradeRepository;
 import com.jlumine.itrader.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class TradeService {
@@ -18,39 +18,37 @@ public class TradeService {
     UserRepository userRepository;
 
     @Autowired
-    BuyRepository buyRepository;
-
-    @Autowired
-    SellRepository sellRepository;
-
-    @Autowired
     PositionRepository positionRepository;
 
+    @Autowired
+    TradeRepository tradeRepository;
+
     @Transactional(rollbackFor=Exception.class)
-    public void trade(Long userId, String symbol, long quantity, BigDecimal price) {
+    public void process(Long userId, String symbol, long quantity, BigDecimal price) {
+        // TODO affordability check
         BigDecimal balanceChange = price.multiply(BigDecimal.valueOf(quantity));
         userRepository.updateBalance(userId, balanceChange);
+
+        Trade trade = new Trade();
+        trade.setUserId(userId);
+        trade.setSymbol(symbol);
         if (quantity > 0) {
-            Buy buy = new Buy();
-            buy.setUserId(userId);
-            buy.setSymbol(symbol);
-            buy.setShares(quantity);
-            buy.setFilledPrice(price);
-            buy.setBalanceChange(balanceChange.negate());
-            buyRepository.save(buy);
+            trade.setBuy(true);
+            trade.setQuantity(quantity);
         } else {
-            Sell sell = new Sell();
-            sell.setUserId(userId);
-            sell.setSymbol(symbol);
-            sell.setShares(-quantity);
-            sell.setFilledPrice(price);
-            sell.setBalanceChange(balanceChange.negate());
-            sellRepository.save(sell);
+            trade.setBuy(false);
+            trade.setQuantity(-quantity);
         }
+        trade.setPrice(price);
+        tradeRepository.save(trade);
+
         PositionId positionId = new PositionId(userId, symbol);
         Position position = positionRepository.findById(positionId)
                 .orElse(new Position(positionId, 0));
-        position.updateShares(quantity);
-        positionRepository.save(position);
+        if (position.updateQuantity(quantity) != 0) {
+            positionRepository.save(position);
+        } else {
+            positionRepository.deleteById(positionId);
+        }
     }
 }

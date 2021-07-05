@@ -128,7 +128,7 @@ class App extends React.Component {
         </Container>
         <footer className={classes.footer}>
           <Container maxWidth="xl">
-            {/* <Typography variant="body1" style={{color: "#ffffff"}}>Lumine.</Typography> */}
+            <Typography variant="body1" style={{color: "#ffffff", fontStyle: "italic"}}>Learn. Try. Trust. Lumine.</Typography>
             <Typography variant="body2" style={{color: "#dddddd"}}>
               {`Copyright © HL ${new Date().getFullYear()}.`}
             </Typography>

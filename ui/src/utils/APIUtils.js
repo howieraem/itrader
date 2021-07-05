@@ -27,19 +27,42 @@ const request = (options, token=null) => {
     );
 };
 
-export function getCurrentUser() {
+const getToken = () => {
     let token = localStorage.getItem('accessToken');
     if (!token) {
         token = sessionStorage.getItem('accessToken');
     }
+    return token;
+}
+
+export function getCurrentUser() {
+    const token = getToken();
     if (!token) {
         return Promise.reject("No access token set. Please log in again.");
     }
-
     return request({
         url: SERVER_URL + "/user/me",
         method: 'GET'
     }, token);
+}
+
+function getUserDetails(field) {
+    const token = getToken();
+    if (!token) {
+        return Promise.reject("No access token set. Please log in again.");
+    }
+    return request({
+        url: SERVER_URL + `/${field}`,
+        method: 'GET'
+    }, token);
+}
+
+export function getPortfolio() {
+    return getUserDetails('portfolio');
+}
+
+export function getTrades() {
+    return getUserDetails('trades');
 }
 
 export function login(loginRequest) {
@@ -59,14 +82,10 @@ export function signup(signupRequest) {
 }
 
 export function trade(tradeRequest) {
-    let token = localStorage.getItem('accessToken');
-    if (!token) {
-        token = sessionStorage.getItem('accessToken');
-    }
+    const token = getToken();
     if (!token) {
         return Promise.reject("No access token set. Please log in again.");
     }
-
     return request({
         url: SERVER_URL + "/trade",
         method: 'POST',

@@ -43,6 +43,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         "/stockHistoryAdv",
     };
 
+//    private static final String[] USER_DETAILS_WHITELIST = {
+//        "/portfolio",
+//        "/trades",
+//    };
+
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 

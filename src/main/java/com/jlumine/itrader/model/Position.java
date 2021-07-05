@@ -1,5 +1,7 @@
 package com.jlumine.itrader.model;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,35 +10,30 @@ import javax.persistence.IdClass;
 
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @IdClass(PositionId.class)
 @Data
 public class Position {
     @Id
-    @Column(name = "userId", nullable = false)
+    @Column(name = "user_id", nullable = false)
     private long userId;
 
     @Id
     @Column(name = "symbol", nullable = false)
     private String symbol;
 
-    @Column(name = "shares", nullable = false)
-    private long shares;
+    @Column(name = "quantity", nullable = false)
+    private long quantity;
 
-    public Position() {}
-
-    public Position(PositionId positionId, long shares) {
+    public Position(PositionId positionId, long quantity) {
         this.userId = positionId.getUserId();
         this.symbol = positionId.getSymbol();
-        this.shares = shares;
+        this.quantity = quantity;
     }
 
-    public Position(long userId, String symbol, long shares) {
-        this.userId = userId;
-        this.symbol = symbol;
-        this.shares = shares;
-    }
-
-    public void updateShares(long qtyChange) {
-        this.shares += qtyChange;
+    public long updateQuantity(long qtyChange) {
+        this.quantity += qtyChange;
+        return this.quantity;
     }
 }

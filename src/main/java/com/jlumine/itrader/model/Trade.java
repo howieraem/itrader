@@ -1,4 +1,5 @@
 package com.jlumine.itrader.model;
+
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -6,28 +7,27 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
-
 @Entity
 @Data
-public class Sell {
+public class Trade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "userId", nullable = false)
+    @Column(name = "user_id", nullable = false)
     private long userId;
 
     @Column(name = "symbol", nullable = false)
     private String symbol;
 
-    @Column(name = "shares", nullable = false)
-    private long shares;
+    @Column(name = "is_buy", nullable = false)
+    private boolean isBuy;
 
-    @Column(name = "filledPrice", nullable = false)
-    private BigDecimal filledPrice;
+    @Column(name = "quantity", nullable = false)
+    private long quantity;
 
-    @Column(name = "balanceChange", nullable = false)
-    private BigDecimal balanceChange;
+    @Column(name = "price", nullable = false)
+    private BigDecimal price;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

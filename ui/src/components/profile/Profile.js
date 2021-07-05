@@ -7,7 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Chart from './Chart';
 import Balance from './Balance';
-import Transactions from './Transactions';
+import Trades from './Trades';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -71,7 +71,7 @@ export default function Profile(props) {
       <main className={classes.content}>
         <Container maxWidth="xl" className={classes.container}>
           <Grid container spacing={3}>
-            {/* Recent Deposits */}
+            {/* Cash */}
             <Grid item xs={12} md={4} lg={3}>
               <Paper className={fixedHeightPaper}>
                 <Balance {...props} />
@@ -88,7 +88,7 @@ export default function Profile(props) {
             {/* Recent Transactions */}
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                <Transactions />
+                <Trades />
               </Paper>
             </Grid>
           </Grid>

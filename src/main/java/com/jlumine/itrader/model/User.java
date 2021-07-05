@@ -44,6 +44,6 @@ public class User {
         this.password = password;
         this.pin = pin;
         this.username = username;
-        this.balance = new BigDecimal(5000);
+        this.balance = new BigDecimal(10000);
     }
 }
