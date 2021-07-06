@@ -24,4 +24,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query("update User user set user.balance = user.balance - :balance where user.id = :id")
     void updateBalance(@Param("id") Long id, @Param("balance") BigDecimal balanceChange);
+
+    @Query("select user.balance from User user where user.id = :id")
+    BigDecimal findBalance(@Param("id") Long id);
 }

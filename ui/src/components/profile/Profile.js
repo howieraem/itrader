@@ -5,45 +5,16 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import Chart from './Chart';
+// import Chart from './Chart';
 import Balance from './Balance';
 import Trades from './Trades';
+import Portfolio from './Portfolio';
 
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-  },
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-  },
-  menuButton: {
-    marginRight: 36,
-  },
-  menuButtonHidden: {
-    display: 'none',
-  },
-  title: {
-    flexGrow: 1,
-  },
-  drawerPaperClose: {
-    overflowX: 'hidden',
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    width: theme.spacing(7),
-    [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(9),
-    },
-  },
   content: {
     flexGrow: 1,
-    height: '100vh',
+    height: '80vh',
     overflow: 'auto',
   },
   container: {
@@ -66,26 +37,24 @@ export default function Profile(props) {
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
   return (
-    <div className={classes.root}>
+    <Grid container>
       <CssBaseline />
       <main className={classes.content}>
         <Container maxWidth="xl" className={classes.container}>
-          <Grid container spacing={3}>
-            {/* Cash */}
-            <Grid item xs={12} md={4} lg={3}>
+          <Grid container spacing={5}>
+            <Grid item xs={12} md={4} lg={3} xl={3}>
               <Paper className={fixedHeightPaper}>
                 <Balance {...props} />
               </Paper>
             </Grid>
 
-            {/* Chart */}
-            <Grid item xs={12} md={8} lg={9}>
+            <Grid item xs={12} md={8} lg={9} xl={9}>
               <Paper className={fixedHeightPaper}>
-                <Chart />
+                {/* <Chart /> */}
+                <Portfolio />
               </Paper>
             </Grid>
 
-            {/* Recent Transactions */}
             <Grid item xs={12}>
               <Paper className={classes.paper}>
                 <Trades />
@@ -94,6 +63,6 @@ export default function Profile(props) {
           </Grid>
         </Container>
       </main>
-    </div>
+    </Grid>
   );
 }

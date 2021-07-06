@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Service
 public class TradeService {
@@ -28,6 +27,7 @@ public class TradeService {
         // TODO affordability check
         BigDecimal balanceChange = price.multiply(BigDecimal.valueOf(quantity));
         userRepository.updateBalance(userId, balanceChange);
+        BigDecimal newBalance = userRepository.findBalance(userId);
 
         Trade trade = new Trade();
         trade.setUserId(userId);
@@ -40,12 +40,14 @@ public class TradeService {
             trade.setQuantity(-quantity);
         }
         trade.setPrice(price);
+        trade.setCashAfter(newBalance);
         tradeRepository.save(trade);
 
         PositionId positionId = new PositionId(userId, symbol);
         Position position = positionRepository.findById(positionId)
-                .orElse(new Position(positionId, 0));
-        if (position.updateQuantity(quantity) != 0) {
+                .orElse(new Position(positionId));
+        position.updateQuantity(quantity, balanceChange);
+        if (position.getQuantity() != 0) {
             positionRepository.save(position);
         } else {
             positionRepository.deleteById(positionId);

@@ -7,24 +7,15 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Title from './Title';
-import { getTrades } from '../../utils/APIUtils';
+import { getPortfolio } from '../../utils/APIUtils';
 
 
-function processTimeFormat(rawTime) {
-  const date = new Date(rawTime); 
-  return `${date.toDateString()} ${date.toLocaleTimeString()} UTC+${0 - date.getTimezoneOffset() / 60}`;
-}
-
-function processTradeRecord(i, tradeRecord) {
+function processPosition(i, position) {
   return { 
     id: i,
-    time: processTimeFormat(tradeRecord.time),
-    symbol: tradeRecord.symbol,
-    action: tradeRecord.buy ? "Buy" : "Sell",
-    quantity: tradeRecord.quantity,
-    price: tradeRecord.price,
-    cashChange: (tradeRecord.buy ? '-' : '+') + tradeRecord.quantity * tradeRecord.price,
-    cashAfter: tradeRecord.cashAfter,
+    symbol: position.symbol,
+    quantity: position.quantity,
+    holdingPrice: (parseFloat(position.holdingCost) / position.quantity).toFixed(6),
   };
 }
 
@@ -34,14 +25,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Trades() {
+export default function Portfolio(props) {
   const classes = useStyles();
-  const maxDisplayRows = 10;
+  const maxDisplayRows = 5;
   const [hasMoreRecords, setHasMoreRecords] = React.useState(false);
   const [records, setRecords] = React.useState([]);
 
   React.useEffect(() => {
-    getTrades(maxDisplayRows + 1)
+    getPortfolio(maxDisplayRows + 1)
     .then(raw => {
       let n;
       if (raw.length > maxDisplayRows) {
@@ -53,7 +44,7 @@ export default function Trades() {
       }
       let res = [];
       for (let i = 0; i < n; ++i) {
-        res.push(processTradeRecord(i, raw[i]));
+        res.push(processPosition(i, raw[i]));
       }
       setRecords(res);
     })
@@ -62,31 +53,23 @@ export default function Trades() {
 
   return (
     <React.Fragment>
-      <Title>Recent Trades</Title>
+      <Title>Portfolio</Title>
       {records.length ? (
         <div>
           <Table size="small">
             <TableHead>
               <TableRow>
-                <TableCell>Time</TableCell>
                 <TableCell>Symbol</TableCell>
-                <TableCell>Action</TableCell>
                 <TableCell align="right">Quantity</TableCell>
-                <TableCell align="right">Price ($)</TableCell>
-                <TableCell align="right">Cash Change ($)</TableCell>
-                <TableCell align="right">Cash After ($)</TableCell>
+                <TableCell align="right">Holding Price ($)</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {records.map((row) => (
                 <TableRow key={row.id}>
-                  <TableCell>{row.time}</TableCell>
                   <TableCell>{row.symbol}</TableCell>
-                  <TableCell>{row.action}</TableCell>
                   <TableCell align="right">{row.quantity}</TableCell>
-                  <TableCell align="right">{row.price}</TableCell>
-                  <TableCell align="right">{row.cashChange}</TableCell>
-                  <TableCell align="right">{row.cashAfter}</TableCell>
+                  <TableCell align="right">{row.holdingPrice}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -94,15 +77,16 @@ export default function Trades() {
 
           {hasMoreRecords ? (
             <div className={classes.seeMore}>
-              <Link color="primary" href="/trades">
-                See more trades
+              <Link color="primary" href="/portfolio">
+                See more positions
               </Link>
             </div>
           ) : null}
         </div>
       ) : (
-        <div>Your trade history is empty.</div>
+        <div>You don't hold any position.</div>
       )}
+      
     </React.Fragment>
   );
 }

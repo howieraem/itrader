@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import java.math.BigDecimal;
 
 
 @Entity
@@ -26,14 +27,23 @@ public class Position {
     @Column(name = "quantity", nullable = false)
     private long quantity;
 
-    public Position(PositionId positionId, long quantity) {
+    @Column(name = "holding_cost", nullable = false)
+    private BigDecimal holdingCost;
+
+    public Position(PositionId positionId) {
         this.userId = positionId.getUserId();
         this.symbol = positionId.getSymbol();
-        this.quantity = quantity;
+        this.quantity = 0;
+        this.holdingCost = BigDecimal.ZERO;
     }
 
-    public long updateQuantity(long qtyChange) {
-        this.quantity += qtyChange;
-        return this.quantity;
+    public void updateQuantity(long qtyChange, BigDecimal balanceChange) {
+        quantity += qtyChange;
+        if (quantity != 0) {
+            holdingCost = holdingCost.add(balanceChange);
+        }
+//        else {
+//            holdingCost = BigDecimal.ZERO;
+//        }
     }
 }

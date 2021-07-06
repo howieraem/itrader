@@ -46,23 +46,23 @@ export function getCurrentUser() {
     }, token);
 }
 
-function getUserDetails(field) {
+function getUserDetails(field, rows=-1) {
     const token = getToken();
     if (!token) {
         return Promise.reject("No access token set. Please log in again.");
     }
     return request({
-        url: SERVER_URL + `/${field}`,
+        url: SERVER_URL + `/${field}?rows=${rows}`,
         method: 'GET'
     }, token);
 }
 
-export function getPortfolio() {
-    return getUserDetails('portfolio');
+export function getPortfolio(rows=5) {
+    return getUserDetails('portfolio', rows);
 }
 
-export function getTrades() {
-    return getUserDetails('trades');
+export function getTrades(rows=5) {
+    return getUserDetails('trades', rows);
 }
 
 export function login(loginRequest) {

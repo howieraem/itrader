@@ -107,7 +107,11 @@ class App extends React.Component {
         <CssBaseline />
         <Container component="main" className={classes.main} maxWidth="xl">
           <Grid container spacing={0}>
-            <PrimarySearchAppBar authenticated={this.state.authenticated} onLogout={this.handleLogout} />
+            <Grid container>
+              <Grid item xs>
+                <PrimarySearchAppBar authenticated={this.state.authenticated} onLogout={this.handleLogout} />
+              </Grid>
+            </Grid>
 
             { this.state.justLoggedOut && <AlertMessage message={"Successfully logged out!"} severity={"success"} /> }
 

@@ -10,8 +10,10 @@ import com.jlumine.itrader.repository.UserRepository;
 import com.jlumine.itrader.security.CurrentUser;
 import com.jlumine.itrader.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -37,13 +39,19 @@ public class UserController {
 
     @GetMapping("/portfolio")
     @PreAuthorize("hasRole('USER')")
-    public List<PositionDTO> getPositions(@CurrentUser UserPrincipal userPrincipal) {
-        return positionRepository.findByUserId(userPrincipal.getId());
+    public List<PositionDTO> getPortfolio(
+            @CurrentUser UserPrincipal userPrincipal,
+            @RequestParam(value = "rows", required = false) Integer rows) {
+        if (rows == null || rows <= 0)  return positionRepository.findByUserId(userPrincipal.getId());
+        return positionRepository.findByUserId(userPrincipal.getId(), PageRequest.of(0, rows));
     }
 
     @GetMapping("/trades")
     @PreAuthorize("hasRole('USER')")
-    public List<TradeDTO> getTrades(@CurrentUser UserPrincipal userPrincipal) {
-        return tradeRepository.findByUserId(userPrincipal.getId());
+    public List<TradeDTO> getTradesLimitedRows(
+            @CurrentUser UserPrincipal userPrincipal,
+            @RequestParam(value = "rows", required = false) Integer rows) {
+        if (rows == null || rows <= 0)  return tradeRepository.findByUserId(userPrincipal.getId());
+        return tradeRepository.findByUserId(userPrincipal.getId(), PageRequest.of(0, rows));
     }
 }

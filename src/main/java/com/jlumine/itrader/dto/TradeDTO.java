@@ -14,9 +14,10 @@ import java.util.Date;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 public class TradeDTO {
+    private Date time;
     private String symbol;
     private long quantity;
     private boolean isBuy;
     private BigDecimal price;
-    private Date time;
+    private BigDecimal cashAfter;
 }

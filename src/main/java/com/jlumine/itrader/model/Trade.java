@@ -29,6 +29,9 @@ public class Trade {
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
+    @Column(name = "cash_after", nullable = false)
+    private BigDecimal cashAfter;
+
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "time", nullable = false)
