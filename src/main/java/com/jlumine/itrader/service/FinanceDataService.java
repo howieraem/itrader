@@ -64,6 +64,12 @@ public class FinanceDataService {
         JSONObject stockInfo = (JSONObject) results.get(0);
 
         StockQuote sq = new StockQuote();
+        switch (stockInfo.getString("marketState")) {
+            case "PRE": sq.setPrice(stockInfo.getBigDecimal("preMarketPrice")); break;
+            case "REGULAR": sq.setPrice(stockInfo.getBigDecimal("regularMarketPrice")); break;
+            case "POST": sq.setPrice(stockInfo.getBigDecimal("postMarketPrice")); break;
+            default: sq.setPrice(BigDecimal.ZERO); break;
+        }
         sq.setAsk(stockInfo.getBigDecimal("ask"));
         sq.setAskSize(stockInfo.getLong("askSize"));
         sq.setBid(stockInfo.getBigDecimal("bid"));

@@ -1,7 +1,7 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Chart from './CandleStickChart';
-import { getStockHistory } from '../../utils/APIUtils';
+import { getStockHistory } from '../../utils/DataAPIUtils';
 import LoadingIndicator from '../../common/LoadingIndicator';
 
 

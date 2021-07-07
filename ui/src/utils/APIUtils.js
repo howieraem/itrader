@@ -1,7 +1,4 @@
 import { SERVER_URL } from '../constants';
-import axios from 'axios';
-import { csvParse } from "d3";
-import { timeParse } from "d3-time-format";
 
 
 const request = (options, token=null) => {
@@ -61,7 +58,7 @@ export function getPortfolio(rows=5) {
     return getUserDetails('portfolio', rows);
 }
 
-export function getTrades(rows=5) {
+export function getTrades(rows=10) {
     return getUserDetails('trades', rows);
 }
 
@@ -81,109 +78,26 @@ export function signup(signupRequest) {
     });
 }
 
-export function trade(tradeRequest) {
+export function authenticatedPost(api, body) {
     const token = getToken();
     if (!token) {
         return Promise.reject("No access token set. Please log in again.");
     }
     return request({
-        url: SERVER_URL + "/trade",
+        url: SERVER_URL + `/${api}`,
         method: 'POST',
-        body: JSON.stringify(tradeRequest)
+        body: JSON.stringify(body)
     }, token);
 }
 
-export function getStockBasicInfo(symbol) {  
-    return new Promise((resolve, reject) => {
-        if (!symbol) return reject(Error('Stock symbol cannot be empty.'));
-
-        const url = SERVER_URL + `/stockBasic?symbols=${symbol}`;
-        return axios.get(url).then((res) => {
-            const { data } = res;
-            if (!data || !data.quoteResponse || !data.quoteResponse.result || data.quoteResponse.result.length === 0) {
-                return resolve(new Error(`Error retrieving info for symbol ${symbol}.`));
-            }
-            return resolve(data.quoteResponse.result[0]);
-        }).catch(err => reject(err));
-    });
+export function trade(tradeRequest) {
+    return authenticatedPost('trade', tradeRequest); 
 }
 
-export const parseDate = timeParse("%Y-%m-%d");
-
-function parseRow(d) {
-	return {
-		date: parseDate(d.Date),
-		open: +d.Open,
-		high: +d.High,
-		low: +d.Low,
-		close: +d.Close,
-		volume: +d.Volume,
-	}
+export function getAffordable(symbol) {
+    return authenticatedPost('affordability', {symbol});
 }
 
-function parseIntraday(raw) {
-  const responseDetails = JSON.parse(raw).chart;
-  if (responseDetails.error)  throw new Error(responseDetails.error.description);
-  const d = responseDetails.result[0];
-  const indicators = d.indicators.quote[0], time = d.timestamp;
-
-  let data = [];
-  for (let i = 0; i < time.length; ++i) {
-    data.push({
-      date: new Date(time[i] * 1000),
-      open: indicators.open[i],
-      high: indicators.high[i],
-      low: indicators.low[i],
-      close: indicators.close[i],
-      volume: indicators.volume[i],
-    })
-  }
-  return data;
+export function getHolding(symbol) {
+    return authenticatedPost('positionQty', {symbol});
 }
-
-export function getStockHistory(symbol, interval="w", from="0", to="9999999999") {
-  switch (interval) {
-    case 'w': interval = '1wk'; break;
-    case 'm': interval = '1mo'; break;
-    case 'q': interval = '3mo'; break;
-    case 'y': interval = '3mo'; break;  // TODO convert quarter to year
-    default: interval = '1d'; break;
-  }
-	const promise = fetch(`http://127.0.0.1:8092/stockHistory?symbol=${symbol}&from=${from}&to=${to}&interval=${interval}`)
-		.then(response => response.text())
-		.then(data => csvParse(data, parseRow))
-        .catch(err => { 
-            console.log(err) 
-        })
-	return promise;
-};
-
-export function getStockDividend(symbol, from="0", to="9999999999") {
-	const promise = fetch(`http://127.0.0.1:8092/stockDividend?symbol=${symbol}&from=${from}&to=${to}`)
-		.then(response => response.text())
-		.then(data => csvParse(data, parseRow))
-        .catch(err => { 
-            console.log(err) 
-        })
-	return promise;
-};
-
-export function getStockToday(symbol, minuteInterval=1, includePrePost=false) {
-    // Volume data for pre/post market are missing, so `includePrePost` is false by default
-    let interval;
-    switch (minuteInterval) {
-        case 5: interval = "5m"; break;
-        case 15: interval = "15m"; break;
-        case 30: interval = "30m"; break;
-        case 60: interval = "1h"; break;
-        case 90: interval = "90m"; break;
-        default: interval = "1m"; break;
-    }
-	const promise = fetch(`http://127.0.0.1:8092/stockHistoryIntraday?symbol=${symbol}&interval=${interval}&range=7d&includePrePost=${includePrePost}`)
-		.then(response => response.text())
-    .then(data => parseIntraday(data))
-        .catch(err => { 
-            console.log(err) 
-        })
-	return promise;
-};

@@ -7,8 +7,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Paper from '@material-ui/core/Paper';
+import { Alert } from "@material-ui/lab"
 import { makeStyles } from '@material-ui/core/styles';
-import { trade } from '../../utils/APIUtils';
+import { trade, getAffordable, getHolding } from '../../utils/APIUtils';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -30,24 +31,56 @@ const useStyles = makeStyles((theme) => ({
   symbolLabel: {
     fontSize: 16, 
     marginBottom: '10px',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    border: 0
+  },
+  validQuantityLabel: {
+    fontSize: 13, 
+    marginBottom: '10px',
+    border: 0
   }
 }))
 
 
 export default function TradeDialog(props) {
   const classes = useStyles();
+  const { symbol, authenticated }  = props;
 
   const [open, setOpen] = React.useState(false);
 
   const [qty, setQty] = React.useState(0);
+  const [maxBuyQty, setMaxBuyQty] = React.useState(0);
+  const [maxSellQty, setMaxSellQty] = React.useState(0);
 
   const [textFieldErr, setTextFieldErr] = React.useState(null);
+
+  const [alertMsg, setAlertMsg] = React.useState(null);
+  const [alertSeverity, setAlertSeverity] = React.useState("info");
+
+  React.useEffect(() => {
+    const updateValidQty = () => {
+      getAffordable(symbol)
+      .then(qty => setMaxBuyQty(qty))
+      .catch(err => console.log(err));
+  
+      getHolding(symbol)
+      .then(qty => setMaxSellQty(qty))
+      .catch(err => console.log(err));
+    }
+
+    const interval = setInterval(() => {
+      updateValidQty();
+    }, 1000);
+  
+    return () => {
+      clearInterval(interval);
+    };
+  }, [symbol]);
 
   const handleQtyChange = (event) => {
     const qty = event.target.value;
     if (isNaN(qty) || isNaN(parseInt(qty)) || qty <= 0) { 
-      setTextFieldErr("Quantity must be a positive integer!") 
+      setTextFieldErr("Quantity must be a positive integer!");
     } else {
       setTextFieldErr(null);
       setQty(qty);
@@ -59,22 +92,46 @@ export default function TradeDialog(props) {
   };
 
   const handleClose = () => {
+    setAlertMsg(null);
+    setTextFieldErr(null);
     setOpen(false);
   };
 
   const handleTrade = (isBuy) => {
     if (textFieldErr)  return;
+    if (isBuy) {
+      if (qty > maxBuyQty) {
+        setTextFieldErr("Quantity exceeds the maximum affordable quantity!")
+        return;
+      }
+    } else {
+      if (qty > maxSellQty) {
+        setTextFieldErr("You cannot sell more than you hold! Short not yet supported.")
+        return;
+      }
+    }
     const tradeRequest = {
-      'symbol': props.symbol,
+      'symbol': symbol,
       'qty': qty * (isBuy ? 1 : -1),
     }
+
     trade(tradeRequest)
     .then(response => {
-      console.log(response)
+      console.log(response);
+      if (response.success) {
+        setAlertMsg(response.message);
+        setAlertSeverity("success");
+        setOpen(false);
+        setAlertMsg(null);
+      } else {
+        setAlertMsg("An error occurred. Please try again.")
+        setAlertSeverity("error");
+      }
     }).catch(error => {
       console.log(error);
+      setAlertMsg("An error occurred. Please try again.")
+      setAlertSeverity("error");
     });
-    setOpen(false);
   }
 
   return (
@@ -85,13 +142,15 @@ export default function TradeDialog(props) {
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Trade</DialogTitle>
           
-          { props.authenticated ? (
+          { authenticated ? (
             <div>
               <DialogContent>
                 <DialogContentText>
                   Be sure to double check details below before you trade.
                 </DialogContentText>
-                <Paper className={classes.symbolLabel}>Stock Symbol: {props.symbol}</Paper>
+                <Paper variant='outlined' className={classes.symbolLabel}>Stock Symbol: {symbol}</Paper>
+                <Paper variant='outlined' className={classes.validQuantityLabel}>Maximum quantity affordable: {maxBuyQty}</Paper>  
+                <Paper variant='outlined' className={classes.validQuantityLabel}>Existing quantity: {maxSellQty}</Paper>
                 <TextField
                   autoFocus
                   onChange={handleQtyChange}
@@ -99,10 +158,13 @@ export default function TradeDialog(props) {
                   margin="dense"
                   id="dialogQty"
                   label="Quantity (shares)"
-                  error={textFieldErr}
+                  error={textFieldErr !== null}
                   helperText={textFieldErr}
                   fullWidth
                 />
+                { alertMsg ? (
+                  <Alert severity={alertSeverity} style={{fontSize: "15px"}}>{alertMsg}</Alert>
+                ) : null }
               </DialogContent>
               <DialogActions>
                 <Button onClick={() => handleTrade(true)} color="primary" className={classes.dialogButton}>

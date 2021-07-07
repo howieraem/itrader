@@ -7,7 +7,7 @@ import InfoTable from './Table';
 import MultiCharts from './MultiCharts';
 import TradeDialog from './TradeDialog';
 import { addTicker, removeAllTickers } from 'stocksocket';
-import { getStockBasicInfo } from '../../utils/APIUtils';
+import { getStockBasicInfo } from '../../utils/DataAPIUtils';
 
 
 const useStyles = theme => ({
@@ -154,7 +154,7 @@ class Dashboard extends React.Component {
     return (
       <Grid container spacing={0}>
         <Grid container spacing={2} className={classes.topContainer}>
-          <Grid item xs={2}> 
+          <Grid item xs={4}> 
             <header className="Symbol-title1">
               {this.state.symbol}
             </header>
@@ -165,7 +165,7 @@ class Dashboard extends React.Component {
 
           <Grid item xs />
 
-          <Grid item xs={2}> 
+          <Grid item xs={4}> 
             <header className="Symbol-title1">
               { marketClosed ? "Market closed" : priceLoaded ? ("$" + this.state.price) : "Loading price..." }
             </header>

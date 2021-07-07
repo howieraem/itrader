@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Service
 public class TradeService {
@@ -52,5 +53,10 @@ public class TradeService {
         } else {
             positionRepository.deleteById(positionId);
         }
+    }
+
+    public Long getAffordableQty(Long userId, BigDecimal price) {
+        BigDecimal balance = userRepository.findBalance(userId);
+        return balance.divide(price, RoundingMode.FLOOR).longValue();
     }
 }

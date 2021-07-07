@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PositionRepository extends JpaRepository<Position, PositionId> {
@@ -29,5 +30,5 @@ public interface PositionRepository extends JpaRepository<Position, PositionId> 
             "from Position p " +
             "where p.userId = :userId " +
             "and p.symbol = :symbol ")
-    Long findFirstQuantityByUserIdAndSymbol(@Param("userId") Long userId, @Param("symbol") String symbol);
+    Optional<Long> findFirstQuantityByUserIdAndSymbol(@Param("userId") Long userId, @Param("symbol") String symbol);
 }
