@@ -30,7 +30,7 @@ import { appearance, candlesAppearance } from "./Appearance";
 
 class CandleStickChartForDiscontinuousIntraDay extends React.Component {
 	render() {
-		const { type, data: initialData, width, ratio } = this.props;
+		const { type, data: initialData, symbol, width, ratio } = this.props;
 
 		const xScaleProvider = discontinuousTimeScaleProvider
 			.inputDateAccessor(d => d.date);
@@ -51,7 +51,7 @@ class CandleStickChartForDiscontinuousIntraDay extends React.Component {
 				width={width}
 				margin={{ left: 50, right: 50, top: 10, bottom: 30 }}
 				type={type}
-				seriesName="MSFT"
+				seriesName={symbol}
 				data={data}
 				xScale={xScale}
 				xAccessor={xAccessor}

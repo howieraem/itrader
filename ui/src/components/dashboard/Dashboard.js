@@ -58,14 +58,14 @@ function sortByKey(unordered) {
 function filterInfo(info) {
   return {
     "Currency": info.currency,
-    "Current EPS": info.epsCurrentYear,
     "52-wk High": info.fiftyTwoWeekHigh,
     "52-wk Low": info.fiftyTwoWeekLow,
-    "Full Name": info.longName,
+    // "Full Name": info.longName,
     "Market": info.market,
     "Market State": info.marketState,
     "Price Range": info.regularMarketDayRange,
-    "PE (Trailing)": info.trailingPE, 
+    "Current EPS": info.epsCurrentYear ? info.epsCurrentYear : "N/A",
+    "PE (Trailing)": info.trailingPE ? info.trailingPE : "N/A", 
   }
 }
 
@@ -76,7 +76,7 @@ class Dashboard extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      symbol: "TSLA",
+      symbol: "DIDI",
       curData: null,
       preData: null,
       price: 0.,
@@ -86,12 +86,16 @@ class Dashboard extends React.Component {
       prePrice: 0.,
       time: 0,
       basicInfo: null,
+      fullName: null,
     }
     this.interval = setInterval(
       function() {
         getStockBasicInfo(this.state.symbol)
         .then(basicInfo => {
-          this.setState({basicInfo: filterInfo(basicInfo)});
+          this.setState({
+            basicInfo: filterInfo(basicInfo),
+            fullName: basicInfo.longName
+          });;
         }).catch(err => { console.log(err) })
       }.bind(this),
       10000
@@ -112,8 +116,6 @@ class Dashboard extends React.Component {
     priceHint
     */
     this.updateData = this.updateData.bind(this);
-
-    addTicker(this.state.symbol, this.updateData);
   }
 
   updateData(liveData) {
@@ -133,10 +135,15 @@ class Dashboard extends React.Component {
 
   componentDidMount() {
     this._mounted = true;
+    
+    addTicker(this.state.symbol, this.updateData);
 
     getStockBasicInfo(this.state.symbol)
     .then(basicInfo => {
-      this.setState({basicInfo: filterInfo(basicInfo)});
+      this.setState({
+        basicInfo: filterInfo(basicInfo),
+        fullName: basicInfo.longName
+      });
     }).catch(err => { console.log(err) })
   }
 
@@ -159,7 +166,7 @@ class Dashboard extends React.Component {
               {this.state.symbol}
             </header>
             <header className="Symbol-title2">
-              { this.state.basicInfo ? this.state.basicInfo["Full Name"] : "" }
+              { this.state.basicInfo ? this.state.fullName : "" }
             </header>
           </Grid>
 

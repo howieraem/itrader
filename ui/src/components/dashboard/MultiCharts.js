@@ -6,8 +6,9 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import MinuteChart from '../chart/MinuteChart';
+import IntradayChart from '../chart/IntradayChart';
 import HistoryChart from '../chart/HistoryChart';
+import MinuteChart from '../chart/MinuteChart';
 
 
 function TabPanel(props) {
@@ -84,7 +85,7 @@ export default function MultiCharts(props) {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        Intraday chart in progress...
+        <IntradayChart symbol={props.symbol} />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <HistoryChart symbol={props.symbol} interval="d" />

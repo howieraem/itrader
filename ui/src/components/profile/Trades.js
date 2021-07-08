@@ -23,8 +23,8 @@ function processTradeRecord(i, tradeRecord) {
     action: tradeRecord.buy ? "Buy" : "Sell",
     quantity: tradeRecord.quantity,
     price: tradeRecord.price,
-    cashChange: (tradeRecord.buy ? '-' : '+') + tradeRecord.quantity * tradeRecord.price,
-    cashAfter: tradeRecord.cashAfter,
+    cashChange: (tradeRecord.buy ? '-' : '+') + (tradeRecord.quantity * tradeRecord.price).toFixed(2),
+    cashAfter: tradeRecord.cashAfter.toFixed(2),
   };
 }
 

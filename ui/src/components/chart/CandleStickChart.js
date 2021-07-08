@@ -59,23 +59,7 @@ function tooltipContent(ys) {
 	};
 }
 
-// const keyValues = ["high", "low"];
-
 class CandleStickChartWithHoverTooltip extends React.Component {
-	// removeRandomValues(data) {
-	// 	return data.map(item => {
-	// 		const newItem = { ...item };
-	// 		const numberOfDeletion =
-	// 			Math.floor(Math.random() * keyValues.length) + 1;
-	// 		for (let i = 0; i < numberOfDeletion; i += 1) {
-	// 			const randomKey =
-	// 				keyValues[Math.floor(Math.random() * keyValues.length)];
-	// 			newItem[randomKey] = undefined;
-	// 		}
-	// 		return newItem;
-	// 	});
-	// }
-
 	render() {
 		let { type, data: initialData, symbol, width, ratio } = this.props;
 

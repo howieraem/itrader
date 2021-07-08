@@ -79,7 +79,7 @@ export function getStockDividend(symbol, from="0", to="9999999999") {
   return promise;
 };
 
-export function getStockToday(symbol, minuteInterval=1, includePrePost=false) {
+export function getStockToday(symbol, minuteInterval=1, dayRange=5, includePrePost=false) {
   // Volume data for pre/post market are missing, so `includePrePost` is false by default
   let interval;
   switch (minuteInterval) {
@@ -90,7 +90,7 @@ export function getStockToday(symbol, minuteInterval=1, includePrePost=false) {
     case 90: interval = "90m"; break;
     default: interval = "1m"; break;
   }
-  const promise = fetch(SERVER_URL + `/stockHistoryIntraday?symbol=${symbol}&interval=${interval}&range=7d&includePrePost=${includePrePost}`)
+  const promise = fetch(SERVER_URL + `/stockHistoryIntraday?symbol=${symbol}&interval=${interval}&range=${dayRange}d&includePrePost=${includePrePost}`)
     .then(response => response.text())
     .then(data => parseIntraday(data))
       .catch(err => { 

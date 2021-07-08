@@ -21,6 +21,9 @@ public class RestTemplateConfig {
     @Value("${app.proxy.port}")
     private int proxyPort;
 
+    @Value("${app.proxy.socks}")
+    private boolean useSocksProxy;
+
     @Bean
     public RestTemplate restTemplate(ClientHttpRequestFactory factory) {
         return new RestTemplate(factory);
@@ -33,7 +36,9 @@ public class RestTemplateConfig {
         factory.setReadTimeout(10000);
 
         if (useProxy)
-            factory.setProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)));
+            factory.setProxy(new Proxy(
+                    useSocksProxy? Proxy.Type.SOCKS : Proxy.Type.HTTP,
+                    new InetSocketAddress(proxyHost, proxyPort)));
         return factory;
     }
 }

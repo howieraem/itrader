@@ -59,23 +59,26 @@ export default function TradeDialog(props) {
 
   React.useEffect(() => {
     const updateValidQty = () => {
-      getAffordable(symbol)
-      .then(qty => setMaxBuyQty(qty))
-      .catch(err => console.log(err));
-  
-      getHolding(symbol)
-      .then(qty => setMaxSellQty(qty))
-      .catch(err => console.log(err));
+      if (open && authenticated) {
+        getAffordable(symbol)
+        .then(qty => setMaxBuyQty(qty))
+        .catch(err => console.log(err));
+    
+        getHolding(symbol)
+        .then(qty => setMaxSellQty(qty))
+        .catch(err => console.log(err));
+      }
     }
+    updateValidQty();
 
     const interval = setInterval(() => {
       updateValidQty();
-    }, 1000);
+    }, 5000);
   
     return () => {
       clearInterval(interval);
     };
-  }, [symbol]);
+  }, [symbol, open, authenticated]);
 
   const handleQtyChange = (event) => {
     const qty = event.target.value;
