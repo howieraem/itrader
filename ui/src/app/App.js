@@ -52,9 +52,11 @@ class App extends React.Component {
       loading: false,
       initialized: false,
       justLoggedOut: false,
+      symbol: "DIDI",
     }
     this.loadCurrentlyLoggedInUser = this.loadCurrentlyLoggedInUser.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
+    this.changeSymbol = this.changeSymbol.bind(this);
   }
 
   loadCurrentlyLoggedInUser() {
@@ -95,6 +97,11 @@ class App extends React.Component {
       justLoggedOut: false,
     })
     this.loadCurrentlyLoggedInUser();
+    console.log(this.state.symbol);
+  }
+
+  changeSymbol(symbol) {
+    this.setState({ symbol: symbol });
   }
 
   render() {
@@ -109,14 +116,14 @@ class App extends React.Component {
           <Grid container spacing={0}>
             <Grid container>
               <Grid item xs>
-                <PrimarySearchAppBar authenticated={this.state.authenticated} onLogout={this.handleLogout} />
+                <PrimarySearchAppBar authenticated={this.state.authenticated} onLogout={this.handleLogout} onSearch={this.changeSymbol} />
               </Grid>
             </Grid>
 
             { this.state.justLoggedOut && <AlertMessage message={"Successfully logged out!"} severity={"success"} /> }
 
             <Switch>
-                <Route exact path="/" render={(props) => <Dashboard authenticated={this.state.authenticated} {...props} />}></Route>
+                <Route exact path="/" render={(props) => <Dashboard symbol={this.state.symbol} authenticated={this.state.authenticated} {...props} />}></Route>
                 <Route path="/login"
                   render={(props) => <SignIn authenticated={this.state.authenticated} {...props} />}>
                 </Route>

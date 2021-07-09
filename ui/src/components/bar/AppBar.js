@@ -59,7 +59,7 @@ const useStyles = theme => ({
     width: '46%',
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(3),
-      width: 'auto',
+      width: '30ch',
     },
   },
   searchIcon: {
@@ -80,8 +80,8 @@ const useStyles = theme => ({
     paddingLeft: `calc(1em + ${theme.spacing(0)}px)`,
     transition: theme.transitions.create('width'),
     width: '80%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
+    [theme.breakpoints.up('sm')]: {
+      width: '32ch',
     },
   },
   sectionDesktop: {
@@ -211,13 +211,20 @@ class PrimarySearchAppBar extends React.Component {
             <div className={classes.grow} />
             <div className={classes.search}>
               <InputBase
-                placeholder="Search stock here"
+                placeholder="Search symbol & hit Enter"
                 classes={{
                   root: classes.inputRoot,
                   input: classes.inputInput,
                 }}
                 inputProps={{ 'aria-label': 'search' }}
                 startAdornment={<SearchIcon/>}
+                onKeyPress={(ev) => {
+                  if (ev.key === 'Enter') {
+                    const symbol = ev.target.value.toUpperCase();
+                    this.props.onSearch(symbol);
+                    ev.preventDefault();
+                  }
+                }}
               />
             </div>
 

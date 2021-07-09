@@ -6,7 +6,7 @@ import { withStyles } from '@material-ui/core/styles';
 import InfoTable from './Table';
 import MultiCharts from './MultiCharts';
 import TradeDialog from './TradeDialog';
-import { addTicker, removeAllTickers } from 'stocksocket';
+import { addTicker, removeTicker, removeAllTickers } from 'stocksocket';
 import { getStockBasicInfo } from '../../utils/DataAPIUtils';
 
 
@@ -74,9 +74,9 @@ class Dashboard extends React.Component {
   _mounted = false
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
-      symbol: "DIDI",
+      symbol: props.symbol,
       curData: null,
       preData: null,
       price: 0.,
@@ -153,6 +153,21 @@ class Dashboard extends React.Component {
     removeAllTickers();
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.symbol !== this.props.symbol) {
+      removeTicker(this.state.symbol);
+      this.setState({ symbol: nextProps.symbol });
+      getStockBasicInfo(this.state.symbol)
+      .then(basicInfo => {
+        this.setState({
+          basicInfo: filterInfo(basicInfo),
+          fullName: basicInfo.longName
+        });
+      }).catch(err => { console.log(err) })
+      addTicker(this.state.symbol, this.updateData);
+    }
+  }
+
   render() {
     const { classes } = this.props;
     const priceLoaded = this.state.price > 0;
@@ -196,11 +211,11 @@ class Dashboard extends React.Component {
 
         <Grid container>
           <Grid item xs={12}>
-            <MultiCharts symbol={this.state.symbol} lastestPrice={this.state.price} />
+            <MultiCharts key={this.state.symbol} symbol={this.state.symbol} lastestPrice={this.state.price} />
           </Grid>
         </Grid>
 
-        <InfoTable data={this.state.basicInfo} />
+        <InfoTable key={this.state.fullName} data={this.state.basicInfo} />
 
         {/* <Grid container spacing={0}>
           <Grid item xs align="center">
