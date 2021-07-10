@@ -25,11 +25,7 @@ const request = (options, token=null) => {
 };
 
 const getToken = () => {
-    let token = localStorage.getItem('accessToken');
-    if (!token) {
-        token = sessionStorage.getItem('accessToken');
-    }
-    return token;
+    return localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
 }
 
 export function getCurrentUser() {

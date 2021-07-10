@@ -1,5 +1,5 @@
 import React from 'react';
-import { fade, withStyles } from '@material-ui/core/styles';
+import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -9,9 +9,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import MoreIcon from '@material-ui/icons/MoreVert';
-// import Link from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
-// import HomeIcon from '@material-ui/icons/Home';
 import Avatar from '@material-ui/core/Avatar';
 import AccountMenu from './AccountMenu';
 
@@ -26,7 +24,15 @@ const ClockMobile = ({ date }) => (
 )
 
 
-const useStyles = theme => ({
+const useStyles = makeStyles((theme) => ({
+  iconButton: {
+    background: '#005480',
+    textTransform: 'none', 
+    alignItems: 'center',
+    '&:hover': {
+      backgroundColor: '#005480',
+    },
+  },
   grow: {
     flexGrow: 1,
   },
@@ -37,16 +43,10 @@ const useStyles = theme => ({
     color: 'white',
     textDecoration: 'none',
     display: 'none',
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('md')]: {
       display: 'block',
     },
   },
-  // titleMobile: {
-  //   display: 'block',
-  //   [theme.breakpoints.up('sm')]: {
-  //     display: 'none',
-  //   },
-  // },
   search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
@@ -57,7 +57,7 @@ const useStyles = theme => ({
     marginRight: theme.spacing(2),
     marginLeft: 0,
     width: '46%',
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('md')]: {
       marginLeft: theme.spacing(3),
       width: '30ch',
     },
@@ -76,11 +76,10 @@ const useStyles = theme => ({
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(0)}px)`,
     transition: theme.transitions.create('width'),
     width: '80%',
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('md')]: {
       width: '32ch',
     },
   },
@@ -96,203 +95,190 @@ const useStyles = theme => ({
       display: 'none',
     },
   },
-});
+}));
 
 
-class PrimarySearchAppBar extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      anchorEl: null,
-      mobileMoreAnchorEl: null,
-      date: new Date(),
+export default function PrimarySearchAppBar(props) {
+  const { authenticated, onLogout, onSearch } = props;
+  const classes = useStyles();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [date, setDate] = React.useState(new Date());
+
+  const isMenuOpen = Boolean(anchorEl);
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setDate(new Date());
+    }, 1000);
+  
+    return () => {
+      clearInterval(interval);
     };
-    this.handleMobileMenuOpen = this.handleMobileMenuOpen.bind(this);
-    this.handleProfileMenuOpen = this.handleProfileMenuOpen.bind(this);
-    this.handleMobileMenuClose = this.handleMobileMenuClose.bind(this);
-    this.handleMenuClose = this.handleMenuClose.bind(this);
-    this.interval = setInterval(
-      () => this.setState({ date: new Date() }),
-      1000
-    )
-  }
+  }, []);
 
-  handleProfileMenuOpen(event) {
-    this.anchorEl = event.currentTarget;
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
   };
 
-  handleMobileMenuOpen(event) {
-    this.mobileMoreAnchorEl = event.currentTarget;
+  const handleMobileMenuOpen = (event) => {
+    setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  handleMobileMenuClose() {
-    this.mobileMoreAnchorEl = null;
+  const handleMobileMenuClose = () => {
+    setMobileMoreAnchorEl(null);
   };
 
-  handleMenuClose() {
-    this.anchorEl = null;
-    this.handleMobileMenuClose();
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
   };
 
-  componentWillUnmount() {
-    clearInterval(this.interval)
-  }
+  const menuId = 'primary-search-account-menu';
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <MenuItem component="a" href="/profile" onClick={handleMenuClose}>
+        Details
+      </MenuItem>
+      <MenuItem component="a" href="/settings" onClick={handleMenuClose}>
+        Settings
+      </MenuItem>
+    </Menu>
+  );
 
-  render() {
-    const {classes} = this.props;
+  const mobileMenuId = 'primary-search-account-menu-mobile';
+  const renderMobileMenu = (
+    <Menu
+      anchorEl={mobileMoreAnchorEl}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      id={mobileMenuId}
+      keepMounted
+      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      open={isMobileMenuOpen}
+      onClose={handleMobileMenuClose}
+      // If false and a vertical scroll bar exists , the popover will add padding to body
+      MenuProps={{ disableScrollLock: true }}
+    >
+      {authenticated ? (
+        <div>
+          <MenuItem onClick={handleProfileMenuOpen}>Profile</MenuItem>
+          <MenuItem onClick={onLogout}>Logout</MenuItem>
+        </div>
+      ) : (
+        <div>
+          <MenuItem component="a" href="/login">Login</MenuItem>
+          <MenuItem component="a" href="/signup">Sign Up</MenuItem>
+        </div>
+      )}
+    </Menu>
+  );
 
-    const isMenuOpen = Boolean(this.anchorEl);
-    const isMobileMenuOpen = Boolean(this.mobileMoreAnchorEl);
-
-    const menuId = 'primary-search-account-menu';
-    const renderMenu = (
-      <Menu
-        anchorEl={this.anchorEl}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        id={menuId}
-        keepMounted
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        open={isMenuOpen}
-        onClose={this.handleMenuClose}
-      >
-        <MenuItem component="a" href="/profile" onClick={this.handleMenuClose}>
-          Details
-        </MenuItem>
-        <MenuItem component="a" href="/settings" onClick={this.handleMenuClose}>
-          Settings
-        </MenuItem>
-      </Menu>
-    );
-
-    const mobileMenuId = 'primary-search-account-menu-mobile';
-    const renderMobileMenu = (
-      <Menu
-        anchorEl={this.mobileMoreAnchorEl}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        id={mobileMenuId}
-        keepMounted
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        open={isMobileMenuOpen}
-        onClose={this.handleMobileMenuClose}
-        // If false and a vertical scroll bar exists , the popover will add padding to body
-        MenuProps={{ disableScrollLock: true }}
-      >
-        {this.props.authenticated ? (
-          <div>
-            <MenuItem onClick={this.handleProfileMenuOpen}>Profile</MenuItem>
-            <MenuItem onClick={this.props.onLogout}>Logout</MenuItem>
-          </div>
-        ) : (
-          <div>
-            <MenuItem component="a" href="/login">Login</MenuItem>
-            <MenuItem component="a" href="/signup">Sign Up</MenuItem>
-          </div>
-        )}
-      </Menu>
-    );
-
-    return (
-      <div className={classes.grow}>
-        <AppBar style={{ background: '#005480' }}>
-          <Toolbar>
-            {/* <div className={classes.grow} /> */}
-            <Button 
-              aria-label="home" 
-              href="/"
-              color="inherit"
-              m={2}
-              // className={classes.titleMobile}
-              style={{textTransform: 'none', fontSize: 18, alignItems: 'center'}}
-              startIcon={<Avatar src={'./logo192.png'} />}
+  return (
+    <div className={classes.grow}>
+      <AppBar style={{ background: '#005480' }}>
+        <Toolbar>
+          <Button 
+            aria-label="home" 
+            href="/"
+            color="inherit"
+            m={2}
+            className={classes.iconButton}
+            startIcon={<Avatar src={'./logo192.png'} />}
+          />
+          <Typography component="a" href="/" className={classes.title} variant="h5" noWrap>
+            ITrader
+          </Typography>
+          <div className={classes.grow} />
+          <div className={classes.search}>
+            <InputBase
+              placeholder="Search symbol & hit Enter"
+              classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput,
+              }}
+              inputProps={{ 'aria-label': 'search' }}
+              startAdornment={<SearchIcon/>}
+              onKeyPress={(ev) => {
+                if (ev.key === 'Enter') {
+                  const symbol = ev.target.value.toUpperCase();
+                  onSearch(symbol);
+                  ev.preventDefault();
+                }
+              }}
             />
-            <Typography component="a" href="/" className={classes.title} variant="h5" noWrap>
-              ITrader
-            </Typography>
-            <div className={classes.grow} />
-            <div className={classes.search}>
-              <InputBase
-                placeholder="Search symbol & hit Enter"
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput,
-                }}
-                inputProps={{ 'aria-label': 'search' }}
-                startAdornment={<SearchIcon/>}
-                onKeyPress={(ev) => {
-                  if (ev.key === 'Enter') {
-                    const symbol = ev.target.value.toUpperCase();
-                    this.props.onSearch(symbol);
-                    ev.preventDefault();
-                  }
-                }}
-              />
-            </div>
+          </div>
 
-            <div className={classes.grow} />
-            <div className={classes.sectionDesktop}>
-              <Clock date={this.state.date} />
-            </div>
-            <div className={classes.sectionMobile}>
-              <ClockMobile date={this.state.date} />
-            </div>
-            <div className={classes.grow} />
+          <div className={classes.grow} />
+          <div className={classes.sectionDesktop}>
+            <Clock date={date} />
+          </div>
+          <div className={classes.sectionMobile}>
+            <ClockMobile date={date} />
+          </div>
+          <div className={classes.grow} />
 
-            <div className={classes.sectionDesktop}>
-              { this.props.authenticated ? (
-                <AccountMenu />
-              ) : (
-                <Button 
-                  aria-label="login" 
-                  href="/login"
-                  color="inherit"
-                  m={2}
-                  style={{textTransform: 'none', fontSize: 18}}
-                >
-                  Login
-                </Button>
-              )}
-
-              { this.props.authenticated ? (
-                <Button 
-                  aria-label="logout" 
-                  color="inherit"
-                  m={2}
-                  style={{textTransform: 'none', fontSize: 18}}
-                  onClick={this.props.onLogout}
-                >
-                  Logout
-                </Button>
-              ) : (
-                <Button 
-                  aria-label="signup" 
-                  href="/signup"
-                  color="inherit"
-                  m={2}
-                  style={{textTransform: 'none', fontSize: 18}}
-                >
-                  Sign Up
-                </Button>
-              )}
-            </div>
-            <div className={classes.sectionMobile}>
-              <IconButton
-                aria-label="show more"
-                aria-controls={mobileMenuId}
-                aria-haspopup="true"
-                onClick={this.handleMobileMenuOpen}
+          <div className={classes.sectionDesktop}>
+            { authenticated ? (
+              <AccountMenu />
+            ) : (
+              <Button 
+                aria-label="login" 
+                href="/login"
                 color="inherit"
+                m={2}
+                style={{textTransform: 'none', fontSize: 18}}
               >
-                <MoreIcon />
-              </IconButton>
-            </div>
-            {/* <div className={classes.grow} /> */}
-          </Toolbar>
-        </AppBar>
-        {renderMobileMenu}
-        {renderMenu}
-      </div>
-    );
-  }
-};
+                Login
+              </Button>
+            )}
 
-export default withStyles(useStyles)(PrimarySearchAppBar);
+            { authenticated ? (
+              <Button 
+                aria-label="logout" 
+                color="inherit"
+                m={2}
+                style={{textTransform: 'none', fontSize: 18}}
+                onClick={onLogout}
+              >
+                Logout
+              </Button>
+            ) : (
+              <Button 
+                aria-label="signup" 
+                href="/signup"
+                color="inherit"
+                m={2}
+                style={{textTransform: 'none', fontSize: 18}}
+              >
+                Sign Up
+              </Button>
+            )}
+          </div>
+          <div className={classes.sectionMobile}>
+            <IconButton
+              aria-label="show more"
+              aria-controls={mobileMenuId}
+              aria-haspopup="true"
+              onClick={handleMobileMenuOpen}
+              color="inherit"
+            >
+              <MoreIcon />
+            </IconButton>
+          </div>
+          {/* <div className={classes.grow} /> */}
+        </Toolbar>
+      </AppBar>
+      {renderMobileMenu}
+      {renderMenu}
+    </div>
+  );
+};

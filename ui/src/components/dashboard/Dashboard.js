@@ -1,4 +1,3 @@
-import './Dashboard.css';
 import React from 'react';
 // import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -13,6 +12,9 @@ import { getStockBasicInfo } from '../../utils/DataAPIUtils';
 const useStyles = theme => ({
   grow: {
     flexGrow: 1,
+    [theme.breakpoints.up('md')]: {
+      display: 'block',
+    },
   },
   buttons: {
     textTransform: 'none', 
@@ -28,6 +30,25 @@ const useStyles = theme => ({
   },
   topContainer: {
     backgroundColor: '#fafaff',
+  },
+  symbolTitle1: {
+    minHeight: '35px',
+    maxHeight: '35px',
+    fontWeight: 'bold',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'left',
+    justifyContent: 'center',
+    fontSize: '20px',
+  },
+  symbolTitle2: {
+    minHeight: '25px',
+    maxHeight: '25px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'left',
+    justifyContent: 'center',
+    fontSize: '17px',
   }
 })
 
@@ -60,7 +81,6 @@ function filterInfo(info) {
     "Currency": info.currency,
     "52-wk High": info.fiftyTwoWeekHigh,
     "52-wk Low": info.fiftyTwoWeekLow,
-    // "Full Name": info.longName,
     "Market": info.market,
     "Market State": info.marketState,
     "Price Range": info.regularMarketDayRange,
@@ -156,15 +176,19 @@ class Dashboard extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.symbol !== this.props.symbol) {
       removeTicker(this.state.symbol);
-      this.setState({ symbol: nextProps.symbol });
-      getStockBasicInfo(this.state.symbol)
+      const curSymbol = nextProps.symbol;
+      this.setState({ 
+        symbol: curSymbol,
+        fullName: null,
+      });
+      getStockBasicInfo(curSymbol)
       .then(basicInfo => {
         this.setState({
           basicInfo: filterInfo(basicInfo),
           fullName: basicInfo.longName
         });
       }).catch(err => { console.log(err) })
-      addTicker(this.state.symbol, this.updateData);
+      addTicker(curSymbol, this.updateData);
     }
   }
 
@@ -176,22 +200,22 @@ class Dashboard extends React.Component {
     return (
       <Grid container spacing={0}>
         <Grid container spacing={2} className={classes.topContainer}>
-          <Grid item xs={4}> 
-            <header className="Symbol-title1">
+          <Grid item xs={3} sm={4}> 
+            <header className={classes.symbolTitle1}>
               {this.state.symbol}
             </header>
-            <header className="Symbol-title2">
+            <header className={classes.symbolTitle2}>
               { this.state.basicInfo ? this.state.fullName : "" }
             </header>
           </Grid>
 
-          <Grid item xs />
+          <Grid item className={classes.grow} />
 
-          <Grid item xs={4}> 
-            <header className="Symbol-title1">
+          <Grid item xs={3} sm={4}> 
+            <header className={classes.symbolTitle1}>
               { marketClosed ? "Market closed" : priceLoaded ? ("$" + this.state.price) : "Loading price..." }
             </header>
-            <header className="Symbol-title2">
+            <header className={classes.symbolTitle2}>
               { priceLoaded ? (`${changeSign}${this.state.change} (${changeSign}${this.state.changePercent}%)`) : "" }
             </header>
           </Grid>
@@ -199,34 +223,17 @@ class Dashboard extends React.Component {
           <Grid item className={classes.grow} />
 
           <Grid item xs={2} align="right">
-            <TradeDialog symbol={this.state.symbol} authenticated={this.props.authenticated} />
+            <TradeDialog symbol={this.state.symbol} authenticated={this.props.authenticated} marketClosed={marketClosed} />
           </Grid>
-          {/* <Grid item xs /> */}
-          {/* <Grid item xs={2} align="right">
-            <Button variant="contained" className={classes.buttons}>
-              More Info
-            </Button>
-          </Grid> */}
         </Grid>
 
         <Grid container>
           <Grid item xs={12}>
-            <MultiCharts key={this.state.symbol} symbol={this.state.symbol} lastestPrice={this.state.price} />
+            <MultiCharts key={this.state.symbol} symbol={this.state.symbol} lastestPrice={this.state.price} marketClosed={marketClosed} />
           </Grid>
         </Grid>
 
         <InfoTable key={this.state.fullName} data={this.state.basicInfo} />
-
-        {/* <Grid container spacing={0}>
-          <Grid item xs align="center">
-            <div className="Symbol-info1">
-              <DataItem k={"Day Volume"} v={this.state.dayVolume} />
-              {this.state.basicInfo ? (Object.keys(this.state.basicInfo).map(key => 
-                <DataItem k={key} v={this.state.basicInfo[key]} />
-              )) : ("pending...")}
-            </div>
-          </Grid>
-        </Grid> */}        
       </Grid>
     )
   }

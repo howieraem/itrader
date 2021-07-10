@@ -1,3 +1,4 @@
+import './ChartHolder.css';
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Chart from './CandleStickChart';
@@ -34,7 +35,7 @@ class HistoryChart extends React.Component {
         <Grid item xs={11} align="left">
           { this.state ? 
             <Chart type="hybrid" data={this.state.data} symbol={this.props.symbol} /> : (
-            <header className="Chart-placeholder">
+            <header className="Chart-holder">
               {"Loading chart..."}
               <LoadingIndicator />
             </header> )

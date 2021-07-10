@@ -6,7 +6,6 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import './Dashboard.css';
 import LoadingIndicator from '../../common/LoadingIndicator';
 
 const useStyles = makeStyles(theme => ({
@@ -22,7 +21,17 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up('md')]: {
       display: 'none',
     },
-  }
+  },
+  tablePlaceholder: {
+    minHeight: '200px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '18px',
+    marginLeft: '50px',
+    marginRight: '50px',
+  },
 }));
 
 function tabulate(data, keysPerRow=3) {
@@ -93,7 +102,7 @@ export default function InfoTable({ data }) {
           </Table>
         </div>
       ) : (
-        <div className="Table-placeholder">
+        <div className={classes.tablePlaceholder}>
           {"Loading stock info..."}
           <LoadingIndicator />
         </div>

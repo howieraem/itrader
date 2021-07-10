@@ -52,7 +52,7 @@ class App extends React.Component {
       loading: false,
       initialized: false,
       justLoggedOut: false,
-      symbol: "DIDI",
+      symbol: null,
     }
     this.loadCurrentlyLoggedInUser = this.loadCurrentlyLoggedInUser.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
@@ -95,6 +95,7 @@ class App extends React.Component {
   componentDidMount() {
     this.setState({
       justLoggedOut: false,
+      symbol: localStorage.getItem('symbol') || 'TSLA',
     })
     this.loadCurrentlyLoggedInUser();
     console.log(this.state.symbol);
@@ -102,6 +103,7 @@ class App extends React.Component {
 
   changeSymbol(symbol) {
     this.setState({ symbol: symbol });
+    localStorage.setItem('symbol', symbol);
   }
 
   render() {

@@ -22,11 +22,11 @@ const canvasGradient = createVerticalLinearGradient([
 
 class AreaChart extends React.Component {
 	render() {
-		const { data, symbol, type, width, ratio } = this.props;
+		const { data, symbol, marketClosed, type, width, ratio } = this.props;
 
 		// TODO consider time zone
 		let closeTime  = new Date();
-		const offset = closeTime.getHours() > 12 ? 1 : 0;
+		const offset = (marketClosed || closeTime.getHours() <= 12) ? 0 : 1;
 		closeTime.setDate(closeTime.getDate() + offset);
 		closeTime.setHours(4);
 		closeTime.setMinutes(0);
@@ -41,7 +41,7 @@ class AreaChart extends React.Component {
 		return (
 			<ChartCanvas ratio={ratio} width={width} height={400}
 				margin={{ left: 50, right: 50, top: 10, bottom: 30 }}
-				seriesName={symbol}
+				seriesName={symbol + '_intraday'}
 				data={data} 
 				type={type}
 				xAccessor={xAccessor}

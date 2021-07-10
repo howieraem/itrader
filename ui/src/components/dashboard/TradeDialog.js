@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TradeDialog(props) {
   const classes = useStyles();
-  const { symbol, authenticated }  = props;
+  const { symbol, authenticated, marketClosed }  = props;
 
   const [open, setOpen] = React.useState(false);
 
@@ -144,62 +144,75 @@ export default function TradeDialog(props) {
       </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Trade</DialogTitle>
-          
-          { authenticated ? (
+          { marketClosed ? (
             <div>
               <DialogContent>
                 <DialogContentText>
-                  Be sure to double check details below before you trade.
-                </DialogContentText>
-                <Paper variant='outlined' className={classes.symbolLabel}>Stock Symbol: {symbol}</Paper>
-                <Paper variant='outlined' className={classes.validQuantityLabel}>Maximum quantity affordable: {maxBuyQty}</Paper>  
-                <Paper variant='outlined' className={classes.validQuantityLabel}>Existing quantity: {maxSellQty}</Paper>
-                <TextField
-                  autoFocus
-                  onChange={handleQtyChange}
-                  variant="outlined"
-                  margin="dense"
-                  id="dialogQty"
-                  label="Quantity (shares)"
-                  error={textFieldErr !== null}
-                  helperText={textFieldErr}
-                  fullWidth
-                />
-                { alertMsg ? (
-                  <Alert severity={alertSeverity} style={{fontSize: "15px"}}>{alertMsg}</Alert>
-                ) : null }
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={() => handleTrade(true)} color="primary" className={classes.dialogButton}>
-                  Buy
-                </Button>
-                <Button onClick={() => handleTrade(false)} color="primary" className={classes.dialogButton}>
-                  Sell
-                </Button>
-                <Button onClick={handleClose} color="primary" className={classes.dialogButton}>
-                  Cancel
-                </Button>
-              </DialogActions>
-            </div>
-          ) : (
-            <div>
-              <DialogContent>
-                <DialogContentText>
-                  Please log in first.
+                  The stock market is closed.
                 </DialogContentText>
                 <DialogActions>
-                  <Button href="/login" color="primary" className={classes.dialogButton}>
-                    Login
+                  <Button onClick={handleClose} color="primary" className={classes.dialogButton}>
+                    OK
+                  </Button>
+                </DialogActions>
+              </DialogContent>
+            </div>
+          ) : (
+            authenticated ? (
+              <div>
+                <DialogContent>
+                  <DialogContentText>
+                    Be sure to double check details below before you trade.
+                  </DialogContentText>
+                  <Paper variant='outlined' className={classes.symbolLabel}>Stock Symbol: {symbol}</Paper>
+                  <Paper variant='outlined' className={classes.validQuantityLabel}>Maximum quantity affordable: {maxBuyQty}</Paper>  
+                  <Paper variant='outlined' className={classes.validQuantityLabel}>Existing quantity: {maxSellQty}</Paper>
+                  <TextField
+                    autoFocus
+                    onChange={handleQtyChange}
+                    variant="outlined"
+                    margin="dense"
+                    id="dialogQty"
+                    label="Quantity (shares)"
+                    error={!Boolean(textFieldErr)}
+                    helperText={textFieldErr}
+                    fullWidth
+                  />
+                  { alertMsg ? (
+                    <Alert severity={alertSeverity} style={{fontSize: "15px"}}>{alertMsg}</Alert>
+                  ) : null }
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={() => handleTrade(true)} color="primary" className={classes.dialogButton}>
+                    Buy
+                  </Button>
+                  <Button onClick={() => handleTrade(false)} color="primary" className={classes.dialogButton}>
+                    Sell
                   </Button>
                   <Button onClick={handleClose} color="primary" className={classes.dialogButton}>
                     Cancel
                   </Button>
                 </DialogActions>
-              </DialogContent>
-            </div>
+              </div>
+            ) : (
+              <div>
+                <DialogContent>
+                  <DialogContentText>
+                    Please log in first.
+                  </DialogContentText>
+                  <DialogActions>
+                    <Button href="/login" color="primary" className={classes.dialogButton}>
+                      Login
+                    </Button>
+                    <Button onClick={handleClose} color="primary" className={classes.dialogButton}>
+                      Cancel
+                    </Button>
+                  </DialogActions>
+                </DialogContent>
+              </div>
+            )
           ) }
-
-        
+                  
       </Dialog>
     </div>
   );

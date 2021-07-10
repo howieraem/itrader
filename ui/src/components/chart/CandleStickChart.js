@@ -102,7 +102,7 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 				width={width}
 				margin={margin}
 				type={type}
-				seriesName={symbol}
+				seriesName={symbol + '_history'}
 				data={data}
 				xScale={xScale}
 				xAccessor={xAccessor}

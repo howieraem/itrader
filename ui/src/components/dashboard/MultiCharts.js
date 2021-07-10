@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
 export default function MultiCharts(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-  const { symbol, latestPrice } = props;
+  const { symbol, latestPrice, marketClosed } = props;
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -86,7 +86,7 @@ export default function MultiCharts(props) {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <IntradayChart symbol={symbol} />
+        <IntradayChart symbol={symbol} marketClosed={marketClosed} />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <HistoryChart symbol={symbol} interval="d" />
