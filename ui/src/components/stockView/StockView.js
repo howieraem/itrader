@@ -12,21 +12,16 @@ import { getStockBasicInfo } from '../../utils/DataAPIUtils';
 const useStyles = theme => ({
   grow: {
     flexGrow: 1,
+    display: 'none',
     [theme.breakpoints.up('md')]: {
       display: 'block',
     },
   },
-  buttons: {
-    textTransform: 'none', 
-    fontSize: 16, 
-    backgroundColor: "#0077b7", 
-    color: "white", 
-    borderRadius: 12,
-    maxWidth: '130px', 
-    maxHeight: '50px', 
-    minWidth: '130px', 
-    minHeight: '50px',
-    marginTop: "5px"
+  grow2: {
+    display: 'block',
+    [theme.breakpoints.up('md')]: {
+      display: 'none',
+    },
   },
   topContainer: {
     backgroundColor: '#fafaff',
@@ -39,7 +34,10 @@ const useStyles = theme => ({
     flexDirection: 'column',
     alignItems: 'left',
     justifyContent: 'center',
-    fontSize: '20px',
+    fontSize: '16px',
+    [theme.breakpoints.up('sm')]: {
+      fontSize: '20px',
+    },
   },
   symbolTitle2: {
     minHeight: '25px',
@@ -48,16 +46,12 @@ const useStyles = theme => ({
     flexDirection: 'column',
     alignItems: 'left',
     justifyContent: 'center',
-    fontSize: '17px',
+    fontSize: '15px',
+    [theme.breakpoints.up('sm')]: {
+      fontSize: '17px',
+    },
   }
 })
-
-
-// class DataItem extends React.Component {
-//   render() {
-//     return <div>{this.props.k + ": " + this.props.v}</div>;
-//   }
-// }
 
 
 function roundNumber(number, places=4) {
@@ -90,7 +84,7 @@ function filterInfo(info) {
 }
 
 
-class Dashboard extends React.Component {
+class StockView extends React.Component {
   _mounted = false
 
   constructor(props) {
@@ -200,7 +194,7 @@ class Dashboard extends React.Component {
     return (
       <Grid container spacing={0}>
         <Grid container spacing={2} className={classes.topContainer}>
-          <Grid item xs={3} sm={4}> 
+          <Grid item xs={4} sm={4}> 
             <header className={classes.symbolTitle1}>
               {this.state.symbol}
             </header>
@@ -211,7 +205,7 @@ class Dashboard extends React.Component {
 
           <Grid item className={classes.grow} />
 
-          <Grid item xs={3} sm={4}> 
+          <Grid item xs={4} sm={5}> 
             <header className={classes.symbolTitle1}>
               { marketClosed ? "Market closed" : priceLoaded ? ("$" + this.state.price) : "Loading price..." }
             </header>
@@ -220,16 +214,16 @@ class Dashboard extends React.Component {
             </header>
           </Grid>
           
-          <Grid item className={classes.grow} />
+          <Grid item xs className={classes.grow2} />
 
-          <Grid item xs={2} align="right">
+          <Grid item xs={2} sm={2} align="right">
             <TradeDialog symbol={this.state.symbol} authenticated={this.props.authenticated} marketClosed={marketClosed} />
           </Grid>
         </Grid>
 
         <Grid container>
           <Grid item xs={12}>
-            <MultiCharts key={this.state.symbol} symbol={this.state.symbol} lastestPrice={this.state.price} marketClosed={marketClosed} />
+            <MultiCharts key={this.state.symbol} symbol={this.state.symbol} lastestPrice={this.state.price} />
           </Grid>
         </Grid>
 
@@ -239,4 +233,4 @@ class Dashboard extends React.Component {
   }
 }
 
-export default withStyles(useStyles)(Dashboard);
+export default withStyles(useStyles)(StockView);

@@ -10,7 +10,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import AlertMessage from '../common/Alert';
 import PrimarySearchAppBar from '../components/bar/AppBar';
-import Dashboard from '../components/dashboard/Dashboard';
+import StockView from '../components/stockView/StockView';
 import SignIn from '../components/auth/SignIn';
 import SignUp from '../components/auth/SignUp';
 import Profile from '../components/profile/Profile';
@@ -125,7 +125,7 @@ class App extends React.Component {
             { this.state.justLoggedOut && <AlertMessage message={"Successfully logged out!"} severity={"success"} /> }
 
             <Switch>
-                <Route exact path="/" render={(props) => <Dashboard symbol={this.state.symbol} authenticated={this.state.authenticated} {...props} />}></Route>
+                <Route exact path="/" render={(props) => <StockView symbol={this.state.symbol} authenticated={this.state.authenticated} {...props} />}></Route>
                 <Route path="/login"
                   render={(props) => <SignIn authenticated={this.state.authenticated} {...props} />}>
                 </Route>

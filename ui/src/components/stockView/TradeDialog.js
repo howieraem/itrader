@@ -15,15 +15,20 @@ import { trade, getAffordable, getHolding } from '../../utils/APIUtils';
 const useStyles = makeStyles((theme) => ({
   tradeButton: {
     textTransform: 'none', 
-    fontSize: 16, 
+    fontSize: 14, 
     backgroundColor: "#0077b7", 
     color: "white", 
     borderRadius: 12,
-    maxWidth: '130px', 
+    marginTop: "5px",
     maxHeight: '50px', 
-    minWidth: '130px', 
     minHeight: '50px',
-    marginTop: "5px"
+    maxWidth: '75px', 
+    minWidth: '75px', 
+    [theme.breakpoints.up('md')]: {
+      fontSize: 16, 
+      maxWidth: '130px', 
+      minWidth: '130px', 
+    },
   },
   dialogButton: {
     textTransform: 'none',
