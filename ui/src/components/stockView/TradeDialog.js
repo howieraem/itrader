@@ -10,16 +10,17 @@ import Paper from '@material-ui/core/Paper';
 import { Alert } from "@material-ui/lab"
 import { makeStyles } from '@material-ui/core/styles';
 import { trade, getAffordable, getHolding } from '../../utils/APIUtils';
+import { COLOR_TERTIARY } from '../../common/Theme';
 
 
 const useStyles = makeStyles((theme) => ({
   tradeButton: {
     textTransform: 'none', 
     fontSize: 14, 
-    backgroundColor: "#0077b7", 
+    backgroundColor: COLOR_TERTIARY, 
     color: "white", 
     borderRadius: 12,
-    marginTop: "5px",
+    marginTop: "10px",
     maxHeight: '50px', 
     minHeight: '50px',
     maxWidth: '75px', 

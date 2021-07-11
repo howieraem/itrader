@@ -11,9 +11,10 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Redirect } from 'react-router-dom';
 import { login } from '../../utils/APIUtils';
+import { COLOR_PRIMARY } from '../../common/Theme';
 
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = (theme) => ({
   paper: {
     marginTop: theme.spacing(8),
     display: 'flex',
@@ -29,9 +30,12 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
   },
   submit: {
+    textTransform: 'none', 
+    background: COLOR_PRIMARY, 
+    color: 'white',
     margin: theme.spacing(3, 0, 2),
   },
-}));
+});
 
 class SignIn extends React.Component {
   constructor(props) {
@@ -108,7 +112,7 @@ class SignIn extends React.Component {
       <Grid item xs={12}>
         <CssBaseline />
         <Container component="main" maxWidth="xs">
-          <Grid item xs={12} style={{ minHeight: "10vh" }}></Grid>
+          <Grid item xs={12} style={{ minHeight: "10vh" }} />
           <div className={classes.paper}>
             <Typography component="h1" variant="h5">
               Sign in to ITrader
@@ -147,9 +151,7 @@ class SignIn extends React.Component {
                 type="submit"
                 fullWidth
                 variant="contained"
-                color="primary"
                 className={classes.submit}
-                style={{textTransform: 'none', background: '#005480'}}
                 onClick={this.handleSubmit}
               >
                 Sign In
@@ -169,7 +171,7 @@ class SignIn extends React.Component {
             </form>
           </div>
         </Container>
-        <Grid item xs={12} style={{ minHeight: "5vh" }}></Grid>
+        <Grid item xs={12} style={{ minHeight: "5vh" }} />
       </Grid>
     );
   }

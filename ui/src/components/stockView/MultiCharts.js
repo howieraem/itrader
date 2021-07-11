@@ -9,6 +9,7 @@ import Box from '@material-ui/core/Box';
 import IntradayChart from '../chart/IntradayChart';
 import HistoryChart from '../chart/HistoryChart';
 import MinuteChart from '../chart/MinuteChart';
+import { COLOR_SECONDARY } from '../../common/Theme';
 
 
 function TabPanel(props) {
@@ -69,7 +70,7 @@ export default function MultiCharts(props) {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar position="static" style={{ background: COLOR_SECONDARY }}>
         <Tabs value={value} onChange={handleChange} aria-label="interval tabs" classes={{ indicator: classes.indicator }}>
           <Tab label="Intraday" {...a11yProps(0)} className={classes.tab} />
           <Tab label="Day" {...a11yProps(1)} className={classes.tab} />

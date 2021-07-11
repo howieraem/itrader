@@ -6,7 +6,7 @@ import { timeParse } from "d3-time-format";
 
 export function getStockBasicInfo(symbol) {  
   return new Promise((resolve, reject) => {
-    if (!symbol) return reject(Error('Stock symbol cannot be empty.'));
+    if (!symbol) return reject(Error('Stock symbol cannot be empty!'));
 
     const url = SERVER_URL + `/stockBasic?symbols=${symbol}`;
     return axios.get(url).then((res) => {
@@ -34,6 +34,7 @@ function parseRow(d) {
 
 function parseIntraday(raw) {
   const responseDetails = JSON.parse(raw).chart;
+  if (!responseDetails)  throw new Error("Intraday data is blank!");
   if (responseDetails.error)  throw new Error(responseDetails.error.description);
   const d = responseDetails.result[0];
   const indicators = d.indicators.quote[0], time = d.timestamp;

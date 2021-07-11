@@ -12,6 +12,7 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
 import AccountMenu from './AccountMenu';
+import { COLOR_PRIMARY } from '../../common/Theme';
 
 
 const Clock = ({ date }) => (
@@ -26,11 +27,11 @@ const ClockMobile = ({ date }) => (
 
 const useStyles = makeStyles((theme) => ({
   iconButton: {
-    background: '#005480',
+    background: COLOR_PRIMARY,
     textTransform: 'none', 
     alignItems: 'center',
     '&:hover': {
-      backgroundColor: '#005480',
+      backgroundColor: COLOR_PRIMARY,
     },
   },
   grow: {
@@ -184,7 +185,7 @@ export default function PrimarySearchAppBar(props) {
 
   return (
     <div className={classes.grow}>
-      <AppBar style={{ background: '#005480' }}>
+      <AppBar style={{ background: COLOR_PRIMARY }}>
         <Toolbar>
           <Button 
             aria-label="home" 
@@ -192,6 +193,7 @@ export default function PrimarySearchAppBar(props) {
             color="inherit"
             m={2}
             className={classes.iconButton}
+            disableRipple={true}
             startIcon={<Avatar src={'./logo192.png'} />}
           />
           <Typography component="a" href="/" className={classes.title} variant="h5" noWrap>

@@ -84,7 +84,7 @@ export default function InfoTable({ data }) {
               ))}
             </TableBody>
           </Table>
-          <Table className={classes.tableMobile} aria-label="info table">
+          <Table className={classes.tableMobile} aria-label="info table mobile">
             <TableBody>
               {tabulate(data, 2).map((row) => (
                 <TableRow>

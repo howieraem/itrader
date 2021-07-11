@@ -5,6 +5,7 @@ import Box from "@material-ui/core/Box";
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Title from './Title';
+import { COLOR_PRIMARY } from '../../common/Theme';
 
 
 const useStyles = makeStyles({
@@ -31,7 +32,7 @@ const useStyles = makeStyles({
     verticalAlign: "middle",
     textAlign: "center",
     borderRadius: "50%",
-    background: "#005480",
+    background: COLOR_PRIMARY,
   },
   textAvatarSpan: {
     lineHeight: "100px",

@@ -3,6 +3,7 @@ import Grid from '@material-ui/core/Grid';
 // import Link from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
+import { COLOR_PRIMARY } from './Theme';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -18,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '60px',
     letterSpacing: '10px',
     marginBottom: '10px',
-    color: '#005480',
+    color: COLOR_PRIMARY,
   },
   desc: {
     fontSize: '20px',
@@ -27,10 +28,10 @@ const useStyles = makeStyles((theme) => ({
   homeButton: {
     textTransform: 'none', 
     fontSize: 18, 
-    backgroundColor: "#005480", 
+    backgroundColor: COLOR_PRIMARY, 
     color: "white",
     '&:hover': {
-      backgroundColor: "#005480",
+      backgroundColor: COLOR_PRIMARY,
       color: "white",
     },
   }
