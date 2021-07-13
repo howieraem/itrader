@@ -13,6 +13,7 @@ import PrimarySearchAppBar from '../components/bar/AppBar';
 import StockView from '../components/stockView/StockView';
 import SignIn from '../components/auth/SignIn';
 import SignUp from '../components/auth/SignUp';
+import Forgot from '../components/auth/Forgot';
 import Profile from '../components/profile/Profile';
 import NotFound from '../common/NotFound';
 import PrivateRoute from '../common/PrivateRoute';
@@ -101,17 +102,13 @@ export default function App() {
           { justLoggedOut && <AlertMessage message={"Successfully logged out!"} severity={"success"} /> }
 
           <Switch>
-              <Route exact path="/" render={(props) => <StockView symbol={symbol} authenticated={authenticated} {...props} />}></Route>
-              <Route path="/login"
-                render={(props) => <SignIn authenticated={authenticated} {...props} />}>
-              </Route>
-              <Route path="/signup"
-                render={(props) => <SignUp authenticated={authenticated} {...props} />}>
-              </Route>
-              <PrivateRoute path="/profile" authenticated={authenticated} initialized={initialized} currentUser={curUser}
-                component={Profile}>
-              </PrivateRoute>
-              <Route component={NotFound}></Route>
+              <Route exact path="/" render={(props) => <StockView symbol={symbol} authenticated={authenticated} {...props} />} />
+              <Route path="/login" render={(props) => <SignIn authenticated={authenticated} {...props} />} />
+              <Route path="/signup" render={(props) => <SignUp authenticated={authenticated} {...props} />} />
+              <PrivateRoute path="/profile" authenticated={authenticated} initialized={initialized} currentUser={curUser} 
+                component={Profile} />
+              <Route path="/forgot" component={Forgot} />
+              <Route component={NotFound} />
           </Switch>
         </Grid>
       </Container>

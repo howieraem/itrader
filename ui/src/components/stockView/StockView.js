@@ -33,7 +33,8 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'left',
     justifyContent: 'center',
-    marginTop: '10px',
+    margin: theme.spacing(2, 0, 1),
+    // marginTop: '10px',
     fontSize: '16px',
     [theme.breakpoints.up('sm')]: {
       fontSize: '20px',
@@ -46,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'left',
     justifyContent: 'center',
-    marginBottom: '10px',
+    margin: theme.spacing(1, 0, 2),
     fontSize: '14px',
     [theme.breakpoints.up('sm')]: {
       fontSize: '16px',
@@ -127,6 +128,9 @@ export default function StockView(props) {
     return () => {
       clearInterval(interval);
       removeTicker(symbol);
+      setPrice(0.);
+      setChange(0.);
+      setChangePercent(0.);
     };
   }, [symbol]);
 

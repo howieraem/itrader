@@ -15,7 +15,7 @@ export default function AlertMessage({ message, rank=1, severity="info" }) {
   }
 
   return (
-    <div>
+    <>
       <Snackbar
         anchorOrigin={{
           vertical: "top",
@@ -34,6 +34,6 @@ export default function AlertMessage({ message, rank=1, severity="info" }) {
       >
         <Alert severity={severity} style={{fontSize: "15px"}}><strong>{message}</strong></Alert>
       </Snackbar>
-    </div>
+    </>
   );
 }

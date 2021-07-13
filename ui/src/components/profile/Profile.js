@@ -50,7 +50,6 @@ export default function Profile(props) {
 
             <Grid item xs={12} md={8} lg={9} xl={9}>
               <Paper className={fixedHeightPaper}>
-                {/* <Chart /> */}
                 <Portfolio />
               </Paper>
             </Grid>

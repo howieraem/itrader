@@ -63,11 +63,11 @@ export default function InfoTable({ data }) {
   return (
     <TableContainer component={Paper}>
       { data ? (
-        <div>
+        <>
           <Table className={classes.table} aria-label="info table">
             <TableBody>
-              {tabulate(data, 3).map((row) => (
-                <TableRow>
+              {tabulate(data, 3).map((row, idx) => (
+                <TableRow key={idx}>
                   <TableCell component="th" scope="row">
                     <strong>{row[0]}</strong>
                   </TableCell>
@@ -86,8 +86,8 @@ export default function InfoTable({ data }) {
           </Table>
           <Table className={classes.tableMobile} aria-label="info table mobile">
             <TableBody>
-              {tabulate(data, 2).map((row) => (
-                <TableRow>
+              {tabulate(data, 2).map((row, idx) => (
+                <TableRow key={idx}>
                   <TableCell component="th" scope="row">
                     <strong>{row[0]}</strong>
                   </TableCell>
@@ -100,7 +100,7 @@ export default function InfoTable({ data }) {
               ))}
             </TableBody>
           </Table>
-        </div>
+        </>
       ) : (
         <div className={classes.tablePlaceholder}>
           {"Loading stock info..."}

@@ -55,7 +55,7 @@ export default function Portfolio(props) {
     <React.Fragment>
       <Title>Portfolio</Title>
       {records.length ? (
-        <div>
+        <>
           <Table size="small">
             <TableHead>
               <TableRow>
@@ -82,7 +82,7 @@ export default function Portfolio(props) {
               </Link>
             </div>
           ) : null}
-        </div>
+        </>
       ) : (
         <div>You don't hold any position.</div>
       )}

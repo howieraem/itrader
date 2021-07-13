@@ -64,7 +64,7 @@ export default function Trades() {
     <React.Fragment>
       <Title>Recent Trades</Title>
       {records.length ? (
-        <div>
+        <>
           <Table size="small">
             <TableHead>
               <TableRow>
@@ -99,7 +99,7 @@ export default function Trades() {
               </Link>
             </div>
           ) : null}
-        </div>
+        </>
       ) : (
         <div>Your trade history is empty.</div>
       )}

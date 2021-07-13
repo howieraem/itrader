@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -109,6 +110,8 @@ export default function PrimarySearchAppBar(props) {
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
+  let history = useHistory();
+
   React.useEffect(() => {
     const interval = setInterval(() => {
       setDate(new Date());
@@ -176,7 +179,7 @@ export default function PrimarySearchAppBar(props) {
         </div>
       ) : (
         <div>
-          <MenuItem component="a" href="/login">Login</MenuItem>
+          <MenuItem component="a" href="/login">Login</MenuItem>,
           <MenuItem component="a" href="/signup">Sign Up</MenuItem>
         </div>
       )}
@@ -214,6 +217,7 @@ export default function PrimarySearchAppBar(props) {
                   const symbol = ev.target.value.toUpperCase();
                   onSearch(symbol);
                   ev.preventDefault();
+                  history.push('/');
                 }
               }}
             />

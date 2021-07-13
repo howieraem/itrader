@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: COLOR_TERTIARY, 
     color: "white", 
     borderRadius: 12,
-    marginTop: "10px",
+    margin: theme.spacing(3, 0, 2),
     maxHeight: '50px', 
     minHeight: '50px',
     maxWidth: '75px', 
@@ -144,14 +144,14 @@ export default function TradeDialog(props) {
   }
 
   return (
-    <div>
+    <>
       <Button variant="contained" className={classes.tradeButton} onClick={handleClickOpen}>
         Trade
       </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Trade</DialogTitle>
           { marketClosed ? (
-            <div>
+            <>
               <DialogContent>
                 <DialogContentText>
                   The stock market is closed.
@@ -162,10 +162,10 @@ export default function TradeDialog(props) {
                   </Button>
                 </DialogActions>
               </DialogContent>
-            </div>
+            </>
           ) : (
             authenticated ? (
-              <div>
+              <>
                 <DialogContent>
                   <DialogContentText>
                     Be sure to double check details below before you trade.
@@ -199,9 +199,9 @@ export default function TradeDialog(props) {
                     Cancel
                   </Button>
                 </DialogActions>
-              </div>
+              </>
             ) : (
-              <div>
+              <>
                 <DialogContent>
                   <DialogContentText>
                     Please log in first.
@@ -215,11 +215,10 @@ export default function TradeDialog(props) {
                     </Button>
                   </DialogActions>
                 </DialogContent>
-              </div>
+              </>
             )
           ) }
-                  
       </Dialog>
-    </div>
+    </>
   );
 }

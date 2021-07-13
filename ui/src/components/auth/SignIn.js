@@ -7,14 +7,14 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Redirect } from 'react-router-dom';
 import { login } from '../../utils/APIUtils';
 import { COLOR_PRIMARY } from '../../common/Theme';
 
 
-const useStyles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
     display: 'flex',
@@ -35,146 +35,109 @@ const useStyles = (theme) => ({
     color: 'white',
     margin: theme.spacing(3, 0, 2),
   },
-});
+}));
 
-class SignIn extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: '',
-      password: '',
-      rememberMe: false,
-    };
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChecked = this.handleChecked.bind(this);
-  }
 
-  componentDidMount(){
-    if (this.props.authenticated) {
-      this.props.history.push("/")
-    }
-  }
+export default function SignIn(props) {
+  const { authenticated, history, location } = props;
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [rememberMe, setRememberMe] = React.useState(false);
+  const classes = useStyles();
 
-  componentDidUpdate(){
-    if (this.props.authenticated) {
-      this.props.history.push("/")
-    }
-  }
-
-  handleInputChange(event) {
-    const target = event.target;
-    const inputName = target.name;        
-    const inputValue = target.value;
-
-    this.setState({
-      [inputName] : inputValue
-    });        
-  }
-
-  handleChecked = event => {
-    this.setState({ rememberMe: event.target.checked });
-  }
-
-  handleSubmit(event) {
+  const handleSubmit = (event) => {
     event.preventDefault();   
 
-    const loginRequest = Object.assign({}, this.state);
+    const loginRequest = Object.assign({}, { email, password });
 
     login(loginRequest)
     .then(response => {
-      if (this.state.rememberMe) {
+      if (rememberMe) {
         localStorage.setItem('accessToken', response.accessToken);
       } else {
         sessionStorage.setItem('accessToken', response.accessToken);
       }
 
       // console.log("Successfully logged in!");
-      this.props.history.push("/");
-      this.props.history.go();
-      // window.location.reload()
+      history.push("/");
+      history.go();
     }).catch(error => {
-      // console.log((error && error.message) || 'Oops! Something went wrong. Please try again!');
+      console.log((error && error.message) || 'Oops! Something went wrong. Please try again!');
     });
   }
-
-  render() {
-    if (this.props.authenticated) {
-      return <Redirect
-        to={{
-          pathname: "/",
-          state: { from: this.props.location }
-        }}
-      />;            
-    }
-    const { classes } = this.props;
-    return (
-      <Grid item xs={12}>
-        <CssBaseline />
-        <Container component="main" maxWidth="xs">
-          <Grid item xs={12} style={{ minHeight: "10vh" }} />
-          <div className={classes.paper}>
-            <Typography component="h1" variant="h5">
-              Sign in to ITrader
-            </Typography>
-            <form className={classes.form} noValidate>
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                autoFocus
-                onChange={this.handleInputChange}
-              />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                onChange={this.handleInputChange}
-              />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-                onChange={this.handleChecked}
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                className={classes.submit}
-                onClick={this.handleSubmit}
-              >
-                Sign In
-              </Button>
-              <Grid container>
-                <Grid item xs style={{marginTop: "5px"}}>
-                  <Link href="/forgot" variant="body2">
-                    Forgot password?
-                  </Link>
-                </Grid>
-                <Grid item style={{marginTop: "5px"}}>
-                  <Link href="/signup" variant="body2">
-                    {"New user? Sign Up!"}
-                  </Link>
-                </Grid>
-              </Grid>
-            </form>
-          </div>
-        </Container>
-        <Grid item xs={12} style={{ minHeight: "5vh" }} />
-      </Grid>
-    );
+  
+  if (authenticated) {
+    return <Redirect
+      to={{
+        pathname: "/",
+        state: { from: location }
+      }}
+    />;            
   }
+  return (
+    <Grid item xs={12}>
+      <CssBaseline />
+      <Container component="main" maxWidth="xs">
+        <Grid item xs={12} style={{ minHeight: "10vh" }} />
+        <div className={classes.paper}>
+          <Typography component="h1" variant="h5">
+            Sign in to ITrader
+          </Typography>
+          <form className={classes.form} noValidate>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              onChange={(ev) => setEmail(ev.target.value)}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              onChange={(ev) => setPassword(ev.target.value)}
+            />
+            <FormControlLabel
+              control={<Checkbox value="remember" color="primary" />}
+              label="Remember me"
+              onChange={(ev) => setRememberMe(ev.target.checked)}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              className={classes.submit}
+              onClick={handleSubmit}
+            >
+              Sign In
+            </Button>
+            <Grid container>
+              <Grid item xs style={{marginTop: "5px"}}>
+                <Link href="/forgot" variant="body2">
+                  Forgot password?
+                </Link>
+              </Grid>
+              <Grid item style={{marginTop: "5px"}}>
+                <Link href="/signup" variant="body2">
+                  {"New user? Sign Up!"}
+                </Link>
+              </Grid>
+            </Grid>
+          </form>
+        </div>
+      </Container>
+      <Grid item xs={12} style={{ minHeight: "5vh" }} />
+    </Grid>
+  );
 }
-
-export default withStyles(useStyles)(SignIn);
