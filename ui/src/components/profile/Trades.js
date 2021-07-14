@@ -1,13 +1,13 @@
 import React from 'react';
-import Link from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Title from './Title';
-import { getTrades } from '../../utils/APIUtils';
+import TablePagination from '@material-ui/core/TablePagination';
+import Typography from '@material-ui/core/Typography';
+import { getTrades, getNumOfTrades } from '../../utils/APIUtils';
 
 
 function processTimeFormat(rawTime) {
@@ -17,9 +17,10 @@ function processTimeFormat(rawTime) {
 
 function processTradeRecord(i, tradeRecord) {
   return { 
-    id: i,
+    i,
     time: processTimeFormat(tradeRecord.time),
     symbol: tradeRecord.symbol,
+    isBuy: tradeRecord.buy,
     action: tradeRecord.buy ? "Buy" : "Sell",
     quantity: tradeRecord.quantity,
     price: tradeRecord.price,
@@ -29,41 +30,71 @@ function processTradeRecord(i, tradeRecord) {
 }
 
 const useStyles = makeStyles((theme) => ({
-  seeMore: {
-    marginTop: theme.spacing(3),
+  title: {
+    display: 'flex',
+    flexDirection: 'row',
   },
+  grow: {
+    flexGrow: 1,
+  },
+  rowBuy: {
+    background: '#d6ffe1'
+  },
+  rowSell: {
+    background: '#ffd6d6'
+  }
 }));
 
 export default function Trades() {
   const classes = useStyles();
-  const maxDisplayRows = 10;
-  const [hasMoreRecords, setHasMoreRecords] = React.useState(false);
-  const [records, setRecords] = React.useState([]);
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [numOfRecords, setNumOfRecords] = React.useState(0);
+  const [pageRecords, setPageRecords] = React.useState([]);
 
   React.useEffect(() => {
-    getTrades(maxDisplayRows + 1)
+    getNumOfTrades()
+    .then(res => setNumOfRecords(res))
+    .catch(err => console.log(err));
+
+    getTrades(page, rowsPerPage)
     .then(raw => {
-      let n;
-      if (raw.length > maxDisplayRows) {
-        setHasMoreRecords(true);
-        n = maxDisplayRows;
-      } else {
-        setHasMoreRecords(false);
-        n = raw.length;
-      }
-      let res = [];
-      for (let i = 0; i < n; ++i) {
-        res.push(processTradeRecord(i, raw[i]));
-      }
-      setRecords(res);
+      setPageRecords(raw.map((row, i) => processTradeRecord(i, row)));
     })
     .catch(err => console.log(err));
-  }, [])
+  }, [rowsPerPage, page])
+
+  const handleChangePage = (ev, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (ev) => {
+    setRowsPerPage(parseInt(ev.target.value, 10));
+    setPage(0);
+  };
 
   return (
     <React.Fragment>
-      <Title>Recent Trades</Title>
-      {records.length ? (
+      <Typography 
+        component="h2" 
+        variant="h6" 
+        color="primary" 
+        gutterBottom
+        className={classes.title}
+      >
+        Recent Trades
+        <div className={classes.grow} />
+        <TablePagination
+          component="div"
+          count={numOfRecords}
+          page={page}
+          onChangePage={handleChangePage}   // onChangePage for Material UI ^5
+          rowsPerPage={rowsPerPage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}   // onRowsPerPageChange for Material UI ^5
+          rowsPerPageOptions={[5, 10, 20]}
+        />
+      </Typography>
+      {numOfRecords ? (
         <>
           <Table size="small">
             <TableHead>
@@ -78,8 +109,8 @@ export default function Trades() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {records.map((row) => (
-                <TableRow key={row.id}>
+              {pageRecords.map((row) => (
+                <TableRow key={row.i} className={row.isBuy ? classes.rowBuy : classes.rowSell}>
                   <TableCell>{row.time}</TableCell>
                   <TableCell>{row.symbol}</TableCell>
                   <TableCell>{row.action}</TableCell>
@@ -91,14 +122,6 @@ export default function Trades() {
               ))}
             </TableBody>
           </Table>
-
-          {hasMoreRecords ? (
-            <div className={classes.seeMore}>
-              <Link color="primary" href="/trades">
-                See more trades
-              </Link>
-            </div>
-          ) : null}
         </>
       ) : (
         <div>Your trade history is empty.</div>

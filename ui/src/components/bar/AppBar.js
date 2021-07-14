@@ -205,7 +205,7 @@ export default function PrimarySearchAppBar(props) {
           <div className={classes.grow} />
           <div className={classes.search}>
             <InputBase
-              placeholder="Search symbol & hit Enter"
+              placeholder="Search stock here"
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,

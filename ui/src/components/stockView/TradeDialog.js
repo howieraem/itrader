@@ -180,7 +180,7 @@ export default function TradeDialog(props) {
                     margin="dense"
                     id="dialogQty"
                     label="Quantity (shares)"
-                    error={!Boolean(textFieldErr)}
+                    error={Boolean(textFieldErr)}
                     helperText={textFieldErr}
                     fullWidth
                   />

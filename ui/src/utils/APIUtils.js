@@ -39,23 +39,38 @@ export function getCurrentUser() {
     }, token);
 }
 
-function getUserDetails(field, rows=-1) {
+function getUserDetails(field, page=-1, rows=-1) {
     const token = getToken();
     if (!token) {
         return Promise.reject("No access token set. Please log in again.");
     }
+    let url = SERVER_URL + `/${field}`
+    if (page >= 0) {
+        url += `?page=${page}`;
+    }
+    if (rows >= 0) {
+        url += `&rows=${rows}`;
+    }
     return request({
-        url: SERVER_URL + `/${field}?rows=${rows}`,
+        url,
         method: 'GET'
     }, token);
 }
 
-export function getPortfolio(rows=5) {
-    return getUserDetails('portfolio', rows);
+export function getPortfolio(page, rows=5) {
+    return getUserDetails('portfolio', page, rows);
 }
 
-export function getTrades(rows=10) {
-    return getUserDetails('trades', rows);
+export function getNumOfPositions() {
+    return getUserDetails('numOfPositions');
+}
+
+export function getTrades(page, rows=10) {
+    return getUserDetails('trades', page, rows);
+}
+
+export function getNumOfTrades() {
+    return getUserDetails('numOfTrades');
 }
 
 export function login(loginRequest) {

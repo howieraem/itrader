@@ -31,4 +31,6 @@ public interface PositionRepository extends JpaRepository<Position, PositionId> 
             "where p.userId = :userId " +
             "and p.symbol = :symbol ")
     Optional<Long> findFirstQuantityByUserIdAndSymbol(@Param("userId") Long userId, @Param("symbol") String symbol);
+
+    long countByUserId(long userId);
 }

@@ -21,4 +21,6 @@ public interface TradeRepository extends JpaRepository<Trade, Long> {
             "from Trade tr where tr.userId = :userId " +
             "order by tr.time desc ")
     List<TradeDTO> findByUserId(@Param("userId") Long userId, Pageable pageable);
+
+    long countByUserId(Long userId);
 }

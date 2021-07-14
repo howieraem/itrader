@@ -5,14 +5,14 @@ import Box from "@material-ui/core/Box";
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Title from './Title';
-import { COLOR_PRIMARY } from '../../common/Theme';
 
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   profileInfo: {
     align: "center",
     textAlign: "center",
     horizontalAlign: "middle",
+    margin: theme.spacing(2, 0, 2),
   },
   profileAvatar: {
     justifyContent: "center",
@@ -20,26 +20,7 @@ const useStyles = makeStyles({
     minWidth: "100px",
     minHeight: "100px"
   },
-  textAvatar: {
-    width: "100px",
-    height: "100px",
-    margin: "0 auto",
-    marginTop: "10px",
-    marginLeft: "60px",
-    position: "relative",
-    left: "50%",
-    transform: "translateX(-50%)",
-    verticalAlign: "middle",
-    textAlign: "center",
-    borderRadius: "50%",
-    background: COLOR_PRIMARY,
-  },
-  textAvatarSpan: {
-    lineHeight: "100px",
-    color: "#ffffff",
-    fontSize: "3em"
-  }
-});
+}));
 
 export default function Balance(props) {
   const classes = useStyles();

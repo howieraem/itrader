@@ -41,17 +41,33 @@ public class UserController {
     @PreAuthorize("hasRole('USER')")
     public List<PositionDTO> getPortfolio(
             @CurrentUser UserPrincipal userPrincipal,
+            @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "rows", required = false) Integer rows) {
-        if (rows == null || rows <= 0)  return positionRepository.findByUserId(userPrincipal.getId());
-        return positionRepository.findByUserId(userPrincipal.getId(), PageRequest.of(0, rows));
+        if (page == null || page < 0)  page = 0;
+        if (rows == null || rows < 0)  rows = 5;
+        return positionRepository.findByUserId(userPrincipal.getId(), PageRequest.of(page, rows));
+    }
+
+    @GetMapping("/numOfPositions")
+    @PreAuthorize("hasRole('USER')")
+    public long getNumberOfPositions(@CurrentUser UserPrincipal userPrincipal) {
+        return positionRepository.countByUserId(userPrincipal.getId());
     }
 
     @GetMapping("/trades")
     @PreAuthorize("hasRole('USER')")
-    public List<TradeDTO> getTradesLimitedRows(
+    public List<TradeDTO> getTrades(
             @CurrentUser UserPrincipal userPrincipal,
+            @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "rows", required = false) Integer rows) {
-        if (rows == null || rows <= 0)  return tradeRepository.findByUserId(userPrincipal.getId());
-        return tradeRepository.findByUserId(userPrincipal.getId(), PageRequest.of(0, rows));
+        if (page == null || page < 0)  page = 0;
+        if (rows == null || rows < 0)  rows = 10;
+        return tradeRepository.findByUserId(userPrincipal.getId(), PageRequest.of(page, rows));
+    }
+
+    @GetMapping("/numOfTrades")
+    @PreAuthorize("hasRole('USER')")
+    public long getNumberOfTrade(@CurrentUser UserPrincipal userPrincipal) {
+        return tradeRepository.countByUserId(userPrincipal.getId());
     }
 }
