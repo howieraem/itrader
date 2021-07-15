@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@IdClass(PositionId.class)
+@IdClass(UserStockId.class)
 @Data
 public class Position {
     @Id
@@ -30,9 +30,9 @@ public class Position {
     @Column(name = "holding_cost", nullable = false)
     private BigDecimal holdingCost;
 
-    public Position(PositionId positionId) {
-        this.userId = positionId.getUserId();
-        this.symbol = positionId.getSymbol();
+    public Position(UserStockId userStockId) {
+        this.userId = userStockId.getUserId();
+        this.symbol = userStockId.getSymbol();
         this.quantity = 0;
         this.holdingCost = BigDecimal.ZERO;
     }

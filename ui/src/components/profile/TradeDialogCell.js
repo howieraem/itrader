@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -16,20 +17,14 @@ import { COLOR_TERTIARY } from '../../common/Theme';
 const useStyles = makeStyles((theme) => ({
   tradeButton: {
     textTransform: 'none', 
-    fontSize: 14, 
+    fontSize: 12, 
     backgroundColor: COLOR_TERTIARY, 
     color: "white", 
-    borderRadius: 12,
-    margin: theme.spacing(3, 0, 2),
-    maxHeight: '50px', 
-    minHeight: '50px',
-    maxWidth: '75px', 
-    minWidth: '75px', 
-    [theme.breakpoints.up('md')]: {
-      fontSize: 16, 
-      maxWidth: '130px', 
-      minWidth: '130px', 
-    },
+    borderRadius: 10,
+    maxHeight: '20px', 
+    minHeight: '20px',
+    maxWidth: '60px', 
+    minWidth: '60px',
   },
   dialogButton: {
     textTransform: 'none',
@@ -63,6 +58,8 @@ export default function TradeDialog(props) {
 
   const [alertMsg, setAlertMsg] = React.useState(null);
   const [alertSeverity, setAlertSeverity] = React.useState("info");
+
+  let history = useHistory();
 
   React.useEffect(() => {
     const updateValidQty = () => {
@@ -136,7 +133,8 @@ export default function TradeDialog(props) {
           setOpen(false);
           setAlertMsg(null);
           setButtonsDisabled(false);
-        }, 1500);
+        }, 2000);
+        history.go();
       } else {
         setAlertMsg("An error occurred. Please try again.")
         setAlertSeverity("error");

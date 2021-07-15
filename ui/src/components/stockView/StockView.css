@@ -1,0 +1,15 @@
+.element {
+  -moz-transition: all 0.3s ease-in;
+  -o-transition: all 0.3s ease-in;
+  -webkit-transition: all 0.3s ease-in;
+  transition: all 0.3s ease-in;
+  color: black;
+}
+
+.stock-rise {
+  color: #008800;
+}
+
+.stock-fall {
+  color: #ee0000;
+}

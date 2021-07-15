@@ -7,7 +7,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Pagination from '@material-ui/lab/Pagination';
 import Typography from '@material-ui/core/Typography';
-import TradeDialog from './TradeDialogCell';
 import { getPortfolio, getNumOfPositions } from '../../utils/APIUtils';
 
 
@@ -30,9 +29,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function Portfolio(props) {
+export default function Favorites() {
   const classes = useStyles();
-  const authenticated = props.currentUser != null;
   const [page, setPage] = React.useState(0);
   const rowsPerPage = 5;
   // const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -73,7 +71,7 @@ export default function Portfolio(props) {
         gutterBottom
         className={classes.title}
       >
-        Portfolio
+        Favorite Stocks
         <div className={classes.grow} />
         <Pagination 
             count={numOfPages} 
@@ -94,9 +92,6 @@ export default function Portfolio(props) {
                 <TableCell align="right">Quantity</TableCell>
                 <TableCell align="right">Holding Price ($)</TableCell>
                 <TableCell align="right">Current Price ($)</TableCell>
-                <TableCell align="right">Profit/Loss ($)</TableCell>
-                <TableCell align="right">Profit/Loss Percentage</TableCell>
-                <TableCell align="right"></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -105,10 +100,7 @@ export default function Portfolio(props) {
                   <TableCell>{row.symbol}</TableCell>
                   <TableCell align="right">{row.quantity}</TableCell>
                   <TableCell align="right">{row.holdingPrice}</TableCell>
-                  <TableCell align="right">0</TableCell>
-                  <TableCell align="right">0</TableCell>
-                  <TableCell align="right">0%</TableCell>
-                  <TableCell align="right"><TradeDialog symbol={row.symbol} authenticated={authenticated} /></TableCell>
+                  <TableCell align="right"></TableCell>
                 </TableRow>
               ))}
             </TableBody>

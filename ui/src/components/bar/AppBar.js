@@ -179,7 +179,7 @@ export default function PrimarySearchAppBar(props) {
         </div>
       ) : (
         <div>
-          <MenuItem component="a" href="/login">Login</MenuItem>,
+          <MenuItem component="a" href="/login">Login</MenuItem>
           <MenuItem component="a" href="/signup">Sign Up</MenuItem>
         </div>
       )}
@@ -211,7 +211,9 @@ export default function PrimarySearchAppBar(props) {
                 input: classes.inputInput,
               }}
               inputProps={{ 'aria-label': 'search' }}
-              startAdornment={<SearchIcon/>}
+              startAdornment={
+                <SearchIcon style={{ marginLeft: 15, marginRight: 0 }}/>
+              }
               onKeyPress={(ev) => {
                 if (ev.key === 'Enter') {
                   const symbol = ev.target.value.toUpperCase();

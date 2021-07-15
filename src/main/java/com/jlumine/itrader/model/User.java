@@ -1,5 +1,6 @@
 package com.jlumine.itrader.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +16,7 @@ import java.math.BigDecimal;
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,8 +29,8 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "pin", nullable = false)
-    private String pin;
+//    @Column(name = "pin", nullable = false)
+//    private String pin;
 
     @Column(name = "username", nullable = false)
     private String username;
@@ -39,10 +41,10 @@ public class User {
     @Column(name = "avatar")
     private String avatar;
 
-    public User(String email, String password, String pin, String username) {
+    public User(String email, String password, String username) {
         this.email = email;
         this.password = password;
-        this.pin = pin;
+//        this.pin = pin;
         this.username = username;
         this.balance = new BigDecimal(10000);
     }

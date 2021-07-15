@@ -22,14 +22,14 @@ export default function AlertMessage({ message, rank=1, severity="info" }) {
           horizontal: "right"
         }}
         open={open}
-        autoHideDuration={2000}
+        autoHideDuration={1500}
         onClose={handleClose}
         variant="warning"
         ContentProps={{
           "aria-describedby": "message-id"
         }}
         style={{
-          marginTop: `${50 * rank}px`
+          marginTop: `${30 * rank}px`
         }}
       >
         <Alert severity={severity} style={{fontSize: "15px"}}><strong>{message}</strong></Alert>

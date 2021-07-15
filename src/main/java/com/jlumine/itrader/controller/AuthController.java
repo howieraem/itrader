@@ -65,7 +65,7 @@ public class AuthController {
         User user = new User();
         user.setEmail(signUpRequest.getEmail());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-        user.setPin(passwordEncoder.encode(signUpRequest.getPin()));
+//        user.setPin(passwordEncoder.encode(signUpRequest.getPin()));
         user.setUsername(signUpRequest.getUsername());
         user.setBalance(new BigDecimal(10000));
 

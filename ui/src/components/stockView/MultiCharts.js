@@ -19,8 +19,8 @@ function TabPanel(props) {
     <div
       role="tabpanel"
       hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
+      id={`scrollable-auto-tabpanel-${index}`}
+      aria-labelledby={`scrollable-auto-tab-${index}`}
       {...other}
     >
       {value === index && (
@@ -40,8 +40,8 @@ TabPanel.propTypes = {
 
 function a11yProps(index) {
   return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    id: `scrollable-auto-tab-${index}`,
+    'aria-controls': `scrollable-auto-tabpanel-${index}`,
   };
 }
 
@@ -57,6 +57,30 @@ const useStyles = makeStyles((theme) => ({
   indicator: {
     backgroundColor: 'white',
   },
+  scrollButtons: {
+    width: 'initial',
+
+    '&:first-child': {
+      // backgroundColor:
+      //   theme.palette.type === 'dark'
+      //     ? theme.palette.grey[800]
+      //     : theme.palette.grey[50],
+      paddingRight: theme.spacing(2),
+      height: '100%',
+      position: 'absolute',
+      left: 0,
+      opacity: 1,
+      zIndex: 1,
+    },
+
+    '&.MuiTabs-scrollButtonsDesktop': {
+      display: 'flex',
+
+      '&.Mui-disabled:first-child': {
+        visibility: 'hidden',
+      },
+    },
+  }
 }));
 
 export default function MultiCharts(props) {
@@ -71,19 +95,28 @@ export default function MultiCharts(props) {
   return (
     <div className={classes.root}>
       <AppBar position="static" style={{ background: COLOR_SECONDARY }}>
-        <Tabs value={value} onChange={handleChange} aria-label="interval tabs" classes={{ indicator: classes.indicator }}>
+        <Tabs 
+          value={value} 
+          onChange={handleChange} 
+          variant="scrollable"
+          scrollButtons="auto"
+          aria-label="interval tabs"
+          classes={{ 
+            indicator: classes.indicator, 
+            scrollButtons: classes.scrollButtons 
+          }}
+        >
           <Tab label="Intraday" {...a11yProps(0)} className={classes.tab} />
           <Tab label="Day" {...a11yProps(1)} className={classes.tab} />
           <Tab label="Week" {...a11yProps(2)} className={classes.tab} />
           <Tab label="Month" {...a11yProps(3)} className={classes.tab} />
           <Tab label="Quarter" {...a11yProps(4)} className={classes.tab} />
-          <Tab label="Year" {...a11yProps(5)} className={classes.tab} />
-          <Tab label="1min" {...a11yProps(6)} className={classes.tab} />
-          <Tab label="5min" {...a11yProps(7)} className={classes.tab} />
-          <Tab label="15min" {...a11yProps(8)} className={classes.tab} />
-          <Tab label="30min" {...a11yProps(9)} className={classes.tab} />
-          <Tab label="60min" {...a11yProps(10)} className={classes.tab} />
-          <Tab label="90min" {...a11yProps(11)} className={classes.tab} />
+          <Tab label="1min" {...a11yProps(5)} className={classes.tab} />
+          <Tab label="5min" {...a11yProps(6)} className={classes.tab} />
+          <Tab label="15min" {...a11yProps(7)} className={classes.tab} />
+          <Tab label="30min" {...a11yProps(8)} className={classes.tab} />
+          <Tab label="60min" {...a11yProps(9)} className={classes.tab} />
+          <Tab label="90min" {...a11yProps(10)} className={classes.tab} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -102,24 +135,21 @@ export default function MultiCharts(props) {
         <HistoryChart symbol={symbol} interval="q" />
       </TabPanel>
       <TabPanel value={value} index={5}>
-        <HistoryChart symbol={symbol} interval="y" />
-      </TabPanel>
-      <TabPanel value={value} index={6}>
         <MinuteChart symbol={symbol} minute={1} />
       </TabPanel>
-      <TabPanel value={value} index={7}>
+      <TabPanel value={value} index={6}>
         <MinuteChart symbol={symbol} minute={5} />
       </TabPanel>
-      <TabPanel value={value} index={8}>
+      <TabPanel value={value} index={7}>
         <MinuteChart symbol={symbol} minute={15} />
       </TabPanel>
-      <TabPanel value={value} index={9}>
+      <TabPanel value={value} index={8}>
         <MinuteChart symbol={symbol} minute={30} />
       </TabPanel>
-      <TabPanel value={value} index={10}>
+      <TabPanel value={value} index={9}>
         <MinuteChart symbol={symbol} minute={60} />
       </TabPanel>
-      <TabPanel value={value} index={11}>
+      <TabPanel value={value} index={10}>
         <MinuteChart symbol={symbol} minute={90} />
       </TabPanel>
     </div>

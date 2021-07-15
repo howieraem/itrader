@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -12,17 +13,20 @@ import java.util.Objects;
 @AllArgsConstructor
 @Getter
 @Setter
-public class PositionId implements Serializable {
+public class UserStockId implements Serializable {
+    @NotNull
     private long userId;
+
+    @NotNull
     private String symbol;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PositionId positionId = (PositionId) o;
-        return userId == positionId.userId &&
-                symbol.equals(positionId.symbol);
+        UserStockId userStockId = (UserStockId) o;
+        return userId == userStockId.userId &&
+                symbol.equals(userStockId.symbol);
     }
 
     @Override

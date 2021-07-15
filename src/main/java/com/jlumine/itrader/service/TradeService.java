@@ -44,14 +44,14 @@ public class TradeService {
         trade.setCashAfter(newBalance);
         tradeRepository.save(trade);
 
-        PositionId positionId = new PositionId(userId, symbol);
-        Position position = positionRepository.findById(positionId)
-                .orElse(new Position(positionId));
+        UserStockId userStockId = new UserStockId(userId, symbol);
+        Position position = positionRepository.findById(userStockId)
+                .orElse(new Position(userStockId));
         position.updateQuantity(quantity, balanceChange);
         if (position.getQuantity() != 0) {
             positionRepository.save(position);
         } else {
-            positionRepository.deleteById(positionId);
+            positionRepository.deleteById(userStockId);
         }
     }
 

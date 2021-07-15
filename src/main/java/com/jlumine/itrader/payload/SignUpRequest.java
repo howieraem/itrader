@@ -12,8 +12,8 @@ public class SignUpRequest {
     @NotBlank
     private String password;
 
-    @NotBlank
-    private String pin;
+//    @NotBlank
+//    private String pin;
 
     @NotBlank
     private String username;
@@ -34,13 +34,13 @@ public class SignUpRequest {
         this.password = password;
     }
 
-    public String getPin() {
-        return pin;
-    }
-
-    public void setPin(String pin) {
-        this.pin = pin;
-    }
+//    public String getPin() {
+//        return pin;
+//    }
+//
+//    public void setPin(String pin) {
+//        this.pin = pin;
+//    }
 
     public String getUsername() {
         return username;
