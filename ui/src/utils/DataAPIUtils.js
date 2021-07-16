@@ -19,6 +19,28 @@ export function getStockBasicInfo(symbol) {
   });
 }
 
+export function getBatchStockPrices(symbols) {
+  return new Promise((resolve, reject) => {
+    if (!symbols || symbols.length === 0) return reject(Error('Stock symbols cannot be empty!'));
+
+    const url = SERVER_URL + `/stockBasic?symbols=${symbols.join(',')}`;
+    return axios.get(url).then((res) => {
+      const { data } = res;
+      if (!data || !data.quoteResponse || !data.quoteResponse.result || data.quoteResponse.result.length === 0) {
+          return resolve(new Error(`Error retrieving prices for symbols ${symbols}.`));
+      }
+      const result = data.quoteResponse.result;
+      const marketState = result[0].marketState;
+      const marketClosed = marketState === "CLOSED";
+      return resolve([marketClosed, result.map((stockRes) => {
+        if (marketState === "PRE")  return stockRes.preMarketPrice;
+        else if (marketState === "POST" || marketClosed)  return stockRes.postMarketPrice;
+        else  return stockRes.regularMarketPrice;
+      })]);
+    }).catch(err => reject(err));
+  });
+}
+
 export const parseDate = timeParse("%Y-%m-%d");
 
 function parseRow(d) {

@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 14, 
     backgroundColor: COLOR_TERTIARY, 
     color: "white", 
-    borderRadius: 12,
+    // borderRadius: 12,
     margin: theme.spacing(3, 0, 2),
     maxHeight: '50px', 
     minHeight: '50px',
@@ -27,8 +27,8 @@ const useStyles = makeStyles((theme) => ({
     minWidth: '75px', 
     [theme.breakpoints.up('md')]: {
       fontSize: 16, 
-      maxWidth: '130px', 
-      minWidth: '130px', 
+      maxWidth: '120px', 
+      minWidth: '120px', 
     },
   },
   dialogButton: {

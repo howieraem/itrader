@@ -9,8 +9,7 @@ import Paper from '@material-ui/core/Paper';
 import Balance from './Balance';
 import Trades from './Trades';
 import Portfolio from './Portfolio';
-import Favorites from './Favorites';
-
+import Watchlist from './WatchlistVertical';
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -51,7 +50,7 @@ export default function Profile(props) {
 
             <Grid item xs={12} md={8} lg={9} xl={9}>
               <Paper className={fixedHeightPaper}>
-                <Favorites />
+                <Watchlist />
               </Paper>
             </Grid>
 

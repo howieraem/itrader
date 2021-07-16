@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 12, 
     backgroundColor: COLOR_TERTIARY, 
     color: "white", 
-    borderRadius: 10,
+    // borderRadius: 10,
     maxHeight: '20px', 
     minHeight: '20px',
     maxWidth: '60px', 

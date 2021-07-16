@@ -38,10 +38,10 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   rowBuy: {
-    background: '#d6ffe1'
+    background: '#bcb3ff'
   },
   rowSell: {
-    background: '#ffd6d6'
+    background: '#ffdca3'
   }
 }));
 

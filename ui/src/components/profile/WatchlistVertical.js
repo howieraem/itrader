@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function Favorites() {
+export default function Watchlist() {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const rowsPerPage = 5;
@@ -71,7 +71,7 @@ export default function Favorites() {
         gutterBottom
         className={classes.title}
       >
-        Favorite Stocks
+        Stock Watchlist
         <div className={classes.grow} />
         <Pagination 
             count={numOfPages} 

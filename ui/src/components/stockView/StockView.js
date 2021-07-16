@@ -1,15 +1,47 @@
 import './StockView.css';
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
 import { makeStyles } from '@material-ui/core/styles';
 import InfoTable from './Table';
 import MultiCharts from './MultiCharts';
 import TradeDialog from './TradeDialog';
 import { addTicker, removeTicker } from 'stocksocket';
 import { getStockBasicInfo } from '../../utils/DataAPIUtils';
+import { COLOR_PRIMARY } from '../../common/Theme';
 
 
 const useStyles = makeStyles((theme) => ({
+  watchlistButton: {
+    textTransform: 'none', 
+    fontSize: 14, 
+    color: "white", 
+    // borderRadius: 12,
+    margin: theme.spacing(3, 0, 2),
+    maxHeight: '50px', 
+    minHeight: '50px',
+    maxWidth: '50px', 
+    minWidth: '50px', 
+    [theme.breakpoints.up('sm')]: {
+      fontSize: 14, 
+      maxWidth: '90px', 
+      minWidth: '90px', 
+    },
+    [theme.breakpoints.up('md')]: {
+      fontSize: 16,
+      maxWidth: '120px', 
+      minWidth: '120px', 
+    },
+  },
+  buttonLabel: {
+    display: 'none',
+    [theme.breakpoints.up('sm')]: {
+      display: 'block',
+    },
+  },
   grow: {
     flexGrow: 1,
     display: 'none',
@@ -99,6 +131,11 @@ function StockViewCore(props) {
   const [basicInfo, setBasicInfo] = React.useState(null);
   const [highlight, setHighlight] = React.useState(false);
   const [isRising, setIsRising] = React.useState(false);
+  const [watchlisted, setWatchlisted] = React.useState(false);
+
+  const handleWlButtonClick = () => {
+    setWatchlisted(!watchlisted);
+  }
 
   const usePre = (value) => {
     const ref = React.useRef();
@@ -157,8 +194,7 @@ function StockViewCore(props) {
         </Grid>
 
         <Grid item className={classes.grow} />
-
-        <Grid item xs={4} sm={5}> 
+        <Grid item xs={4} sm={4}> 
           <header className={classes.symbolTitle1}>
             <Blinking highlight={highlight} rise={isRising}>
               { marketClosed ? "Market closed" : priceLoaded ? ("$" + price) : "Loading price..." }
@@ -172,9 +208,19 @@ function StockViewCore(props) {
         </Grid>
         
         <Grid item xs className={classes.grow2} />
-
-        <Grid item xs={2} sm={2} align="right">
-          <TradeDialog symbol={symbol} authenticated={authenticated} marketClosed={marketClosed} />
+        <Grid item xs={3} sm={3} align="right">
+          <ButtonGroup size="small">
+            <Button 
+              variant="contained" 
+              className={classes.watchlistButton} 
+              onClick={handleWlButtonClick}
+              style={{ background: (watchlisted ? "#ee0000" : COLOR_PRIMARY) }}
+            >
+              {watchlisted ? <RemoveIcon /> : <AddIcon />}
+              <div className={classes.buttonLabel}>Watchlist</div>
+            </Button>
+            <TradeDialog symbol={symbol} authenticated={authenticated} marketClosed={marketClosed} />
+          </ButtonGroup>
         </Grid>
       </Grid>
 

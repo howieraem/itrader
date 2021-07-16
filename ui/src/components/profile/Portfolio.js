@@ -9,15 +9,21 @@ import Pagination from '@material-ui/lab/Pagination';
 import Typography from '@material-ui/core/Typography';
 import TradeDialog from './TradeDialogCell';
 import { getPortfolio, getNumOfPositions } from '../../utils/APIUtils';
+import { getBatchStockPrices } from '../../utils/DataAPIUtils';
 
+function procRawPositionInfo(i, position) {
+  position.i = i;
+  position.holdingPrice = (parseFloat(position.holdingCost) / position.quantity).toFixed(2);
+  position.currentPrice = '--';
+  position.pl = '--';
+  position.plPercent = '--';
+}
 
-function processPositionInfo(i, position) {
-  return { 
-    i,
-    symbol: position.symbol,
-    quantity: position.quantity,
-    holdingPrice: (parseFloat(position.holdingCost) / position.quantity).toFixed(2),
-  };
+function updatePositionPrice(position, currentPrice) {
+  position.currentPrice = currentPrice;
+  const diff = position.currentPrice - position.holdingPrice;
+  position.pl = (diff * position.quantity).toFixed(2);
+  position.plPercent = (diff / position.holdingPrice * 100).toFixed(2);
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -27,6 +33,12 @@ const useStyles = makeStyles((theme) => ({
   },
   grow: {
     flexGrow: 1,
+  },
+  rowProfit: {
+    background: '#d6ffe1'
+  },
+  rowLoss: {
+    background: '#ffd6d6'
   }
 }));
 
@@ -37,31 +49,59 @@ export default function Portfolio(props) {
   const rowsPerPage = 5;
   // const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [numOfRecords, setNumOfRecords] = React.useState(0);
-  const [pageRecords, setPageRecords] = React.useState([]);
   const numOfPages = Math.floor((numOfRecords + rowsPerPage - 1) / rowsPerPage);
 
-  // const [hidePrev, setHidePrev] = React.useState(page === 0);
-  // const [hideNext, setHideNext] = React.useState(true);
+  const [pageRecords, setPageRecords] = React.useState([]);
+  const [marketClosed, setMarketClosed] = React.useState(false);
 
   React.useEffect(() => {
     getNumOfPositions()
     .then(res => setNumOfRecords(res))
     .catch(err => console.log(err));
 
-    getPortfolio(page, rowsPerPage)
-    .then(raw => {
-      setPageRecords(raw.map((row, i) => processPositionInfo(i, row)));
-    })
-    .catch(err => console.log(err));
+    const updateSymbolPrices = (pageSymbols, pageRecords) => {
+      getBatchStockPrices(pageSymbols)
+      .then(res => {
+        setMarketClosed(res[0]);
+        for (let i = 0; i < pageRecords.length; ++i) {
+          updatePositionPrice(pageRecords[i], res[1][i]);
+        }
+        setPageRecords(pageRecords);
+      })
+      .catch(err => console.log(err))
+    };
 
-    // setHideNext(page === numOfPages - 1);
-  }, [page, rowsPerPage, numOfPages])
+    let interval;
+    const initPortfio = () => {
+      getPortfolio(page, rowsPerPage)
+      .then(pageRecords => {
+        let pageSymbols = [];
+        for (let i = 0; i < pageRecords.length; ++i) {
+          procRawPositionInfo(i, pageRecords[i]);
+          pageSymbols.push(pageRecords[i].symbol);
+        }
+        // setPageRecords(pageRecords);
+        updateSymbolPrices(pageSymbols, pageRecords);
+        
+        if (!marketClosed) {
+          interval = setInterval(() => {
+            updateSymbolPrices(pageSymbols, pageRecords);
+          }, 5000);
+        }
+      })
+      .catch(err => console.log(err));
+    }
+    initPortfio();
+  
+    if (!marketClosed) {
+      return () => {
+        clearInterval(interval);
+      };
+    }
+  }, [page, rowsPerPage, numOfPages, marketClosed])
 
   const handleChangePage = (ev, newPage) => {
-    const page = newPage - 1;
-    // setHidePrev(page === 0);
-    // setHideNext(page === numOfPages - 1);
-    setPage(page);
+    setPage(newPage - 1);
   };
 
   return (
@@ -101,13 +141,13 @@ export default function Portfolio(props) {
             </TableHead>
             <TableBody>
               {pageRecords.map((row) => (
-                <TableRow key={row.i}>
+                <TableRow key={row.i} className={row.pl >= 0 ? classes.rowProfit : classes.rowLoss}>
                   <TableCell>{row.symbol}</TableCell>
                   <TableCell align="right">{row.quantity}</TableCell>
                   <TableCell align="right">{row.holdingPrice}</TableCell>
-                  <TableCell align="right">0</TableCell>
-                  <TableCell align="right">0</TableCell>
-                  <TableCell align="right">0%</TableCell>
+                  <TableCell align="right">{row.currentPrice}</TableCell>
+                  <TableCell align="right">{row.pl}</TableCell>
+                  <TableCell align="right">{`${row.plPercent} %`}</TableCell>
                   <TableCell align="right"><TradeDialog symbol={row.symbol} authenticated={authenticated} /></TableCell>
                 </TableRow>
               ))}

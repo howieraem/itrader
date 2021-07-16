@@ -4,16 +4,20 @@ import com.jlumine.itrader.model.Favorite;
 import com.jlumine.itrader.model.UserStockId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface FavoriteRepository extends JpaRepository<Favorite, UserStockId> {
-    Optional<Favorite> findByUserIdAndSymbol(long userId, String symbol);
+    Optional<Favorite> findByUserIdAndSymbol(Long userId, String symbol);
 
-    int countByUserId(long userId);
+    int countByUserId(Long userId);
 
-    List<Favorite> findByUserId(long userId);
+    @Transactional(rollbackFor = Exception.class)
+    List<Favorite> findByUserId(Long userId);
 
-    void deleteByUserIdAndSymbol(long userId, String symbol);
+    @Transactional(rollbackFor = Exception.class)
+    void deleteByUserId(Long userId);
 }
