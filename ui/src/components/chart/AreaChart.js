@@ -23,7 +23,6 @@ const canvasGradient = createVerticalLinearGradient([
 class AreaChart extends React.Component {
 	render() {
 		const { data, symbol, type, width, ratio } = this.props;
-
 		const openTime = data[0].date;
 		let closeTime  = new Date();
 		const endHour = openTime.getHours() + 7;
@@ -58,7 +57,7 @@ class AreaChart extends React.Component {
 							<stop offset="100%"  stopColor="#4286f4" stopOpacity={0.8} />
 						</linearGradient>
 					</defs>
-					<XAxis axisAt="bottom" orient="bottom" ticks={14} zoomEnabled={false}/>
+					<XAxis axisAt="bottom" orient="bottom" ticks={width >= 640 ? 14 : 7} zoomEnabled={false}/>
 					<YAxis axisAt="left" orient="left" />
 					<AreaSeries
 						yAccessor={d => d.close}

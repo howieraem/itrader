@@ -6,6 +6,7 @@ import com.jlumine.itrader.exception.ResourceNotFoundException;
 import com.jlumine.itrader.model.Favorite;
 import com.jlumine.itrader.model.User;
 import com.jlumine.itrader.model.UserStockId;
+import com.jlumine.itrader.payload.ApiResponse;
 import com.jlumine.itrader.payload.SymbolRequest;
 import com.jlumine.itrader.repository.FavoriteRepository;
 import com.jlumine.itrader.repository.PositionRepository;
@@ -15,7 +16,9 @@ import com.jlumine.itrader.security.CurrentUser;
 import com.jlumine.itrader.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -47,10 +50,8 @@ public class UserController {
     @PreAuthorize("hasRole('USER')")
     public List<PositionDTO> getPortfolio(
             @CurrentUser UserPrincipal userPrincipal,
-            @RequestParam(value = "page", required = false) Integer page,
-            @RequestParam(value = "rows", required = false) Integer rows) {
-        if (page == null || page < 0)  page = 0;
-        if (rows == null || rows < 0)  rows = 5;
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "rows") Integer rows) {
         return positionRepository.findByUserId(userPrincipal.getId(), PageRequest.of(page, rows));
     }
 
@@ -64,10 +65,8 @@ public class UserController {
     @PreAuthorize("hasRole('USER')")
     public List<TradeDTO> getTrades(
             @CurrentUser UserPrincipal userPrincipal,
-            @RequestParam(value = "page", required = false) Integer page,
-            @RequestParam(value = "rows", required = false) Integer rows) {
-        if (page == null || page < 0)  page = 0;
-        if (rows == null || rows < 0)  rows = 10;
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "rows") Integer rows) {
         return tradeRepository.findByUserId(userPrincipal.getId(), PageRequest.of(page, rows));
     }
 
@@ -79,8 +78,11 @@ public class UserController {
 
     @GetMapping("/watchlist")
     @PreAuthorize("hasRole('USER')")
-    public List<Favorite> getWatchlist(@CurrentUser UserPrincipal userPrincipal) {
-        return favoriteRepository.findByUserId(userPrincipal.getId());
+    public List<Favorite> getWatchlist(
+            @CurrentUser UserPrincipal userPrincipal,
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "rows") Integer rows) {
+        return favoriteRepository.findByUserId(userPrincipal.getId(), PageRequest.of(page, rows));
     }
 
     @GetMapping("/watchlistSize")
@@ -89,31 +91,45 @@ public class UserController {
         return favoriteRepository.countByUserId(userPrincipal.getId());
     }
 
+    @GetMapping("/existInWatchlist")
+    @PreAuthorize("hasRole('USER')")
+    public boolean existInWatchlist(
+            @CurrentUser UserPrincipal userPrincipal,
+            @RequestParam(value = "symbol") String symbol) {
+        return favoriteRepository.existsByUserIdAndSymbol(userPrincipal.getId(), symbol);
+    }
+
     @PostMapping("/addToWatchlist")
     @PreAuthorize("hasRole('USER')")
-    public void addToWatchlist(
+    @ResponseBody
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean addToWatchlist(
             @Valid @RequestBody SymbolRequest symbolRequest,
             @CurrentUser UserPrincipal userPrincipal) {
         Favorite favorite = new Favorite();
         favorite.setUserId(userPrincipal.getId());
         favorite.setSymbol(symbolRequest.getSymbol());
         favoriteRepository.save(favorite);
+        return true;
     }
 
     @PostMapping("/rmFromWatchlist")
     @PreAuthorize("hasRole('USER')")
-    public void removeFromWatchlist(
+    @ResponseBody
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean removeFromWatchlist(
             @Valid @RequestBody SymbolRequest symbolRequest,
             @CurrentUser UserPrincipal userPrincipal) {
-        UserStockId userStockId = new UserStockId();
-        userStockId.setUserId(userPrincipal.getId());
-        userStockId.setSymbol(symbolRequest.getSymbol());
-        favoriteRepository.deleteById(userStockId);
+        favoriteRepository.deleteByUserIdAndSymbol(userPrincipal.getId(), symbolRequest.getSymbol());
+        return true;
     }
 
     @PostMapping("/clearWatchlist")
     @PreAuthorize("hasRole('USER')")
-    public void clearWatchlist(@CurrentUser UserPrincipal userPrincipal) {
+    @ResponseBody
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean clearWatchlist(@CurrentUser UserPrincipal userPrincipal) {
         favoriteRepository.deleteByUserId(userPrincipal.getId());
+        return true;
     }
 }

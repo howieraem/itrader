@@ -17,14 +17,14 @@ import { COLOR_TERTIARY } from '../../common/Theme';
 const useStyles = makeStyles((theme) => ({
   tradeButton: {
     textTransform: 'none', 
-    fontSize: 12, 
     backgroundColor: COLOR_TERTIARY, 
     color: "white", 
+    // fontSize: 12, 
     // borderRadius: 10,
-    maxHeight: '20px', 
-    minHeight: '20px',
-    maxWidth: '60px', 
-    minWidth: '60px',
+    // maxHeight: '20px', 
+    // minHeight: '20px',
+    maxWidth: '100px', 
+    minWidth: '100px',
   },
   dialogButton: {
     textTransform: 'none',
@@ -157,7 +157,9 @@ export default function TradeDialog(props) {
             <>
               <DialogContent>
                 <DialogContentText>
-                  The stock market is closed.
+                  <Alert severity="error" style={{fontSize: "15px"}}>
+                    The regular stock market is closed. Pre/post-market not yet supported.
+                  </Alert>
                 </DialogContentText>
                 <DialogActions>
                   <Button onClick={handleClose} color="primary" className={classes.dialogButton}>
@@ -222,7 +224,9 @@ export default function TradeDialog(props) {
               <>
                 <DialogContent>
                   <DialogContentText>
-                    Please log in first.
+                    <Alert severity="error" style={{fontSize: "15px"}}>
+                      Please sign in first.
+                    </Alert>
                   </DialogContentText>
                   <DialogActions>
                     <Button href="/login" color="primary" className={classes.dialogButton}>

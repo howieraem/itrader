@@ -7,11 +7,13 @@ import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import { makeStyles } from '@material-ui/core/styles';
 import InfoTable from './Table';
-import MultiCharts from './MultiCharts';
+import CharTabs from './ChartTabs';
 import TradeDialog from './TradeDialog';
 import { addTicker, removeTicker } from 'stocksocket';
+import { existInWatchlist, addToWatchlist, removeFromWatchlist } from '../../utils/APIUtils';
 import { getStockBasicInfo } from '../../utils/DataAPIUtils';
 import { COLOR_PRIMARY } from '../../common/Theme';
+import { MARKET_LOC } from '../../constants';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -81,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'left',
     justifyContent: 'center',
     margin: theme.spacing(1, 0, 2),
-    fontSize: '14px',
+    fontSize: '13px',
     [theme.breakpoints.up('sm')]: {
       fontSize: '16px',
     },
@@ -106,14 +108,19 @@ function roundNumber(number, places=4) {
 
 function filterInfo(info) {
   return {
-    "Currency": info.currency,
-    "52-wk High": info.fiftyTwoWeekHigh,
-    "52-wk Low": info.fiftyTwoWeekLow,
-    "Market": info.market,
-    "Market State": info.marketState,
-    "Price Range": info.regularMarketDayRange,
-    "Current EPS": info.epsCurrentYear ? info.epsCurrentYear : "N/A",
-    "PE (Trailing)": info.trailingPE ? info.trailingPE : "N/A", 
+    "Market Location": MARKET_LOC[info.market] || info.market,
+    "Outstanding Shares": `${(info.sharesOutstanding / 1e6).toFixed(2)}M`,
+    "Market Capitalization": `${info.currency.toUpperCase()} ${(info.marketCap / 1e6).toFixed(2)}M`,
+    "Volume": info.regularMarketVolume || 0,
+    "Day Price Range": info.regularMarketDayRange,
+    "52-week High": info.fiftyTwoWeekHigh,
+    "52-week Low": info.fiftyTwoWeekLow,
+    // "Market State": info.marketState,
+    "Current Year EPS": info.epsCurrentYear || "N/A",
+    "Forward EPS": info.epsForward || "N/A",
+    "Trailing PE": info.trailingPE || "N/A",
+    "Forward PE": info.forwardPE || "N/A",
+    "Book Value": info.bookValue,
   }
 }
 
@@ -125,16 +132,27 @@ const Blinking = (props) => (
 
 function StockViewCore(props) {
   const classes = useStyles();
-  const { symbol, authenticated, dataTime, price, change, changePercent } = props;
+  const { symbol, authenticated, dataTime, livePrice, change, changePercent } = props;
   
-  const [fullName, setFullName] = React.useState(null);
+  const [stockName, setStockName] = React.useState(null);
   const [basicInfo, setBasicInfo] = React.useState(null);
+  const [currency, setCurrency] = React.useState("USD");
   const [highlight, setHighlight] = React.useState(false);
   const [isRising, setIsRising] = React.useState(false);
   const [watchlisted, setWatchlisted] = React.useState(false);
+  const [regularMarketPrice, setRegularMarketPrice] = React.useState(0.);
+  const [regularMarketClosed, setRegularMarketClosed] = React.useState(false);
 
   const handleWlButtonClick = () => {
-    setWatchlisted(!watchlisted);
+    if (watchlisted) {
+      removeFromWatchlist(symbol)
+      .then(res => setWatchlisted(false))
+      .catch(err => console.log(err));
+    } else {
+      addToWatchlist(symbol)
+      .then(res => setWatchlisted(true))
+      .catch(err => console.log(err));
+    }
   }
 
   const usePre = (value) => {
@@ -145,13 +163,22 @@ function StockViewCore(props) {
     return ref.current;
   }
 
-  const prePrice = usePre(price);
+  React.useEffect(() => {
+    existInWatchlist(symbol)
+    .then(res => setWatchlisted(res))
+    .catch(err => console.log(err));
+  }, [symbol])
+
+  const prePrice = usePre(livePrice);
   React.useEffect(() => {
     const updateBasicInfo = () => {
       getStockBasicInfo(symbol)
       .then(basicInfo => {
         setBasicInfo(filterInfo(basicInfo));
-        setFullName(basicInfo.longName);
+        setStockName(basicInfo.displayName || basicInfo.shortName || basicInfo.longName);
+        setCurrency(basicInfo.currency.toUpperCase());
+        setRegularMarketPrice(basicInfo.regularMarketPrice);
+        setRegularMarketClosed(basicInfo.marketState !== "REGULAR");
       }).catch(err => { console.log(err) })
     };
     updateBasicInfo();
@@ -166,9 +193,9 @@ function StockViewCore(props) {
         setHighlight(false);
       }, 700);
     };
-    if (price > 0 && prePrice > 0) {
-      if (price !== prePrice) {
-        setIsRising(price - prePrice > 0);
+    if (livePrice > 0 && prePrice > 0) {
+      if (livePrice !== prePrice) {
+        setIsRising(livePrice - prePrice > 0);
         handlePriceChange();
       }
     }
@@ -176,11 +203,17 @@ function StockViewCore(props) {
     return () => {
       clearInterval(interval);
     };
-  }, [symbol, price]);  // don't put prePrice here
+  }, [symbol, livePrice]);  // don't put prePrice here
 
-  const priceLoaded = price > 0;
-  const changeSign = change > 0 ? "+" : "";
-  const marketClosed = basicInfo ? basicInfo["Market State"] === "CLOSED" : false;
+  const changeSign = change >= 0 ? "+" : "-";
+  let tradeNotAvailMsg = "";
+  if (regularMarketClosed) {
+    tradeNotAvailMsg = "Regular market is closed. Pre/post-market not yet supported.";
+  }
+  if (basicInfo && basicInfo.Currency !== "USD") {
+    tradeNotAvailMsg = "Currrency is not USD and currency exchange not yet implemented.";
+  }
+
   return (
     <Grid container spacing={0}>
       <Grid container spacing={2} className={classes.topContainer}>
@@ -189,7 +222,7 @@ function StockViewCore(props) {
             {symbol}
           </header>
           <header className={classes.symbolTitle2}>
-            { basicInfo ? fullName : "" }
+            { basicInfo ? stockName : "" }
           </header>
         </Grid>
 
@@ -197,16 +230,16 @@ function StockViewCore(props) {
         <Grid item xs={4} sm={4}> 
           <header className={classes.symbolTitle1}>
             <Blinking highlight={highlight} rise={isRising}>
-              { marketClosed ? "Market closed" : priceLoaded ? ("$" + price) : "Loading price..." }
+              { `${currency} ${livePrice || regularMarketPrice}` }
             </Blinking>
           </header>
           <header className={classes.symbolTitle2}>
             <Blinking highlight={highlight} rise={isRising}>
-              { priceLoaded ? (`${changeSign}${change} (${changeSign}${changePercent}%)`) : "" }
+              { regularMarketClosed ? "Regular Market closed" : `${changeSign}${change} (${changeSign}${changePercent}%)` }
             </Blinking>
           </header>
         </Grid>
-        
+
         <Grid item xs className={classes.grow2} />
         <Grid item xs={3} sm={3} align="right">
           <ButtonGroup size="small">
@@ -219,14 +252,18 @@ function StockViewCore(props) {
               {watchlisted ? <RemoveIcon /> : <AddIcon />}
               <div className={classes.buttonLabel}>Watchlist</div>
             </Button>
-            <TradeDialog symbol={symbol} authenticated={authenticated} marketClosed={marketClosed} />
+            <TradeDialog 
+              symbol={symbol} 
+              authenticated={authenticated} 
+              errMsg={tradeNotAvailMsg}
+            />
           </ButtonGroup>
         </Grid>
       </Grid>
 
       <Grid container>
         <Grid item xs={12}>
-          <MultiCharts symbol={symbol} dateTime={dataTime} lastestPrice={price} />
+          <CharTabs symbol={symbol} dateTime={dataTime} lastestPrice={livePrice} />
         </Grid>
       </Grid>
 
@@ -239,7 +276,7 @@ export default function StockView(props) {
   const symbol = props.symbol;
   // const [curData, setCurData] = React.useState(null);
   const [dataTime, setDataTime] = React.useState(null);
-  const [price, setPrice] = React.useState(0.);
+  const [livePrice, setLivePrice] = React.useState(0.);
   const [change, setChange] = React.useState(0.);
   const [changePercent, setChangePercent] = React.useState(0.);
 
@@ -261,7 +298,7 @@ export default function StockView(props) {
     const updateLiveData = (liveData) => {
       // setCurData(sortByKey(liveData));
       setDataTime(new Date(liveData.time));
-      setPrice(roundNumber(liveData.price));
+      setLivePrice(roundNumber(liveData.price));
       setChange(roundNumber(liveData.change));
       setChangePercent(roundNumber(liveData.changePercent, 2));
     };
@@ -269,11 +306,11 @@ export default function StockView(props) {
 
     return () => {
       removeTicker(symbol);
-      setPrice(0.);
-      setChange(0.);
-      setChangePercent(0.);
+      setLivePrice(0);
+      setChange(0);
+      setChangePercent(0);
     };
   }, [symbol]);
 
-  return <StockViewCore dataTime={dataTime} price={price} change={change} changePercent={changePercent} {...props} />
+  return <StockViewCore dataTime={dataTime} livePrice={livePrice} change={change} changePercent={changePercent} {...props} />
 }

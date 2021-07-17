@@ -38,8 +38,13 @@ export default function Balance(props) {
         <Title>{props.currentUser.username}</Title>
 
         <Title>Cash Available</Title>
-        <Typography component="p" variant="h4">
-          ${props.currentUser.balance.toFixed(2)}
+        <Typography component="p" variant="h5">
+          USD {props.currentUser.balance.toFixed(2)}
+        </Typography>
+
+        <Title>Estimated Net Worth</Title>
+        <Typography component="p" variant="h5">
+          USD {props.currentUser.balance.toFixed(2)}
         </Typography>
       </div>
     </React.Fragment>

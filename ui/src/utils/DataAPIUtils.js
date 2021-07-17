@@ -8,12 +8,14 @@ export function getStockBasicInfo(symbol) {
   return new Promise((resolve, reject) => {
     if (!symbol) return reject(Error('Stock symbol cannot be empty!'));
 
-    const url = SERVER_URL + `/stockBasic?symbols=${symbol}`;
+    const multiSymbols = symbol instanceof Array;
+    const url = SERVER_URL + `/stockBasic?symbols=${multiSymbols ? symbol.join() : symbol}`;
     return axios.get(url).then((res) => {
       const { data } = res;
       if (!data || !data.quoteResponse || !data.quoteResponse.result || data.quoteResponse.result.length === 0) {
           return resolve(new Error(`Error retrieving info for symbol ${symbol}.`));
       }
+      if (multiSymbols)  return resolve(data.quoteResponse.result);
       return resolve(data.quoteResponse.result[0]);
     }).catch(err => reject(err));
   });
@@ -21,15 +23,7 @@ export function getStockBasicInfo(symbol) {
 
 export function getBatchStockPrices(symbols) {
   return new Promise((resolve, reject) => {
-    if (!symbols || symbols.length === 0) return reject(Error('Stock symbols cannot be empty!'));
-
-    const url = SERVER_URL + `/stockBasic?symbols=${symbols.join(',')}`;
-    return axios.get(url).then((res) => {
-      const { data } = res;
-      if (!data || !data.quoteResponse || !data.quoteResponse.result || data.quoteResponse.result.length === 0) {
-          return resolve(new Error(`Error retrieving prices for symbols ${symbols}.`));
-      }
-      const result = data.quoteResponse.result;
+    return getStockBasicInfo(symbols).then(result => {
       const marketState = result[0].marketState;
       const marketClosed = marketState === "CLOSED";
       return resolve([marketClosed, result.map((stockRes) => {
@@ -41,7 +35,7 @@ export function getBatchStockPrices(symbols) {
   });
 }
 
-export const parseDate = timeParse("%Y-%m-%d");
+const parseDate = timeParse("%Y-%m-%d");
 
 function parseRow(d) {
   return {
@@ -60,17 +54,32 @@ function parseIntraday(raw) {
   if (responseDetails.error)  throw new Error(responseDetails.error.description);
   const d = responseDetails.result[0];
   const indicators = d.indicators.quote[0], time = d.timestamp;
+  if (!time)  return [{}];
 
   let data = [];
   for (let i = 0; i < time.length; ++i) {
-    data.push({
-      date: new Date(time[i] * 1000),
-      open: indicators.open[i],
-      high: indicators.high[i],
-      low: indicators.low[i],
-      close: indicators.close[i],
-      volume: indicators.volume[i],
-    });
+    const date = new Date(time[i] * 1000);
+    if (i > 0 && indicators.open[i] === null) {
+      // no exchange at this minute
+      const preClose = data[i - 1].close;
+      data.push({
+        date,
+        open: preClose,
+        high: preClose,
+        low: preClose,
+        close: preClose,
+        volume: 0,
+      });
+    } else {
+      data.push({
+        date,
+        open: indicators.open[i],
+        high: indicators.high[i],
+        low: indicators.low[i],
+        close: indicators.close[i],
+        volume: indicators.volume[i],
+      });
+    }
   }
   return data;
 }
@@ -116,8 +125,8 @@ export function getStockToday(symbol, minuteInterval=1, dayRange=5, includePrePo
   const promise = fetch(SERVER_URL + `/stockHistoryIntraday?symbol=${symbol}&interval=${interval}&range=${dayRange}d&includePrePost=${includePrePost}`)
     .then(response => response.text())
     .then(data => parseIntraday(data))
-      .catch(err => { 
-        console.log(err) 
-      })
+    .catch(err => { 
+      console.log(err) 
+    })
   return promise;
 };

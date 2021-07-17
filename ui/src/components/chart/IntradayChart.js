@@ -32,12 +32,25 @@ export default function IntradayChart(props) {
     }
   }, [symbol, marketClosed]);
 
+  if (data && data[0].open === undefined) {
+    return (
+      <header className="Chart-holder">
+        {"Intraday data not available. The stock might have been suspended or delisted."}
+      </header>
+    )
+  }
+
   return (
     <Grid container>
       <Grid item xs />
       <Grid item xs={11} align="left">
-        { data ? 
-          <Chart type="hybrid" data={data} {...props} /> : (
+        { data ? data[0].open === undefined ? (
+          <header className="Chart-holder">
+            {"Minute data not available. The stock might have been suspended or delisted."}
+          </header>
+        ) : (
+          <Chart type="hybrid" data={data} {...props} />
+        ) : (
           <header className="Chart-holder">
             {"Loading chart..."}
             <LoadingIndicator />

@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TradeDialog(props) {
   const classes = useStyles();
-  const { symbol, authenticated, marketClosed }  = props;
+  const { symbol, authenticated, errMsg }  = props;
 
   const [open, setOpen] = React.useState(false);
   const [buttonsDisabled, setButtonsDisabled] = React.useState(false);
@@ -155,19 +155,19 @@ export default function TradeDialog(props) {
       </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Trade</DialogTitle>
-          { marketClosed ? (
-            <>
-              <DialogContent>
-                <DialogContentText>
-                  The stock market is closed.
-                </DialogContentText>
-                <DialogActions>
-                  <Button onClick={handleClose} color="primary" className={classes.dialogButton}>
-                    OK
-                  </Button>
-                </DialogActions>
-              </DialogContent>
-            </>
+          { errMsg ? (
+            <DialogContent>
+              <DialogContentText>
+                <Alert severity="error" style={{fontSize: "15px"}}>
+                  {[`Trading is not available for this stock right now. Reason: `, <br/>, `${errMsg}`]}
+                </Alert>
+              </DialogContentText>
+              <DialogActions>
+                <Button onClick={handleClose} color="primary" className={classes.dialogButton}>
+                  OK
+                </Button>
+              </DialogActions>
+            </DialogContent>
           ) : (
             authenticated ? (
               <>
@@ -224,7 +224,9 @@ export default function TradeDialog(props) {
               <>
                 <DialogContent>
                   <DialogContentText>
-                    Please log in first.
+                    <Alert severity="error" style={{fontSize: "15px"}}>
+                      Please sign in first.
+                    </Alert>
                   </DialogContentText>
                   <DialogActions>
                     <Button href="/login" color="primary" className={classes.dialogButton}>

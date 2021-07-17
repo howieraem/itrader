@@ -31,7 +31,7 @@ const getToken = () => {
 export function getCurrentUser() {
     const token = getToken();
     if (!token) {
-        return Promise.reject("No access token set. Please log in again.");
+        return Promise.reject("No access token set. Please sign in again.");
     }
     return request({
         url: SERVER_URL + "/user/me",
@@ -42,13 +42,13 @@ export function getCurrentUser() {
 function getUserDetails(field, page=-1, rows=-1) {
     const token = getToken();
     if (!token) {
-        return Promise.reject("No access token set. Please log in again.");
+        return Promise.reject("No access token set. Please sign in again.");
     }
     let url = SERVER_URL + `/${field}`
     if (page >= 0) {
         url += `?page=${page}`;
     }
-    if (rows >= 0) {
+    if (rows > 0) {
         url += `&rows=${rows}`;
     }
     return request({
@@ -73,6 +73,18 @@ export function getNumOfTrades() {
     return getUserDetails('numOfTrades');
 }
 
+export function getWatchlist(page, rows=10) {
+    return getUserDetails('watchlist', page, rows);
+}
+
+export function existInWatchlist(symbol) {
+    return getUserDetails(`existInWatchlist?symbol=${symbol}`);
+}
+
+export function getWatchlistSize() {
+    return getUserDetails('watchlistSize');
+}
+
 export function login(loginRequest) {
     return request({
         url: SERVER_URL + "/auth/login",
@@ -92,7 +104,7 @@ export function signup(signupRequest) {
 export function authenticatedPost(api, body) {
     const token = getToken();
     if (!token) {
-        return Promise.reject("No access token set. Please log in again.");
+        return Promise.reject("No access token set. Please sign in again.");
     }
     return request({
         url: SERVER_URL + `/${api}`,
@@ -111,4 +123,12 @@ export function getAffordable(symbol) {
 
 export function getHolding(symbol) {
     return authenticatedPost('positionQty', {symbol});
+}
+
+export function addToWatchlist(symbol) {
+    return authenticatedPost('addToWatchlist', {symbol});
+}
+
+export function removeFromWatchlist(symbol) {
+    return authenticatedPost('rmFromWatchlist', {symbol});
 }

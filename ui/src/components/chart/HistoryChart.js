@@ -6,7 +6,7 @@ import { getStockHistory } from '../../utils/DataAPIUtils';
 import LoadingIndicator from '../../common/LoadingIndicator';
 
 
-export default function HistoryChar(props) {
+export default function HistoryChart(props) {
   const { symbol, interval } = props;
   const [data, setData] = React.useState(null);
 
@@ -24,7 +24,11 @@ export default function HistoryChar(props) {
       getStockHistory(symbol, interval).then(data => {
         if (data && data.length) {
           setData(data);
-          localStorage.setItem(symbolKey, JSON.stringify(data));
+          try {
+            localStorage.setItem(symbolKey, JSON.stringify(data));
+          } catch (e) {
+            // don't store cache if quota exceeded
+          }
         }
         else setData(null);
       }).catch(err => { console.log(err); setData(null); })

@@ -103,9 +103,9 @@ export default function Trades() {
                 <TableCell>Symbol</TableCell>
                 <TableCell>Action</TableCell>
                 <TableCell align="right">Quantity</TableCell>
-                <TableCell align="right">Price ($)</TableCell>
-                <TableCell align="right">Cash Change ($)</TableCell>
-                <TableCell align="right">Cash After ($)</TableCell>
+                <TableCell align="right">Price (USD)</TableCell>
+                <TableCell align="right">Cash In/Out (USD)</TableCell>
+                <TableCell align="right">Cash After (USD)</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

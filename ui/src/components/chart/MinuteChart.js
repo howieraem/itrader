@@ -12,8 +12,8 @@ export default function MinuteChart(props) {
 
   React.useEffect(() => {
     const symbolKey = symbol + "_m" + minute;
-    const symbolCache = localStorage.getItem(symbolKey);
-    if (symbolCache) {
+    let symbolCache;
+    if (minute >= 30 && (symbolCache = localStorage.getItem(symbolKey))) {
       let data = JSON.parse(symbolCache);
       data.forEach((entry) => {
         // recover date format
@@ -24,7 +24,11 @@ export default function MinuteChart(props) {
       getStockToday(symbol, minute).then(data => {
         if (data && data.length) { 
           setData(data); 
-          localStorage.setItem(symbolKey, JSON.stringify(data));
+          try {
+            localStorage.setItem(symbolKey, JSON.stringify(data));
+          } catch (e) {
+            // don't store cache if quota exceeded
+          }
         }
         else setData(null);
       }).catch(err => { console.log(err); setData(null); })
@@ -35,8 +39,13 @@ export default function MinuteChart(props) {
     <Grid container>
       <Grid item xs />
       <Grid item xs={11} align="left">
-        { data ? 
-          <Chart type="hybrid" data={data} symbol={symbol} /> : (
+        { data ? data[0].open === undefined ? (
+          <header className="Chart-holder">
+            {"Minute data not available. The stock might have been suspended or delisted."}
+          </header>
+        ) : ( 
+          <Chart type="hybrid" data={data} symbol={symbol} /> 
+        ) : (
           <header className="Chart-holder">
             {"Loading chart..."}
             <LoadingIndicator />

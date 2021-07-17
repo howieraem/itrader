@@ -9,7 +9,8 @@ import Paper from '@material-ui/core/Paper';
 import Balance from './Balance';
 import Trades from './Trades';
 import Portfolio from './Portfolio';
-import Watchlist from './WatchlistVertical';
+import Watchlist from './Watchlist';
+
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -28,19 +29,21 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
   },
   fixedHeight: {
-    height: 288,
+    height: 380,
   },
 }));
 
 export default function Profile(props) {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  const { onSymbolClick } = props;
+  const authenticated = props.currentUser != null;
 
   return (
     <Grid container>
       <CssBaseline />
       <main className={classes.content}>
-        <Container maxWidth="xl" className={classes.container}>
+        <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={5}>
             <Grid item xs={12} md={4} lg={3} xl={3}>
               <Paper className={fixedHeightPaper}>
@@ -50,13 +53,13 @@ export default function Profile(props) {
 
             <Grid item xs={12} md={8} lg={9} xl={9}>
               <Paper className={fixedHeightPaper}>
-                <Watchlist />
+                <Watchlist authenticated={authenticated} onSymbolClick={onSymbolClick} />
               </Paper>
             </Grid>
 
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                <Portfolio {...props} />
+                <Portfolio authenticated={authenticated} onSymbolClick={onSymbolClick} />
               </Paper>
             </Grid>
 

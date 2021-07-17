@@ -67,7 +67,9 @@ public class FinanceDataService {
         switch (stockInfo.getString("marketState")) {
             case "PRE": sq.setPrice(stockInfo.getBigDecimal("preMarketPrice")); break;
             case "REGULAR": sq.setPrice(stockInfo.getBigDecimal("regularMarketPrice")); break;
-            case "POST": sq.setPrice(stockInfo.getBigDecimal("postMarketPrice")); break;
+            case "POST":
+            case "POSTPOST":
+                sq.setPrice(stockInfo.getBigDecimal("postMarketPrice")); break;
             default: sq.setPrice(BigDecimal.ZERO); break;
         }
         sq.setAsk(stockInfo.getBigDecimal("ask"));

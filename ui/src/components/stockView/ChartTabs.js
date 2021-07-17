@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function MultiCharts(props) {
+export default function CharTabs(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
   const { symbol, latestPrice, marketClosed } = props;
