@@ -11,13 +11,13 @@ import Paper from '@material-ui/core/Paper';
 import { Alert } from "@material-ui/lab"
 import { makeStyles } from '@material-ui/core/styles';
 import { trade, getAffordable, getHolding } from '../../utils/APIUtils';
-import { COLOR_TERTIARY } from '../../common/Theme';
+import { COLORS } from '../../common/Theme';
 
 
 const useStyles = makeStyles((theme) => ({
   tradeButton: {
     textTransform: 'none', 
-    backgroundColor: COLOR_TERTIARY, 
+    backgroundColor: COLORS[2], 
     color: "white", 
     // fontSize: 12, 
     // borderRadius: 10,

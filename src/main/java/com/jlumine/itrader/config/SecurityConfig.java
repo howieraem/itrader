@@ -35,6 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     };
 
     private static final String[] FINANCE_DATA_WHITELIST = {
+        "/stockSearch",
         "/stockBasic",
         "/stockDetails",
         "/stockHistory",

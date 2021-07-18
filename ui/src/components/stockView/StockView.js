@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { makeStyles } from '@material-ui/core/styles';
 import InfoTable from './Table';
 import CharTabs from './ChartTabs';
@@ -12,7 +12,7 @@ import TradeDialog from './TradeDialog';
 import { addTicker, removeTicker } from 'stocksocket';
 import { existInWatchlist, addToWatchlist, removeFromWatchlist } from '../../utils/APIUtils';
 import { getStockBasicInfo } from '../../utils/DataAPIUtils';
-import { COLOR_PRIMARY } from '../../common/Theme';
+import { COLORS } from '../../common/Theme';
 import { MARKET_LOC } from '../../constants';
 
 
@@ -164,10 +164,12 @@ function StockViewCore(props) {
   }
 
   React.useEffect(() => {
-    existInWatchlist(symbol)
-    .then(res => setWatchlisted(res))
-    .catch(err => console.log(err));
-  }, [symbol])
+    if (authenticated) {
+      existInWatchlist(symbol)
+      .then(res => setWatchlisted(res))
+      .catch(err => console.log(err));
+    }
+  }, [symbol, authenticated])
 
   const prePrice = usePre(livePrice);
   React.useEffect(() => {
@@ -247,9 +249,10 @@ function StockViewCore(props) {
               variant="contained" 
               className={classes.watchlistButton} 
               onClick={handleWlButtonClick}
-              style={{ background: (watchlisted ? "#ee0000" : COLOR_PRIMARY) }}
+              disabled={!authenticated}
+              style={{ background: authenticated ? (watchlisted ? "#ee0000" : COLORS[0]) : "#cccccc" }}
             >
-              {watchlisted ? <RemoveIcon /> : <AddIcon />}
+              {watchlisted ? <DeleteForeverIcon /> : <AddIcon />}
               <div className={classes.buttonLabel}>Watchlist</div>
             </Button>
             <TradeDialog 
@@ -273,7 +276,7 @@ function StockViewCore(props) {
 }
 
 export default function StockView(props) {
-  const symbol = props.symbol;
+  const { symbol } = props;
   // const [curData, setCurData] = React.useState(null);
   const [dataTime, setDataTime] = React.useState(null);
   const [livePrice, setLivePrice] = React.useState(0.);

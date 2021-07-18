@@ -2,7 +2,7 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
-import { COLOR_PRIMARY } from './Theme';
+import { COLORS } from './Theme';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '60px',
     letterSpacing: '10px',
     marginBottom: '10px',
-    color: COLOR_PRIMARY,
+    color: COLORS[0],
   },
   desc: {
     fontSize: '20px',
@@ -27,10 +27,10 @@ const useStyles = makeStyles((theme) => ({
   homeButton: {
     textTransform: 'none', 
     fontSize: 18, 
-    backgroundColor: COLOR_PRIMARY, 
+    backgroundColor: COLORS[0], 
     color: "white",
     '&:hover': {
-      backgroundColor: COLOR_PRIMARY,
+      backgroundColor: COLORS[0],
       color: "white",
     },
   }

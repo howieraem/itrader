@@ -8,7 +8,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Pagination from '@material-ui/lab/Pagination';
 import Typography from '@material-ui/core/Typography';
-import TradeDialog from './TradeDialogCell';
+// import TradeDialog from './TradeDialogCell';
 import { getPortfolio, getNumOfPositions } from '../../utils/APIUtils';
 import { getBatchStockPrices } from '../../utils/DataAPIUtils';
 
@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Portfolio(props) {
   const classes = useStyles();
-  const { authenticated, onSymbolClick } = props;
+  const { onSymbolClick } = props;
 
   const [page, setPage] = React.useState(0);
   const rowsPerPage = 5;
@@ -65,7 +65,7 @@ export default function Portfolio(props) {
 
   const onRowClick = (i) => {
     onSymbolClick(pageRecords[i].symbol);
-    history.push('/');
+    history.push('/stockView');
   }
 
   React.useEffect(() => {
@@ -151,6 +151,7 @@ export default function Portfolio(props) {
                 <TableCell align="right">Market Capitalization (USD)</TableCell>
                 <TableCell align="right">Floating Profit/Loss (USD)</TableCell>
                 <TableCell align="right">Floating Profit/Loss Percentage</TableCell>
+                {/* <TableCell align="right" /> */}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -163,6 +164,13 @@ export default function Portfolio(props) {
                   <TableCell align="right">{row.currentPrice ? row.currentPrice * row.quantity : '--'}</TableCell>
                   <TableCell align="right">{row.pl || '--'}</TableCell>
                   <TableCell align="right">{row.plPercent || '--'}</TableCell>
+                  {/* <TableCell align="right">
+                    <TradeDialog 
+                      symbol={row.symbol} 
+                      authenticated={authenticated} 
+                      marketClosed={row.marketClosed} 
+                    />
+                  </TableCell> */}
                 </TableRow>
               ))}
             </TableBody>

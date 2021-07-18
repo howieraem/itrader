@@ -9,7 +9,7 @@ import Box from '@material-ui/core/Box';
 import IntradayChart from '../chart/IntradayChart';
 import HistoryChart from '../chart/HistoryChart';
 import MinuteChart from '../chart/MinuteChart';
-import { COLOR_SECONDARY } from '../../common/Theme';
+import { COLORS } from '../../common/Theme';
 
 
 function TabPanel(props) {
@@ -94,7 +94,7 @@ export default function CharTabs(props) {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static" style={{ background: COLOR_SECONDARY }}>
+      <AppBar position="static" style={{ background: COLORS[1] }}>
         <Tabs 
           value={value} 
           onChange={handleChange} 

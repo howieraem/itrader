@@ -10,15 +10,16 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import AlertMessage from '../common/Alert';
 import PrimarySearchAppBar from '../components/bar/AppBar';
+import Landing from '../components/landing/Landing';
 import StockView from '../components/stockView/StockView';
 import SignIn from '../components/auth/SignIn';
 import SignUp from '../components/auth/SignUp';
-import Forgot from '../components/auth/Forgot';
-import Profile from '../components/profile/Profile';
+// import Forgot from '../components/auth/Forgot';
+import Dashboard from '../components/dashboard/Dashboard';
 import NotFound from '../common/NotFound';
 import PrivateRoute from '../common/PrivateRoute';
 import LoadingIndicator from '../common/LoadingIndicator';
-import { COLOR_PRIMARY } from '../common/Theme';
+import { COLORS } from '../common/Theme';
 import { getCurrentUser } from '../utils/APIUtils';
 
 
@@ -39,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3, 2),
     paddingRight: 0,
     marginTop: 'auto',
-    backgroundColor: COLOR_PRIMARY
+    backgroundColor: COLORS[0]
       // theme.palette.type === 'light' ? theme.palette.grey[200] : theme.palette.grey[800],
   },
 }));
@@ -103,23 +104,27 @@ export default function App() {
           { justLoggedOut && <AlertMessage message={"Successfully logged out!"} severity={"success"} /> }
 
           <Switch>
-              <Route exact path="/" render={(props) => <StockView symbol={symbol} authenticated={authenticated} {...props} />} />
+              <Route exact path="/" render={(props) => <Landing authenticated={authenticated} {...props} />} />
+              <Route path="/stockView" render={(props) => <StockView symbol={symbol} authenticated={authenticated} {...props} />} />
               <Route path="/login" render={(props) => <SignIn authenticated={authenticated} {...props} />} />
               <Route path="/signup" render={(props) => <SignUp authenticated={authenticated} {...props} />} />
-              <PrivateRoute path="/profile" 
+              <PrivateRoute path="/dashboard" 
                 authenticated={authenticated} 
                 initialized={initialized} 
                 currentUser={curUser} 
-                component={Profile}
+                component={Dashboard}
                 onSymbolClick={changeSymbol}
               />
-              <Route path="/forgot" component={Forgot} />
+              {/* <Route path="/forgot" component={Forgot} /> */}
               <Route component={NotFound} />
           </Switch>
         </Grid>
       </Container>
       <footer className={classes.footer}>
         <Container maxWidth="xl">
+          <Typography variant="body1" style={{color: "#ffffff", fontStyle: "italic"}}>
+            Sky is the limit.
+          </Typography>
           <Typography variant="body2" style={{color: "#dddddd"}}>
             {`Copyright © HL ${new Date().getFullYear()}.`}
           </Typography>

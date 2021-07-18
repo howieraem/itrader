@@ -17,6 +17,11 @@ public class FinanceDataController {
     @Autowired
     FinanceDataService financeDataService;
 
+    @GetMapping("/stockSearch")
+    public String getStockBasic(@RequestParam(value = "name") String name) {
+        return financeDataService.searchStock(name);
+    }
+
     @GetMapping("/stockBasic")
     public String getStockBasic(@RequestParam(value = "symbols") List<String> symbols) {
         return financeDataService.getStockBasic(symbols);

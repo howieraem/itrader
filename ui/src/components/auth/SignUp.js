@@ -1,4 +1,5 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -7,9 +8,9 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { Redirect } from 'react-router-dom';
 import { signup } from '../../utils/APIUtils';
-import { COLOR_PRIMARY } from '../../common/Theme';
+import Background from '../../common/Background';
+import { COLORS } from '../../common/Theme';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -29,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
   submit: {
     textTransform: 'none', 
-    background: COLOR_PRIMARY,
+    background: COLORS[0],
     color: 'white', 
     margin: theme.spacing(3, 0, 2),
   },
@@ -83,86 +84,89 @@ export default function SignUp(props) {
   if (authenticated) {
     return <Redirect
       to={{
-        pathname: "/",
+        pathname: "/dashboard",
         state: { from: location }
       }}
     />;
   }
   return (
-    <Grid item xs={12}>
-      <CssBaseline />
-      <Container component="main" maxWidth="xs">
-        <Grid item xs={12} style={{ minHeight: "10vh" }} />
-        <div className={classes.paper}>
-          <Typography component="h1" variant="h5">
-            Sign up with ITrader
-          </Typography>
-          <form className={classes.form} noValidate>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoFocus
-              onChange={(ev) => setEmail(ev.target.value)}
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              onChange={(ev) => setPassword(ev.target.value)}
-            />
-            {/* <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="pin"
-              label="Trading PIN (4-digit)"
-              type="password"
-              id="pin"
-              onChange={(ev) => setPin(ev.target.value)}
-            /> */}
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="username"
-              label="Username"
-              type="username"
-              id="username"
-              onChange={(ev) => setUsername(ev.target.value)}
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              // color="primary"
-              className={classes.submit}
-              onClick={handleSubmit}
-            >
-              Sign Up
-            </Button>
-            <Grid container justify="flex-end">
-              <Grid item style={{marginTop: '5px'}}>
-                <Link href="/login" variant="body2">
-                  Already have an account? Sign in!
-                </Link>
+    <>
+      <Grid item xs={12}>
+        <CssBaseline />
+        <Container component="main" maxWidth="xs">
+          <Grid item xs={12} style={{ minHeight: "10vh" }} />
+          <div className={classes.paper}>
+            <Typography component="h1" variant="h5">
+              Sign up with ITrader
+            </Typography>
+            <form className={classes.form} noValidate>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoFocus
+                onChange={(ev) => setEmail(ev.target.value)}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                onChange={(ev) => setPassword(ev.target.value)}
+              />
+              {/* <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="pin"
+                label="Trading PIN (4-digit)"
+                type="password"
+                id="pin"
+                onChange={(ev) => setPin(ev.target.value)}
+              /> */}
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="username"
+                label="Username"
+                type="username"
+                id="username"
+                onChange={(ev) => setUsername(ev.target.value)}
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                // color="primary"
+                className={classes.submit}
+                onClick={handleSubmit}
+              >
+                Sign Up
+              </Button>
+              <Grid container justify="flex-end">
+                <Grid item style={{marginTop: '5px'}}>
+                  <Link href="/login" variant="body2">
+                    Already have an account? Sign in!
+                  </Link>
+                </Grid>
               </Grid>
-            </Grid>
-          </form>
-        </div>
-      </Container>
-      <Grid item xs={12} style={{ minHeight: "5vh" }} />
-    </Grid>
+            </form>
+          </div>
+        </Container>
+        <Grid item xs={12} style={{ minHeight: "5vh" }} />
+      </Grid>
+      <Background />
+    </>
   );
 }

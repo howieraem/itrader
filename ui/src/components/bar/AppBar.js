@@ -13,7 +13,7 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
 import AccountMenu from './AccountMenu';
-import { COLOR_PRIMARY } from '../../common/Theme';
+import { COLORS } from '../../common/Theme';
 
 
 const Clock = ({ date }) => (
@@ -28,11 +28,11 @@ const ClockMobile = ({ date }) => (
 
 const useStyles = makeStyles((theme) => ({
   iconButton: {
-    background: COLOR_PRIMARY,
+    background: COLORS[0],
     textTransform: 'none', 
     alignItems: 'center',
     '&:hover': {
-      backgroundColor: COLOR_PRIMARY,
+      backgroundColor: COLORS[0],
     },
   },
   grow: {
@@ -188,7 +188,7 @@ export default function PrimarySearchAppBar(props) {
 
   return (
     <div className={classes.grow}>
-      <AppBar style={{ background: COLOR_PRIMARY }}>
+      <AppBar style={{ background: COLORS[0] }}>
         <Toolbar>
           <Button 
             aria-label="home" 
@@ -219,7 +219,7 @@ export default function PrimarySearchAppBar(props) {
                   const symbol = ev.target.value.toUpperCase();
                   onSearch(symbol);
                   ev.preventDefault();
-                  history.push('/');
+                  history.push('/stockView');
                 }
               }}
             />

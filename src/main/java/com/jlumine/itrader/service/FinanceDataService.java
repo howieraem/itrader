@@ -14,6 +14,7 @@ import java.util.List;
 @Service
 public class FinanceDataService {
     // Note: crumb is not longer required for Yahoo Finance's new APIs
+    private static final String URL_SEARCH = "https://query1.finance.yahoo.com/v1/finance/search?q=%s&quotesCount=5&newsCount=0&enableEnhancedTrivialQuery=true&lang=en-US&region=US";
     private static final String URL_BASIC = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=%s";
     private static final String URL_SNAPSHOT = "https://query2.finance.yahoo.com/v10/finance/quoteSummary/%s?modules=%s";
     private static final String URL_HISTORY = "https://query1.finance.yahoo.com/v7/finance/download/%s?period1=%s&period2=%s&interval=%s&events=%s&includeAdjustedClose=true";
@@ -25,6 +26,10 @@ public class FinanceDataService {
 
     private String forward(String url) {
         return restTemplate.exchange(url, HttpMethod.GET, null, String.class).getBody();
+    }
+
+    public String searchStock(String name) {
+        return forward(String.format(URL_SEARCH, name));
     }
 
     public String getStockBasic(String symbol) {
