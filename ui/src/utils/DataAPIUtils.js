@@ -4,6 +4,21 @@ import { csvParse } from "d3";
 import { timeParse } from "d3-time-format";
 
 
+export function searchTicker(str) {
+  return new Promise((resolve, reject) => {
+    if (!str) return resolve([]);
+    const url = SERVER_URL + `/stockSearch?name=${str}`;
+    return axios.get(url).then((res) => {
+      const { data } = res;
+      if (!data || !data.quotes) {
+          return resolve(new Error(`Error searching ${str}.`));
+      }
+      const quotes = data.quotes;
+      return resolve(quotes.filter(quote => quote.quoteType === "EQUITY" && quote.isYahooFinance));
+    }).catch(err => reject(err));
+  });
+};
+
 export function getStockBasicInfo(symbol) {  
   return new Promise((resolve, reject) => {
     if (!symbol) return reject(Error('Stock symbol cannot be empty!'));

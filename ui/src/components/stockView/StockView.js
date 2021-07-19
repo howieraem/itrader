@@ -69,7 +69,6 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'left',
     justifyContent: 'center',
     margin: theme.spacing(2, 0, 1),
-    // marginTop: '10px',
     fontSize: '16px',
     [theme.breakpoints.up('sm')]: {
       fontSize: '20px',
@@ -91,36 +90,32 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function roundNumber(number, places=4) {
-  return parseFloat(number.toFixed(places))
+  if (!number)  return null;
+  return parseFloat(number.toFixed(places));
 }
 
-
-// function sortByKey(unordered) {
-//   return Object.keys(unordered).sort().reduce(
-//     (obj, key) => { 
-//       obj[key] = unordered[key]; 
-//       return obj;
-//     }, 
-//     {}
-//   );
-// }
-
+function procLargeNum(number, places=2) {
+  if (number > 1e9)  return `${(number / 1e9).toFixed(places)}B`;
+  if (number > 1e6)  return `${(number / 1e6).toFixed(places)}M`;
+  if (number > 1e3)  return `${(number / 1e3).toFixed(places)}K`;
+  return number.toFixed(places);
+}
 
 function filterInfo(info) {
   return {
-    "Market Location": MARKET_LOC[info.market] || info.market,
-    "Outstanding Shares": `${(info.sharesOutstanding / 1e6).toFixed(2)}M`,
-    "Market Capitalization": `${info.currency.toUpperCase()} ${(info.marketCap / 1e6).toFixed(2)}M`,
+    "Market Region": MARKET_LOC[info.market] || info.market,
+    "Outstanding Shares": procLargeNum(info.sharesOutstanding),
+    "Market Capitalization": `${info.currency.toUpperCase()} ${procLargeNum(info.marketCap)}`,
     "Volume": info.regularMarketVolume || 0,
     "Day Price Range": info.regularMarketDayRange,
-    "52-week High": info.fiftyTwoWeekHigh,
-    "52-week Low": info.fiftyTwoWeekLow,
+    "52-week High": roundNumber(info.fiftyTwoWeekHigh),
+    "52-week Low": roundNumber(info.fiftyTwoWeekLow),
     // "Market State": info.marketState,
-    "Current Year EPS": info.epsCurrentYear || "N/A",
-    "Forward EPS": info.epsForward || "N/A",
-    "Trailing PE": info.trailingPE || "N/A",
-    "Forward PE": info.forwardPE || "N/A",
-    "Book Value": info.bookValue,
+    "Current Year EPS": roundNumber(info.epsCurrentYear) || "N/A",
+    "Forward EPS": roundNumber(info.epsForward) || "N/A",
+    "Trailing PE": roundNumber(info.trailingPE) || "N/A",
+    "Forward PE": roundNumber(info.forwardPE) || "N/A",
+    "Book Value": roundNumber(info.bookValue),
   }
 }
 
@@ -133,14 +128,16 @@ const Blinking = (props) => (
 function StockViewCore(props) {
   const classes = useStyles();
   const { symbol, authenticated, dataTime, livePrice, change, changePercent } = props;
-  
+
   const [stockName, setStockName] = React.useState(null);
   const [basicInfo, setBasicInfo] = React.useState(null);
   const [currency, setCurrency] = React.useState("USD");
   const [highlight, setHighlight] = React.useState(false);
   const [isRising, setIsRising] = React.useState(false);
   const [watchlisted, setWatchlisted] = React.useState(false);
-  const [regularMarketPrice, setRegularMarketPrice] = React.useState(0.);
+  const [regularMarketPrice, setRegularMarketPrice] = React.useState(0);
+  const [regularMarketChange, setRegularMarketChange] = React.useState(0);
+  const [regularMarketChangePercent, setRegularMarketChangePercent] = React.useState(0);
   const [regularMarketClosed, setRegularMarketClosed] = React.useState(false);
 
   const handleWlButtonClick = () => {
@@ -171,29 +168,38 @@ function StockViewCore(props) {
     }
   }, [symbol, authenticated])
 
-  const prePrice = usePre(livePrice);
   React.useEffect(() => {
     const updateBasicInfo = () => {
       getStockBasicInfo(symbol)
       .then(basicInfo => {
         setBasicInfo(filterInfo(basicInfo));
-        setStockName(basicInfo.displayName || basicInfo.shortName || basicInfo.longName);
+        setStockName(basicInfo.displayName || basicInfo.longName || basicInfo.shortName);
         setCurrency(basicInfo.currency.toUpperCase());
-        setRegularMarketPrice(basicInfo.regularMarketPrice);
+        setRegularMarketPrice(roundNumber(basicInfo.regularMarketPrice, 3));
+        setRegularMarketChange(roundNumber(basicInfo.regularMarketChange, 3));
+        setRegularMarketChangePercent(roundNumber(basicInfo.regularMarketChangePercent, 2));
         setRegularMarketClosed(basicInfo.marketState !== "REGULAR");
       }).catch(err => { console.log(err) })
     };
     updateBasicInfo();
 
     const interval = setInterval(() => {
+      // Update info table every 15s, not as frequent as live price
       updateBasicInfo();
-    }, 600000);
+    }, 15000);
 
+    return () => {
+      clearInterval(interval);
+    };
+  }, [symbol])
+
+  const prePrice = usePre(livePrice);
+  React.useEffect(() => {
     const handlePriceChange = () => {
       setHighlight(true);
       setTimeout(() => {
         setHighlight(false);
-      }, 700);
+      }, 500);
     };
     if (livePrice > 0 && prePrice > 0) {
       if (livePrice !== prePrice) {
@@ -201,15 +207,17 @@ function StockViewCore(props) {
         handlePriceChange();
       }
     }
+  }, [livePrice]);  // don't put prePrice here
 
-    return () => {
-      clearInterval(interval);
-    };
-  }, [symbol, livePrice]);  // don't put prePrice here
+  let changeSign = "", priceColor = "#cc0000";
+  if (change >= 0 && regularMarketChange >= 0) {
+    changeSign = "+";
+    priceColor = "#00aa00";
+  }
 
-  const changeSign = change >= 0 ? "+" : "-";
   let tradeNotAvailMsg = "";
   if (regularMarketClosed) {
+    priceColor = "#000000";
     tradeNotAvailMsg = "Regular market is closed. Pre/post-market not yet supported.";
   }
   if (basicInfo && basicInfo.Currency !== "USD") {
@@ -220,47 +228,50 @@ function StockViewCore(props) {
     <Grid container spacing={0}>
       <Grid container spacing={2} className={classes.topContainer}>
         <Grid item xs={4} sm={4}> 
-          <header className={classes.symbolTitle1}>
+          <div className={classes.symbolTitle1}>
             {symbol}
-          </header>
-          <header className={classes.symbolTitle2}>
+          </div>
+          <div className={classes.symbolTitle2}>
             { basicInfo ? stockName : "" }
-          </header>
+          </div>
         </Grid>
 
         <Grid item className={classes.grow} />
-        <Grid item xs={4} sm={4}> 
-          <header className={classes.symbolTitle1}>
-            <Blinking highlight={highlight} rise={isRising}>
-              { `${currency} ${livePrice || regularMarketPrice}` }
-            </Blinking>
-          </header>
-          <header className={classes.symbolTitle2}>
-            <Blinking highlight={highlight} rise={isRising}>
-              { regularMarketClosed ? "Regular Market closed" : `${changeSign}${change} (${changeSign}${changePercent}%)` }
-            </Blinking>
-          </header>
+        <Grid item xs={4} sm={2} md={2}>
+          <Blinking highlight={highlight} rise={isRising}>
+            <div className={classes.symbolTitle1}>
+                { `${currency} ${livePrice || regularMarketPrice}` }
+            </div>
+            <div className={classes.symbolTitle2} style={{ color: priceColor }}>
+                { regularMarketClosed ? "Regular Market closed" : (
+                    `${changeSign}${change || regularMarketChange} (${changeSign}${changePercent || regularMarketChangePercent}%)`
+                  )
+                }
+            </div>
+          </Blinking>
         </Grid>
+        <Grid item md={2} /> 
 
         <Grid item xs className={classes.grow2} />
         <Grid item xs={3} sm={3} align="right">
-          <ButtonGroup size="small">
-            <Button 
-              variant="contained" 
-              className={classes.watchlistButton} 
-              onClick={handleWlButtonClick}
-              disabled={!authenticated}
-              style={{ background: authenticated ? (watchlisted ? "#ee0000" : COLORS[0]) : "#cccccc" }}
-            >
-              {watchlisted ? <DeleteForeverIcon /> : <AddIcon />}
-              <div className={classes.buttonLabel}>Watchlist</div>
-            </Button>
-            <TradeDialog 
-              symbol={symbol} 
-              authenticated={authenticated} 
-              errMsg={tradeNotAvailMsg}
-            />
-          </ButtonGroup>
+          { authenticated ? (
+              <ButtonGroup size="small">
+                <Button 
+                  variant="contained" 
+                  className={classes.watchlistButton} 
+                  onClick={handleWlButtonClick}
+                  startIcon={watchlisted ? <DeleteForeverIcon /> : <AddIcon />}
+                  style={{ background: (watchlisted ? "#ee0000" : COLORS[0]) }}
+                >
+                  <div className={classes.buttonLabel}>Watchlist</div>
+                </Button>
+                <TradeDialog 
+                  symbol={symbol}
+                  errMsg={tradeNotAvailMsg}
+                />
+              </ButtonGroup>
+            ) : null 
+          }
         </Grid>
       </Grid>
 
@@ -277,11 +288,11 @@ function StockViewCore(props) {
 
 export default function StockView(props) {
   const { symbol } = props;
-  // const [curData, setCurData] = React.useState(null);
   const [dataTime, setDataTime] = React.useState(null);
   const [livePrice, setLivePrice] = React.useState(0.);
   const [change, setChange] = React.useState(0.);
   const [changePercent, setChangePercent] = React.useState(0.);
+  // const [dayVolume, setDayVolume] = React.useState(0);
 
   React.useEffect(() => {
     /* 
@@ -299,11 +310,11 @@ export default function StockView(props) {
     priceHint
     */
     const updateLiveData = (liveData) => {
-      // setCurData(sortByKey(liveData));
       setDataTime(new Date(liveData.time));
-      setLivePrice(roundNumber(liveData.price));
-      setChange(roundNumber(liveData.change));
+      setLivePrice(roundNumber(liveData.price, 3));
+      setChange(roundNumber(liveData.change, 3));
       setChangePercent(roundNumber(liveData.changePercent, 2));
+      // setDayVolume(liveData.dayVolume);
     };
     addTicker(symbol, updateLiveData);
 
@@ -315,5 +326,14 @@ export default function StockView(props) {
     };
   }, [symbol]);
 
-  return <StockViewCore dataTime={dataTime} livePrice={livePrice} change={change} changePercent={changePercent} {...props} />
+  return (
+    <StockViewCore 
+      dataTime={dataTime} 
+      livePrice={livePrice} 
+      change={change} 
+      changePercent={changePercent} 
+      // dayVolume={dayVolume} 
+      {...props} 
+    />
+  );
 }

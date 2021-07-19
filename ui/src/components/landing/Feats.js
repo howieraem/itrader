@@ -47,7 +47,7 @@ const cards = [
   },
   {
     heading: 'Convenient.',
-    desc: 'Add stocks to your watchlist. No complicated operations in paper trading.', 
+    desc: 'Add stocks to watchlist. No complicated operations. Mobile devices supported.', 
     icon: 'https://image.flaticon.com/icons/png/512/633/633652.png',
   },
   {

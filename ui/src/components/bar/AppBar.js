@@ -2,6 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
@@ -14,6 +15,7 @@ import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
 import AccountMenu from './AccountMenu';
 import { COLORS } from '../../common/Theme';
+import { searchTicker } from '../../utils/DataAPIUtils'; 
 
 
 const Clock = ({ date }) => (
@@ -59,31 +61,20 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
     marginLeft: 0,
     width: '46%',
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(3),
       width: '30ch',
     },
   },
-  searchIcon: {
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+  searchOptions: {
+    
   },
   inputRoot: {
     color: 'inherit',
   },
   inputInput: {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(0)}px)`,
+    paddingLeft: '1em',
     transition: theme.transitions.create('width'),
-    width: '80%',
-    [theme.breakpoints.up('md')]: {
-      width: '32ch',
-    },
   },
   sectionDesktop: {
     display: 'none',
@@ -106,6 +97,8 @@ export default function PrimarySearchAppBar(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [date, setDate] = React.useState(new Date());
+  const [searchRes, setSearchRes] = React.useState([]);
+  const [symbol, setSymbol] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -138,6 +131,18 @@ export default function PrimarySearchAppBar(props) {
     setAnchorEl(null);
     handleMobileMenuClose();
   };
+
+  const handleOptionFetch = (str) => {
+    setSymbol(null);
+    searchTicker(str)
+    .then(res => setSearchRes(res))
+    .catch(err => console.log(err));
+  }
+
+  const handleSearchClick = (symbol) => {
+    onSearch(symbol);
+    history.push('/stockView');
+  }
 
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
@@ -202,28 +207,47 @@ export default function PrimarySearchAppBar(props) {
           <Typography component="a" href="/" className={classes.title} variant="h5" noWrap>
             ITrader
           </Typography>
+
           <div className={classes.grow} />
-          <div className={classes.search}>
-            <InputBase
-              placeholder="Search stock here"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-              startAdornment={
-                <SearchIcon style={{ marginLeft: 15, marginRight: 0 }}/>
+          <Autocomplete
+            id="autocomplete"
+            freeSolo
+            options={searchRes}
+            getOptionLabel={(option) => option ? option.symbol : ""}
+            filterOptions={x => x}  // don't filter options
+            classes={{
+              root: classes.search, 
+              paper: classes.searchOptions 
+            }}
+            onChange={(ev, val) => {
+              if (val) { 
+                setSymbol(val.symbol);
+                handleSearchClick(val.symbol);
               }
-              onKeyPress={(ev) => {
-                if (ev.key === 'Enter') {
-                  const symbol = ev.target.value.toUpperCase();
-                  onSearch(symbol);
-                  ev.preventDefault();
-                  history.push('/stockView');
+            }}
+            onInputChange={(ev, val) => handleOptionFetch(val)}
+            renderInput={(params) => (
+              <InputBase
+                ref={params.InputProps.ref}
+                inputProps={params.inputProps}
+                autoFocus
+                placeholder="Search stock here"
+                classes={{
+                  root: classes.inputRoot,
+                  input: classes.inputInput,
+                }}
+                endAdornment={
+                  <SearchIcon style={{ marginLeft: 10, marginRight: 10 }} />
                 }
-              }}
-            />
-          </div>
+                // onKeyPress={(ev) => {
+                //   if (ev.key === 'Enter') {
+                //     handleSearchClick();
+                //     ev.preventDefault();
+                //   }
+                // }}
+              />
+            )}
+          />
 
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>

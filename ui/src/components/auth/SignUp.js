@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    background: "rgba(255, 255, 255, .3)",
   },
   avatar: {
     margin: theme.spacing(1),
@@ -166,7 +167,7 @@ export default function SignUp(props) {
         </Container>
         <Grid item xs={12} style={{ minHeight: "5vh" }} />
       </Grid>
-      <Background />
+      <Background num={100} />
     </>
   );
 }

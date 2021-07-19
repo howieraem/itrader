@@ -4,4 +4,7 @@ export const MARKET_LOC = {
   "cn_market": "China (Mainland)",
   "hk_market": "Hong Kong",
   "gb_market": "UK",
+  "mx_market": "Mexico",
+  "sg_market": "Singapore",
+  "tw_market": "Taiwan",
 }

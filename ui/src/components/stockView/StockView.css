@@ -7,9 +7,9 @@
 }
 
 .stock-rise {
-  color: #008800;
+  background: #72ff72;
 }
 
 .stock-fall {
-  color: #ee0000;
+  background: #fa7c7c;
 }
