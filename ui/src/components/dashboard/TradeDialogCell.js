@@ -10,7 +10,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Paper from '@material-ui/core/Paper';
 import { Alert } from "@material-ui/lab"
 import { makeStyles } from '@material-ui/core/styles';
-import { trade, getAffordable, getHolding } from '../../utils/APIUtils';
+import { trade, getTradable } from '../../utils/APIUtils';
 import { COLORS } from '../../common/Theme';
 
 
@@ -64,12 +64,11 @@ export default function TradeDialog(props) {
   React.useEffect(() => {
     const updateValidQty = () => {
       if (open && authenticated) {
-        getAffordable(symbol)
-        .then(qty => setMaxBuyQty(qty))
-        .catch(err => console.log(err));
-    
-        getHolding(symbol)
-        .then(qty => setMaxSellQty(qty))
+        getTradable(symbol)
+        .then(response => {
+          setMaxBuyQty(response.affordable);
+          setMaxSellQty(response.sellable);
+        })
         .catch(err => console.log(err));
       }
     }
@@ -176,8 +175,8 @@ export default function TradeDialog(props) {
                     Be sure to double check details below before you trade.
                   </DialogContentText>
                   <Paper variant='outlined' className={classes.symbolLabel}>Stock Symbol: {symbol}</Paper>
-                  <Paper variant='outlined' className={classes.validQuantityLabel}>Maximum quantity affordable: {maxBuyQty}</Paper>  
-                  <Paper variant='outlined' className={classes.validQuantityLabel}>Existing quantity: {maxSellQty}</Paper>
+                  <Paper variant='outlined' className={classes.validQuantityLabel}>Max. affordable: {maxBuyQty}</Paper>  
+                  <Paper variant='outlined' className={classes.validQuantityLabel}>Max. sellable: {maxSellQty}</Paper>
                   <TextField
                     autoFocus
                     onChange={handleQtyChange}

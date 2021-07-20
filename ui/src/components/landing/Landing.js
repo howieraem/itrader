@@ -4,7 +4,7 @@ import Background from '../../common/Background';
 
 
 export default function Home(props) {
-  const { authenticated, history, location } = props;
+  const { authenticated, location } = props;
 
   if (authenticated) {
     return <Redirect

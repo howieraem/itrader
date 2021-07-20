@@ -14,7 +14,7 @@ import { getBatchStockPrices } from '../../utils/DataAPIUtils';
 
 function procRawPositionInfo(i, position) {
   position.i = i;
-  position.holdingPrice = (parseFloat(position.holdingCost) / position.quantity).toFixed(2);
+  position.holdingPrice = (position.holdingCost / position.quantity).toFixed(4);
 }
 
 function updatePositionPrice(position, currentPrice) {
@@ -59,7 +59,6 @@ export default function Portfolio(props) {
   const numOfPages = Math.floor((numOfRecords + rowsPerPage - 1) / rowsPerPage);
 
   const [pageRecords, setPageRecords] = React.useState([]);
-  const [marketClosed, setMarketClosed] = React.useState(false);
 
   let history = useHistory();
 
@@ -76,9 +75,8 @@ export default function Portfolio(props) {
     const updateSymbolPrices = (pageSymbols, pageRecords) => {
       getBatchStockPrices(pageSymbols)
       .then(res => {
-        setMarketClosed(res[0]);  // TODO marketClosed might not be the same for symbols queried
         for (let i = 0; i < pageRecords.length; ++i) {
-          updatePositionPrice(pageRecords[i], res[1][i]);
+          updatePositionPrice(pageRecords[i], res[i]);
         }
         setPageRecords(pageRecords);
       })
@@ -94,25 +92,21 @@ export default function Portfolio(props) {
           procRawPositionInfo(i, pageRecords[i]);
           pageSymbols.push(pageRecords[i].symbol);
         }
-        // setPageRecords(pageRecords);
         updateSymbolPrices(pageSymbols, pageRecords);
 
-        if (!marketClosed) {
-          interval = setInterval(() => {
-            updateSymbolPrices(pageSymbols, pageRecords);
-          }, 10000);
-        }
+        interval = setInterval(() => {
+          // update portfolio display price every 10s
+          updateSymbolPrices(pageSymbols, pageRecords);
+        }, 10000);
       })
       .catch(err => console.log(err));
     }
     initPortfio();
   
-    if (!marketClosed) {
-      return () => {
-        clearInterval(interval);
-      };
-    }
-  }, [page, rowsPerPage, numOfPages, marketClosed])
+    return () => {
+      clearInterval(interval);
+    };
+  }, [page, rowsPerPage, numOfPages])
 
   const handleChangePage = (ev, newPage) => {
     setPage(newPage - 1);
@@ -161,7 +155,7 @@ export default function Portfolio(props) {
                   <TableCell align="right">{row.quantity}</TableCell>
                   <TableCell align="right">{row.holdingPrice}</TableCell>
                   <TableCell align="right">{row.currentPrice || '--'}</TableCell>
-                  <TableCell align="right">{row.currentPrice ? row.currentPrice * row.quantity : '--'}</TableCell>
+                  <TableCell align="right">{row.currentPrice ? (row.currentPrice * row.quantity).toFixed(4) : '--'}</TableCell>
                   <TableCell align="right">{row.pl || '--'}</TableCell>
                   <TableCell align="right">{row.plPercent || '--'}</TableCell>
                   {/* <TableCell align="right">

@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
 export default function App() {
   const classes = useStyles();
 
-  const [symbol, setSymbol] = React.useState('');
+  const [symbol, setSymbol] = React.useState(sessionStorage.getItem('symbol') || 'TSLA');
   const [authenticated, setAuthenticated] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [initialized, setInitialized] = React.useState(false);
@@ -86,8 +86,6 @@ export default function App() {
       });
     };
     loadCurrentlyLoggedInUser();
-
-    setSymbol(sessionStorage.getItem('symbol') || 'TSLA');
   }, [])
 
   return ( loading ? (<LoadingIndicator />) : (

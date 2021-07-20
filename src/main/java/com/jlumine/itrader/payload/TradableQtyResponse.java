@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApiResponse {
-    private boolean success;
-    private String message;
+public class TradableQtyResponse {
+    private long affordable;
+    private long sellable;
 }

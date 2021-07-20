@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @Service
@@ -60,27 +61,36 @@ public class FinanceDataService {
         return forward(String.format(URL_HISTORY_ADV, symbol, from, to, interval, includePrePost));
     }
 
-    public StockQuote getCurrentQuote(String symbol) {
+    private JSONObject preprocessSymbolInfo(String symbol) {
         JSONObject jsonObject = JSONObject.parseObject(getStockBasic(symbol)).getJSONObject("quoteResponse");
         if (jsonObject.getJSONObject("error") != null)
-            throw new RuntimeException(String.format("Failed to fetch stock price for symbol %s.", symbol));
+            throw new RuntimeException(String.format("Failed to fetch info for symbol %s.", symbol));
         JSONArray results = jsonObject.getJSONArray("result");
         if (results.isEmpty())  throw new RuntimeException(String.format("Symbol %s does not exist.", symbol));
-        JSONObject stockInfo = (JSONObject) results.get(0);
+        return (JSONObject) results.get(0);
+    }
+
+    public StockQuote getCurrentQuote(String symbol) {
+        JSONObject stockInfo = preprocessSymbolInfo(symbol);
+        String currency = stockInfo.getString("currency").toUpperCase();
+        BigDecimal rate = currency.equals("USD") ? BigDecimal.ONE : getCurrencyExchangeRate(currency);
 
         StockQuote sq = new StockQuote();
-        switch (stockInfo.getString("marketState")) {
-            case "PRE": sq.setPrice(stockInfo.getBigDecimal("preMarketPrice")); break;
-            case "REGULAR": sq.setPrice(stockInfo.getBigDecimal("regularMarketPrice")); break;
-            case "POST":
-            case "POSTPOST":
-                sq.setPrice(stockInfo.getBigDecimal("postMarketPrice")); break;
-            default: sq.setPrice(BigDecimal.ZERO); break;
-        }
-        sq.setAsk(stockInfo.getBigDecimal("ask"));
+        sq.setPrice(stockInfo.getBigDecimal("regularMarketPrice").divide(rate, RoundingMode.HALF_UP));
+//        switch (stockInfo.getString("marketState")) {
+//            case "PRE": sq.setPrice(stockInfo.getBigDecimal("preMarketPrice").divide(rate, RoundingMode.HALF_UP)); break;
+//            case "REGULAR": sq.setPrice(stockInfo.getBigDecimal("regularMarketPrice").divide(rate, RoundingMode.HALF_UP)); break;
+//            case "POST": sq.setPrice(stockInfo.getBigDecimal("postMarketPrice").divide(rate, RoundingMode.HALF_UP)); break;
+//            default: sq.setPrice(BigDecimal.ZERO); break;
+//        }
+        sq.setAsk(stockInfo.getBigDecimal("ask").divide(rate, RoundingMode.HALF_UP));
         sq.setAskSize(stockInfo.getLong("askSize"));
-        sq.setBid(stockInfo.getBigDecimal("bid"));
+        sq.setBid(stockInfo.getBigDecimal("bid").divide(rate, RoundingMode.HALF_UP));
         sq.setBidSize(stockInfo.getLong("bidSize"));
         return sq;
+    }
+
+    public BigDecimal getCurrencyExchangeRate(String currency) {
+        return preprocessSymbolInfo(currency + "=X").getBigDecimal("regularMarketPrice");
     }
 }

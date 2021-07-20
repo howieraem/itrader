@@ -3,6 +3,19 @@ import axios from 'axios';
 import { csvParse } from "d3";
 import { timeParse } from "d3-time-format";
 
+export function getExchangeRate(currency) {
+  return new Promise((resolve, reject) => {
+    if (!currency || currency === "USD") return resolve(1);
+    const url = SERVER_URL + `/exchangeRate?currency=${currency}`;
+    return axios.get(url).then((res) => {
+      const { data } = res;
+      if (!data) {
+          return resolve(new Error(`Failed to get exchange rate for ${currency}.`));
+      }
+      return resolve(data);
+    }).catch(err => reject(err));
+  });
+};
 
 export function searchTicker(str) {
   return new Promise((resolve, reject) => {
@@ -11,7 +24,7 @@ export function searchTicker(str) {
     return axios.get(url).then((res) => {
       const { data } = res;
       if (!data || !data.quotes) {
-          return resolve(new Error(`Error searching ${str}.`));
+          return resolve(new Error(`Got errors while searching ${str}.`));
       }
       const quotes = data.quotes;
       return resolve(quotes.filter(quote => quote.quoteType === "EQUITY" && quote.isYahooFinance));
@@ -23,14 +36,14 @@ export function getStockBasicInfo(symbol) {
   return new Promise((resolve, reject) => {
     if (!symbol) return reject(Error('Stock symbol cannot be empty!'));
 
-    const multiSymbols = symbol instanceof Array;
-    const url = SERVER_URL + `/stockBasic?symbols=${multiSymbols ? symbol.join() : symbol}`;
+    const isMulti = symbol instanceof Array;
+    const url = SERVER_URL + `/stockBasic?symbols=${isMulti ? symbol.join() : symbol}`;
     return axios.get(url).then((res) => {
       const { data } = res;
       if (!data || !data.quoteResponse || !data.quoteResponse.result || data.quoteResponse.result.length === 0) {
           return resolve(new Error(`Error retrieving info for symbol ${symbol}.`));
       }
-      if (multiSymbols)  return resolve(data.quoteResponse.result);
+      if (isMulti)  return resolve(data.quoteResponse.result);
       return resolve(data.quoteResponse.result[0]);
     }).catch(err => reject(err));
   });
@@ -39,13 +52,17 @@ export function getStockBasicInfo(symbol) {
 export function getBatchStockPrices(symbols) {
   return new Promise((resolve, reject) => {
     return getStockBasicInfo(symbols).then(result => {
-      const marketState = result[0].marketState;
-      const marketClosed = marketState === "CLOSED";
-      return resolve([marketClosed, result.map((stockRes) => {
-        if (marketState === "PRE")  return stockRes.preMarketPrice;
-        else if (marketState === "POST" || marketClosed)  return stockRes.postMarketPrice;
-        else  return stockRes.regularMarketPrice;
-      })]);
+      const promises = result.map(
+        (quote) => getExchangeRate(quote.currency.toUpperCase())
+                   .then(rate => {
+                      // let price;
+                      // if (marketState === "PRE")  price = quote.preMarketPrice;
+                      // else if (marketState === "POST" || marketClosed)  price = quote.postMarketPrice;
+                      // else  price quote.regularMarketPrice;
+                      return (quote.regularMarketPrice / rate).toFixed(4);
+                   })
+      );
+      return resolve(Promise.all(promises));
     }).catch(err => reject(err));
   });
 }

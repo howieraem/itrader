@@ -1,12 +1,9 @@
 package com.jlumine.itrader.controller;
 
-// import com.alibaba.fastjson.JSONObject;
 import com.jlumine.itrader.service.FinanceDataService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -18,13 +15,18 @@ public class FinanceDataController {
     FinanceDataService financeDataService;
 
     @GetMapping("/stockSearch")
-    public String getStockBasic(@RequestParam(value = "name") String name) {
+    public String searchStock(@RequestParam(value = "name") String name) {
         return financeDataService.searchStock(name);
     }
 
     @GetMapping("/stockBasic")
     public String getStockBasic(@RequestParam(value = "symbols") List<String> symbols) {
         return financeDataService.getStockBasic(symbols);
+    }
+
+    @GetMapping("/exchangeRate")
+    public BigDecimal getExchangeRate(@RequestParam(value = "currency") String currency) {
+        return financeDataService.getCurrencyExchangeRate(currency);
     }
 
     @GetMapping("/stockDetails")

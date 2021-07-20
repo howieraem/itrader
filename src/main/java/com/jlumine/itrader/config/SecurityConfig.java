@@ -35,6 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     };
 
     private static final String[] FINANCE_DATA_WHITELIST = {
+        "/exchangeRate",
         "/stockSearch",
         "/stockBasic",
         "/stockDetails",
@@ -43,11 +44,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         "/stockHistoryIntraday",
         "/stockHistoryAdv",
     };
-
-//    private static final String[] USER_DETAILS_WHITELIST = {
-//        "/portfolio",
-//        "/trades",
-//    };
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;

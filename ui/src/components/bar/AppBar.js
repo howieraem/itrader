@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
     width: '46%',
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(3),
-      width: '30ch',
+      width: '35ch',
     },
   },
   searchOptions: {
@@ -75,6 +75,7 @@ const useStyles = makeStyles((theme) => ({
   inputInput: {
     paddingLeft: '1em',
     transition: theme.transitions.create('width'),
+    height: 30,
   },
   sectionDesktop: {
     display: 'none',
@@ -98,7 +99,7 @@ export default function PrimarySearchAppBar(props) {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [date, setDate] = React.useState(new Date());
   const [searchRes, setSearchRes] = React.useState([]);
-  const [symbol, setSymbol] = React.useState(null);
+  // const [symbol, setSymbol] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -133,7 +134,7 @@ export default function PrimarySearchAppBar(props) {
   };
 
   const handleOptionFetch = (str) => {
-    setSymbol(null);
+    // setSymbol(null);
     searchTicker(str)
     .then(res => setSearchRes(res))
     .catch(err => console.log(err));
@@ -220,8 +221,8 @@ export default function PrimarySearchAppBar(props) {
               paper: classes.searchOptions 
             }}
             onChange={(ev, val) => {
-              if (val) { 
-                setSymbol(val.symbol);
+              if (val && val.symbol) { 
+                // setSymbol(val.symbol);
                 handleSearchClick(val.symbol);
               }
             }}
@@ -237,7 +238,7 @@ export default function PrimarySearchAppBar(props) {
                   input: classes.inputInput,
                 }}
                 endAdornment={
-                  <SearchIcon style={{ marginLeft: 10, marginRight: 10 }} />
+                  <SearchIcon style={{ marginLeft: 10, marginRight: 5 }} />
                 }
                 // onKeyPress={(ev) => {
                 //   if (ev.key === 'Enter') {

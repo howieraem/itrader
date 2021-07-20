@@ -44,6 +44,8 @@ export default function Watchlist(props) {
   const handleRemove = (i) => {
     removeFromWatchlist(pageRecords[i].symbol)
     .catch(err => console.log(err));
+
+    setNumOfRecords(numOfRecords - 1);
   }
 
   const handleWatchlistItemClick = (i) => {
@@ -68,15 +70,15 @@ export default function Watchlist(props) {
         getStockBasicInfo(symbols)
         .then(res => {
           for (let i = 0; i < res.length; ++i) {
-            records[i].name = res[i].displayName || res[i].shortName || res[i].longName;
-            records[i].marketClosed = (res[i].marketState !== "REGULAR");
+            records[i].name = res[i].displayName || res[i].longName || res[i].shortName;
+            // records[i].marketClosed = (res[i].marketState !== "REGULAR");
           }
           setPageRecords(records);
         });
       }
     })
     .catch(err => console.log(err));
-  }, [page, rowsPerPage, numOfPages, pageRecords])
+  }, [page, rowsPerPage, numOfPages, numOfRecords])
 
   const handleChangePage = (ev, newPage) => {
     setPage(newPage - 1);

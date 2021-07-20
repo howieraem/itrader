@@ -117,12 +117,16 @@ export function trade(tradeRequest) {
     return authenticatedPost('trade', tradeRequest); 
 }
 
-export function getAffordable(symbol) {
-    return authenticatedPost('affordability', {symbol});
+export function getTradable(symbol) {
+    return authenticatedPost('tradable', {symbol});
 }
 
-export function getHolding(symbol) {
-    return authenticatedPost('positionQty', {symbol});
+export function getAffordable(symbol) {
+    return authenticatedPost('affordable', {symbol});
+}
+
+export function getSellable(symbol) {
+    return authenticatedPost('sellable', {symbol});
 }
 
 export function addToWatchlist(symbol) {

@@ -1,9 +1,6 @@
 package com.jlumine.itrader.controller;
 
-import com.jlumine.itrader.payload.SymbolRequest;
-import com.jlumine.itrader.payload.ApiResponse;
-import com.jlumine.itrader.payload.AuthenticatedRequest;
-import com.jlumine.itrader.payload.TradeRequest;
+import com.jlumine.itrader.payload.*;
 import com.jlumine.itrader.repository.PositionRepository;
 import com.jlumine.itrader.service.FinanceDataService;
 import com.jlumine.itrader.service.TradeService;
@@ -41,10 +38,25 @@ public class TradeController {
         return ResponseEntity.ok(new ApiResponse(true, "Trade completed!"));
     }
 
-    @PostMapping("/affordability")
+    @PostMapping("/tradable")
     @PreAuthorize("hasRole('USER')")
     @ResponseBody
-    public Long getAffordability(
+    public ResponseEntity<?> getTradable(
+            @Valid @RequestBody SymbolRequest symbolRequest,
+            AuthenticatedRequest authenticatedRequest) {
+        String symbol = symbolRequest.getSymbol();
+        BigDecimal price = financeDataService.getCurrentQuote(symbol).getPrice();
+        long affordable = tradeService.getAffordableQty(authenticatedRequest.getUserId(), price);
+        long sellable = positionRepository.findFirstQuantityByUserIdAndSymbol(
+                authenticatedRequest.getUserId(), symbolRequest.getSymbol())
+                .orElse(0L);
+        return ResponseEntity.ok(new TradableQtyResponse(affordable, sellable));
+    }
+
+    @PostMapping("/affordable")
+    @PreAuthorize("hasRole('USER')")
+    @ResponseBody
+    public Long getAffordable(
             @Valid @RequestBody SymbolRequest symbolRequest,
             AuthenticatedRequest authenticatedRequest) {
         String symbol = symbolRequest.getSymbol();
@@ -52,10 +64,10 @@ public class TradeController {
         return tradeService.getAffordableQty(authenticatedRequest.getUserId(), price);
     }
 
-    @PostMapping("/positionQty")
+    @PostMapping("/sellable")
     @PreAuthorize("hasRole('USER')")
     @ResponseBody
-    public Long getPositionQty(
+    public Long getSellable(
             @Valid @RequestBody SymbolRequest symbolRequest,
             AuthenticatedRequest authenticatedRequest) {
         return positionRepository.findFirstQuantityByUserIdAndSymbol(

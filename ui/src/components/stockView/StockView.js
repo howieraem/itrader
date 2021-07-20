@@ -25,8 +25,8 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
     maxHeight: '50px', 
     minHeight: '50px',
-    maxWidth: '50px', 
-    minWidth: '50px', 
+    maxWidth: '40px', 
+    minWidth: '40px', 
     [theme.breakpoints.up('sm')]: {
       fontSize: 14, 
       maxWidth: '90px', 
@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     margin: theme.spacing(2, 0, 1),
     fontSize: '16px',
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('md')]: {
       fontSize: '20px',
     },
   },
@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     margin: theme.spacing(1, 0, 2),
     fontSize: '13px',
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('md')]: {
       fontSize: '16px',
     },
   }
@@ -209,20 +209,25 @@ function StockViewCore(props) {
     }
   }, [livePrice]);  // don't put prePrice here
 
-  let changeSign = "", priceColor = "#cc0000";
-  if (change >= 0 && regularMarketChange >= 0) {
-    changeSign = "+";
-    priceColor = "#00aa00";
+  let changeSign = "", priceColor = "#000000", tradeNotAvailMsg = "";
+  if (!regularMarketClosed) {
+    if (change >= 0 && regularMarketChange >= 0) {
+      changeSign = "+";
+      priceColor = "#00aa00";
+    } else {
+      priceColor = "#cc0000";
+    }
+  } else {
+    tradeNotAvailMsg = "Market is closed.";
   }
 
-  let tradeNotAvailMsg = "";
-  if (regularMarketClosed) {
-    priceColor = "#000000";
-    tradeNotAvailMsg = "Regular market is closed. Pre/post-market not yet supported.";
-  }
-  if (basicInfo && basicInfo.Currency !== "USD") {
-    tradeNotAvailMsg = "Currrency is not USD and currency exchange not yet implemented.";
-  }
+  // if (regularMarketClosed) {
+  //   priceColor = "#000000";
+  //   tradeNotAvailMsg = "Market is closed.";
+  // }
+  // if (basicInfo && basicInfo.Currency !== "USD") {
+  //   tradeNotAvailMsg = "Currrency is not USD and currency exchange not yet implemented.";
+  // }
 
   return (
     <Grid container spacing={0}>
@@ -243,7 +248,7 @@ function StockViewCore(props) {
                 { `${currency} ${livePrice || regularMarketPrice}` }
             </div>
             <div className={classes.symbolTitle2} style={{ color: priceColor }}>
-                { regularMarketClosed ? "Regular Market closed" : (
+                { regularMarketClosed ? "Market closed" : (
                     `${changeSign}${change || regularMarketChange} (${changeSign}${changePercent || regularMarketChangePercent}%)`
                   )
                 }
@@ -260,13 +265,14 @@ function StockViewCore(props) {
                   variant="contained" 
                   className={classes.watchlistButton} 
                   onClick={handleWlButtonClick}
-                  startIcon={watchlisted ? <DeleteForeverIcon /> : <AddIcon />}
                   style={{ background: (watchlisted ? "#ee0000" : COLORS[0]) }}
                 >
+                  {watchlisted ? <DeleteForeverIcon /> : <AddIcon />}
                   <div className={classes.buttonLabel}>Watchlist</div>
                 </Button>
                 <TradeDialog 
                   symbol={symbol}
+                  foreignCurrency={currency === "USD" ? null : currency}
                   errMsg={tradeNotAvailMsg}
                 />
               </ButtonGroup>

@@ -9,7 +9,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Paper from '@material-ui/core/Paper';
 import { Alert } from "@material-ui/lab"
 import { makeStyles } from '@material-ui/core/styles';
-import { trade, getAffordable, getHolding } from '../../utils/APIUtils';
+import { getExchangeRate } from '../../utils/DataAPIUtils';
+import { trade, getTradable } from '../../utils/APIUtils';
 import { COLORS } from '../../common/Theme';
 
 
@@ -50,12 +51,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TradeDialog(props) {
   const classes = useStyles();
-  const { symbol, authenticated, errMsg }  = props;
+  const { symbol, foreignCurrency, errMsg }  = props;
 
   const [open, setOpen] = React.useState(false);
   const [buttonsDisabled, setButtonsDisabled] = React.useState(false);
 
   const [qty, setQty] = React.useState(0);
+  const [exchangeRate, setExchangeRate] = React.useState(1);
   const [maxBuyQty, setMaxBuyQty] = React.useState(0);
   const [maxSellQty, setMaxSellQty] = React.useState(0);
 
@@ -66,26 +68,31 @@ export default function TradeDialog(props) {
 
   React.useEffect(() => {
     const updateValidQty = () => {
-      if (open && authenticated) {
-        getAffordable(symbol)
-        .then(qty => setMaxBuyQty(qty))
+      if (open) {
+        getTradable(symbol)
+        .then(response => {
+          setMaxBuyQty(response.affordable);
+          setMaxSellQty(response.sellable);
+        })
         .catch(err => console.log(err));
-    
-        getHolding(symbol)
-        .then(qty => setMaxSellQty(qty))
-        .catch(err => console.log(err));
+
+        if (foreignCurrency) {
+          getExchangeRate(foreignCurrency)
+          .then(res => setExchangeRate(res))
+          .catch(err => console.log(err));
+        } 
       }
     }
     updateValidQty();
 
     const interval = setInterval(() => {
       updateValidQty();
-    }, 5000);
+    }, 10000);
   
     return () => {
       clearInterval(interval);
     };
-  }, [symbol, open, authenticated]);
+  }, [symbol, foreignCurrency, open]);
 
   const handleQtyChange = (event) => {
     const qty = event.target.value;
@@ -169,76 +176,81 @@ export default function TradeDialog(props) {
               </DialogActions>
             </DialogContent>
           ) : (
-            authenticated ? (
-              <>
-                <DialogContent>
-                  <DialogContentText>
-                    Be sure to double check details below before you trade.
-                  </DialogContentText>
-                  <Paper variant='outlined' className={classes.symbolLabel}>Stock Symbol: {symbol}</Paper>
-                  <Paper variant='outlined' className={classes.validQuantityLabel}>Maximum quantity affordable: {maxBuyQty}</Paper>  
-                  <Paper variant='outlined' className={classes.validQuantityLabel}>Existing quantity: {maxSellQty}</Paper>
-                  <TextField
-                    autoFocus
-                    onChange={handleQtyChange}
-                    variant="outlined"
-                    margin="dense"
-                    id="dialogQty"
-                    label="Quantity (shares)"
-                    error={Boolean(textFieldErr)}
-                    helperText={textFieldErr}
-                    fullWidth
-                  />
-                  { alertMsg ? (
-                    <Alert severity={alertSeverity} style={{fontSize: "15px"}}>{alertMsg}</Alert>
+            // authenticated ? (
+            <>
+              <DialogContent>
+                <DialogContentText>
+                  Be sure to double check details below before you trade.
+                </DialogContentText>
+                <Paper variant='outlined' className={classes.symbolLabel}>Stock Symbol: {symbol}</Paper>
+                { foreignCurrency ? (
+                    <Paper variant='outlined' className={classes.validQuantityLabel}>
+                      Exchange rate: 1 USD = {exchangeRate} {foreignCurrency}
+                    </Paper>
                   ) : null }
-                </DialogContent>
-                <DialogActions>
-                  <Button 
-                    onClick={() => handleTrade(true)} 
-                    color="primary" 
-                    disabled={buttonsDisabled}
-                    className={classes.dialogButton}
-                  >
-                    Buy
-                  </Button>
-                  <Button 
-                    onClick={() => handleTrade(false)} 
-                    color="primary" 
-                    disabled={buttonsDisabled}
-                    className={classes.dialogButton}
-                  >
-                    Sell
-                  </Button>
-                  <Button 
-                    onClick={handleClose} 
-                    color="primary" 
-                    disabled={buttonsDisabled}
-                    className={classes.dialogButton}
-                  >
-                    Cancel
-                  </Button>
-                </DialogActions>
-              </>
-            ) : (
-              <>
-                <DialogContent>
-                  <DialogContentText>
-                    <Alert severity="error" style={{fontSize: "15px"}}>
-                      Please sign in first.
-                    </Alert>
-                  </DialogContentText>
-                  <DialogActions>
-                    <Button href="/login" color="primary" className={classes.dialogButton}>
-                      Login
-                    </Button>
-                    <Button onClick={handleClose} color="primary" className={classes.dialogButton}>
-                      Cancel
-                    </Button>
-                  </DialogActions>
-                </DialogContent>
-              </>
-            )
+                <Paper variant='outlined' className={classes.validQuantityLabel}>Max. affordable: {maxBuyQty}</Paper>
+                <Paper variant='outlined' className={classes.validQuantityLabel}>Max. sellable: {maxSellQty}</Paper>
+                <TextField
+                  autoFocus
+                  onChange={handleQtyChange}
+                  variant="outlined"
+                  margin="dense"
+                  id="dialogQty"
+                  label="Quantity (shares)"
+                  error={Boolean(textFieldErr)}
+                  helperText={textFieldErr}
+                  fullWidth
+                />
+                { alertMsg ? (
+                  <Alert severity={alertSeverity} style={{fontSize: "15px"}}>{alertMsg}</Alert>
+                ) : null }
+              </DialogContent>
+              <DialogActions>
+                <Button 
+                  onClick={() => handleTrade(true)} 
+                  color="primary" 
+                  disabled={buttonsDisabled}
+                  className={classes.dialogButton}
+                >
+                  Buy
+                </Button>
+                <Button 
+                  onClick={() => handleTrade(false)} 
+                  color="primary" 
+                  disabled={buttonsDisabled}
+                  className={classes.dialogButton}
+                >
+                  Sell
+                </Button>
+                <Button 
+                  onClick={handleClose} 
+                  color="primary" 
+                  disabled={buttonsDisabled}
+                  className={classes.dialogButton}
+                >
+                  Cancel
+                </Button>
+              </DialogActions>
+            </>
+            // ) : (
+            //   <>
+            //     <DialogContent>
+            //       <DialogContentText>
+            //         <Alert severity="error" style={{fontSize: "15px"}}>
+            //           Please sign in first.
+            //         </Alert>
+            //       </DialogContentText>
+            //       <DialogActions>
+            //         <Button href="/login" color="primary" className={classes.dialogButton}>
+            //           Login
+            //         </Button>
+            //         <Button onClick={handleClose} color="primary" className={classes.dialogButton}>
+            //           Cancel
+            //         </Button>
+            //       </DialogActions>
+            //     </DialogContent>
+            //   </>
+            // )
           ) }
       </Dialog>
     </>
