@@ -66,7 +66,7 @@ export default function Hero() {
         <Grid item md={2} />
         <Grid item md={8} align="center">
           <Button
-            href='/login'
+            href='#instructions'
             className={classes.button}
             endIcon={<DoubleArrowIcon />}
           >

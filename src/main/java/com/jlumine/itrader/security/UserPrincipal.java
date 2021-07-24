@@ -1,5 +1,7 @@
 package com.jlumine.itrader.security;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jlumine.itrader.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -9,12 +11,24 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserPrincipal implements UserDetails {
+    @JsonProperty("id")
     private Long id;
+
+    @JsonProperty("email")
     private String email;
+
+    @JsonProperty("password")
     private String password;
+
+    @JsonProperty("username")
     private String username;
+
+    @JsonProperty("authorities")
     private Collection<? extends GrantedAuthority> authorities;
+
+    public UserPrincipal() {};
 
     public UserPrincipal(Long id, String email, String password, String username,
                          Collection<? extends GrantedAuthority> authorities) {

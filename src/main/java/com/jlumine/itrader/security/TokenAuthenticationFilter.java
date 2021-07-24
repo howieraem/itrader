@@ -1,5 +1,6 @@
 package com.jlumine.itrader.security;
 
+
 import com.jlumine.itrader.payload.AuthenticatedRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +39,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
                 Long userId = tokenProvider.getUserIdFromToken(jwt);
-
-                UserDetails userDetails = customUserDetailsService.loadUserById(userId);
+                UserDetails userDetails = UserPrincipal.create(customUserDetailsService.getUser(userId));
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

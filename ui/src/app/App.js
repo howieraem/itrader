@@ -8,15 +8,16 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
-import AlertMessage from '../common/Alert';
-import PrimarySearchAppBar from '../components/bar/AppBar';
+import Dashboard from '../components/dashboard/Dashboard';
+// import Forgot from '../components/auth/Forgot';
+import NavBar from '../components/bar/NavBar';
+import NotFound from '../common/NotFound';
 import Landing from '../components/landing/Landing';
-import StockView from '../components/stockView/StockView';
+import Settings from "../components/settings/Settings";
 import SignIn from '../components/auth/SignIn';
 import SignUp from '../components/auth/SignUp';
-// import Forgot from '../components/auth/Forgot';
-import Dashboard from '../components/dashboard/Dashboard';
-import NotFound from '../common/NotFound';
+import StockView from '../components/stockView/StockView';
+import AlertMessage from '../common/Alert';
 import PrivateRoute from '../common/PrivateRoute';
 import LoadingIndicator from '../common/LoadingIndicator';
 import { COLORS } from '../common/Theme';
@@ -95,7 +96,7 @@ export default function App() {
         <Grid container spacing={0}>
           <Grid container>
             <Grid item xs>
-              <PrimarySearchAppBar authenticated={authenticated} onLogout={handleLogout} onSearch={changeSymbol} />
+              <NavBar authenticated={authenticated} onLogout={handleLogout} onSearch={changeSymbol} />
             </Grid>
           </Grid>
 
@@ -106,12 +107,20 @@ export default function App() {
               <Route path="/stockView" render={(props) => <StockView symbol={symbol} authenticated={authenticated} {...props} />} />
               <Route path="/login" render={(props) => <SignIn authenticated={authenticated} {...props} />} />
               <Route path="/signup" render={(props) => <SignUp authenticated={authenticated} {...props} />} />
-              <PrivateRoute path="/dashboard" 
+              <PrivateRoute
+                path="/dashboard"
                 authenticated={authenticated} 
                 initialized={initialized} 
                 currentUser={curUser} 
                 component={Dashboard}
                 onSymbolClick={changeSymbol}
+              />
+              <PrivateRoute
+                path="/settings"
+                authenticated={authenticated}
+                initialized={initialized}
+                currentUser={curUser}
+                component={Settings}
               />
               {/* <Route path="/forgot" component={Forgot} /> */}
               <Route component={NotFound} />

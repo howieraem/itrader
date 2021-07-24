@@ -35,6 +35,14 @@ export default function HistoryChart(props) {
     }
   }, [symbol, interval])
 
+  if (data && data[0].open === undefined) {
+    return (
+      <header className="Chart-holder">
+        {"History data not available. The stock might have been suspended or delisted."}
+      </header>
+    )
+  }
+
   return (
     <Grid container>
       <Grid item xs />

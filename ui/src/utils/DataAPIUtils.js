@@ -15,7 +15,7 @@ export function getExchangeRate(currency) {
       return resolve(data);
     }).catch(err => reject(err));
   });
-};
+}
 
 export function searchTicker(str) {
   return new Promise((resolve, reject) => {
@@ -27,10 +27,10 @@ export function searchTicker(str) {
           return resolve(new Error(`Got errors while searching ${str}.`));
       }
       const quotes = data.quotes;
-      return resolve(quotes.filter(quote => quote.quoteType === "EQUITY" && quote.isYahooFinance));
+      return resolve(quotes.filter(quote => (quote.quoteType === "EQUITY" || quote.quoteType === "CRYPTOCURRENCY") && quote.isYahooFinance));
     }).catch(err => reject(err));
   });
-};
+}
 
 export function getStockBasicInfo(symbol) {  
   return new Promise((resolve, reject) => {
@@ -63,6 +63,14 @@ export function getBatchStockPrices(symbols) {
                    })
       );
       return resolve(Promise.all(promises));
+    }).catch(err => reject(err));
+  });
+}
+
+export function getMarketStates(symbols) {
+  return new Promise((resolve, reject) => {
+    return getStockBasicInfo(symbols).then(result => {
+      return resolve(result.map(res => res.marketState));
     }).catch(err => reject(err));
   });
 }

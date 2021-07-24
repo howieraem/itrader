@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jlumine.itrader.model.StockQuote;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -13,9 +15,10 @@ import java.math.RoundingMode;
 import java.util.List;
 
 @Service
+@CacheConfig(cacheNames = "stockData")
 public class FinanceDataService {
     // Note: crumb is not longer required for Yahoo Finance's new APIs
-    private static final String URL_SEARCH = "https://query1.finance.yahoo.com/v1/finance/search?q=%s&quotesCount=5&newsCount=0&enableEnhancedTrivialQuery=true&lang=en-US&region=US";
+    private static final String URL_SEARCH = "https://query1.finance.yahoo.com/v1/finance/search?q=%s&quotesCount=5&newsCount=0&enableEnhancedTrivialQuery=true&enableFuzzyQuery=true&lang=en-US&region=US";
     private static final String URL_BASIC = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=%s";
     private static final String URL_SNAPSHOT = "https://query2.finance.yahoo.com/v10/finance/quoteSummary/%s?modules=%s";
     private static final String URL_HISTORY = "https://query1.finance.yahoo.com/v7/finance/download/%s?period1=%s&period2=%s&interval=%s&events=%s&includeAdjustedClose=true";
@@ -29,6 +32,7 @@ public class FinanceDataService {
         return restTemplate.exchange(url, HttpMethod.GET, null, String.class).getBody();
     }
 
+    @Cacheable(cacheNames = "stockSearch", key = "#name", unless = "#result == null")
     public String searchStock(String name) {
         return forward(String.format(URL_SEARCH, name));
     }

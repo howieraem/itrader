@@ -93,7 +93,7 @@ export default function Watchlist(props) {
         gutterBottom
         className={classes.title}
       >
-        Stock Watchlist
+        Watchlist
         <div className={classes.grow} />
         <Pagination 
             count={numOfPages} 

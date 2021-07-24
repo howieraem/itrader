@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from "react-helmet";
 import { Redirect } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -43,15 +44,28 @@ export default function SignUp(props) {
   
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [password2, setPassword2] = React.useState('');
   // const [pin, setPin] = React.useState('');
   const [username, setUsername] = React.useState('');
 
+  const [pwd2ErrMsg, setPwdErrMsg] = React.useState('');
+
+  const checkPwdMatch = (ev) => {
+    const pwd2 = ev.target.value;
+    setPassword2(pwd2);
+    if (pwd2 && pwd2 !== password) {
+      setPwdErrMsg("Passwords must match!")
+    } else {
+      setPwdErrMsg("");
+    }
+  }
+
   const handleSubmit = (event) => {
-    event.preventDefault();   
+    event.preventDefault();
 
     const signUpRequest = Object.assign({}, {
       email,
-      password,
+      password2,
       // pin,
       username,
     });
@@ -92,6 +106,9 @@ export default function SignUp(props) {
   }
   return (
     <>
+      <Helmet>
+        <title>ITrader - Sign Up</title>
+      </Helmet>
       <Grid item xs={12}>
         <CssBaseline />
         <Container component="main" maxWidth="xs">
@@ -123,6 +140,19 @@ export default function SignUp(props) {
                 id="password"
                 onChange={(ev) => setPassword(ev.target.value)}
               />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="password2"
+                label="Confirm Password"
+                type="password"
+                id="password2"
+                error={Boolean(pwd2ErrMsg)}
+                helperText={pwd2ErrMsg}
+                onChange={(ev) => checkPwdMatch(ev)}
+              />
               {/* <TextField
                 variant="outlined"
                 margin="normal"
@@ -149,9 +179,9 @@ export default function SignUp(props) {
                 type="submit"
                 fullWidth
                 variant="contained"
-                // color="primary"
                 className={classes.submit}
                 onClick={handleSubmit}
+                disabled={Boolean(pwd2ErrMsg) || !Boolean(email) || !Boolean(username)}
               >
                 Sign Up
               </Button>

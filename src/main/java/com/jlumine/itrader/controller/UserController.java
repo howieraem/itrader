@@ -13,6 +13,8 @@ import com.jlumine.itrader.repository.UserRepository;
 import com.jlumine.itrader.security.CurrentUser;
 import com.jlumine.itrader.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@CacheConfig(cacheNames = "userCache")
 public class UserController {
 
     @Autowired
@@ -38,6 +41,7 @@ public class UserController {
 
     @GetMapping("/user/me")
     @PreAuthorize("hasRole('USER')")
+    @Cacheable(cacheNames = "user", key = "#userPrincipal.getId()", unless = "#result == null")
     public User getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
         return userRepository.findById(userPrincipal.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));

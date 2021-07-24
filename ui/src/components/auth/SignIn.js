@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from "react-helmet";
 import { Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -21,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    background: "rgba(255, 255, 255, .3)",
+    background: "rgba(255,255,255,0.3)",
   },
   avatar: {
     margin: theme.spacing(1),
@@ -78,6 +79,9 @@ export default function SignIn(props) {
   }
   return (
     <>
+      <Helmet>
+        <title>ITrader - Sign In</title>
+      </Helmet>
       <Grid item xs={12}>
         <CssBaseline />
         <Container component="main" maxWidth="xs">
@@ -122,6 +126,7 @@ export default function SignIn(props) {
                 variant="contained"
                 className={classes.submit}
                 onClick={handleSubmit}
+                disabled={!Boolean(email) || !Boolean(password)}
               >
                 Sign In
               </Button>

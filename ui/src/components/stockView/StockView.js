@@ -1,17 +1,18 @@
 import './StockView.css';
 import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import { makeStyles } from '@material-ui/core/styles';
+import { Helmet } from "react-helmet";
 import InfoTable from './Table';
 import CharTabs from './ChartTabs';
 import TradeDialog from './TradeDialog';
 import { addTicker, removeTicker } from 'stocksocket';
 import { existInWatchlist, addToWatchlist, removeFromWatchlist } from '../../utils/APIUtils';
-import { getStockBasicInfo } from '../../utils/DataAPIUtils';
+import { getMarketStates, getStockBasicInfo } from '../../utils/DataAPIUtils';
 import { COLORS } from '../../common/Theme';
 import { MARKET_LOC } from '../../constants';
 
@@ -95,28 +96,28 @@ function roundNumber(number, places=4) {
 }
 
 function procLargeNum(number, places=2) {
-  if (number > 1e9)  return `${(number / 1e9).toFixed(places)}B`;
-  if (number > 1e6)  return `${(number / 1e6).toFixed(places)}M`;
-  if (number > 1e3)  return `${(number / 1e3).toFixed(places)}K`;
-  return number.toFixed(places);
+  if (!number)  return number;
+  else if (number > 1e9)  return `${(number / 1e9).toFixed(places)}B`;
+  else if (number > 1e6)  return `${(number / 1e6).toFixed(places)}M`;
+  else if (number > 1e3)  return `${(number / 1e3).toFixed(places)}K`;
+  else return number.toFixed(places);
 }
 
 function filterInfo(info) {
   return {
     "Market Region": MARKET_LOC[info.market] || info.market,
-    "Outstanding Shares": procLargeNum(info.sharesOutstanding),
-    "Market Capitalization": `${info.currency.toUpperCase()} ${procLargeNum(info.marketCap)}`,
+    "Outstanding Shares": procLargeNum(info.sharesOutstanding) || "N/A",
+    "Market Capitalization": info.marketCap ? `${info.currency.toUpperCase()} ${procLargeNum(info.marketCap)}` : "N/A",
     "Volume": info.regularMarketVolume || 0,
     "Day Price Range": info.regularMarketDayRange,
     "52-week High": roundNumber(info.fiftyTwoWeekHigh),
     "52-week Low": roundNumber(info.fiftyTwoWeekLow),
-    // "Market State": info.marketState,
     "Current Year EPS": roundNumber(info.epsCurrentYear) || "N/A",
     "Forward EPS": roundNumber(info.epsForward) || "N/A",
     "Trailing PE": roundNumber(info.trailingPE) || "N/A",
     "Forward PE": roundNumber(info.forwardPE) || "N/A",
-    "Book Value": roundNumber(info.bookValue),
-  }
+    "Book Value": roundNumber(info.bookValue) || "N/A",
+  };
 }
 
 const Blinking = (props) => (
@@ -127,7 +128,7 @@ const Blinking = (props) => (
 
 function StockViewCore(props) {
   const classes = useStyles();
-  const { symbol, authenticated, dataTime, livePrice, change, changePercent } = props;
+  const { symbol, authenticated, marketOpen, dataTime, livePrice, change, changePercent } = props;
 
   const [stockName, setStockName] = React.useState(null);
   const [basicInfo, setBasicInfo] = React.useState(null);
@@ -138,7 +139,6 @@ function StockViewCore(props) {
   const [regularMarketPrice, setRegularMarketPrice] = React.useState(0);
   const [regularMarketChange, setRegularMarketChange] = React.useState(0);
   const [regularMarketChangePercent, setRegularMarketChangePercent] = React.useState(0);
-  const [regularMarketClosed, setRegularMarketClosed] = React.useState(false);
 
   const handleWlButtonClick = () => {
     if (watchlisted) {
@@ -178,7 +178,6 @@ function StockViewCore(props) {
         setRegularMarketPrice(roundNumber(basicInfo.regularMarketPrice, 3));
         setRegularMarketChange(roundNumber(basicInfo.regularMarketChange, 3));
         setRegularMarketChangePercent(roundNumber(basicInfo.regularMarketChangePercent, 2));
-        setRegularMarketClosed(basicInfo.marketState !== "REGULAR");
       }).catch(err => { console.log(err) })
     };
     updateBasicInfo();
@@ -210,7 +209,7 @@ function StockViewCore(props) {
   }, [livePrice]);  // don't put prePrice here
 
   let changeSign = "", priceColor = "#000000", tradeNotAvailMsg = "";
-  if (!regularMarketClosed) {
+  if (marketOpen) {
     if (change >= 0 && regularMarketChange >= 0) {
       changeSign = "+";
       priceColor = "#00aa00";
@@ -220,14 +219,6 @@ function StockViewCore(props) {
   } else {
     tradeNotAvailMsg = "Market is closed.";
   }
-
-  // if (regularMarketClosed) {
-  //   priceColor = "#000000";
-  //   tradeNotAvailMsg = "Market is closed.";
-  // }
-  // if (basicInfo && basicInfo.Currency !== "USD") {
-  //   tradeNotAvailMsg = "Currrency is not USD and currency exchange not yet implemented.";
-  // }
 
   return (
     <Grid container spacing={0}>
@@ -248,9 +239,9 @@ function StockViewCore(props) {
                 { `${currency} ${livePrice || regularMarketPrice}` }
             </div>
             <div className={classes.symbolTitle2} style={{ color: priceColor }}>
-                { regularMarketClosed ? "Market closed" : (
+                { marketOpen ? (
                     `${changeSign}${change || regularMarketChange} (${changeSign}${changePercent || regularMarketChangePercent}%)`
-                  )
+                  ) : "Market closed"
                 }
             </div>
           </Blinking>
@@ -294,11 +285,17 @@ function StockViewCore(props) {
 
 export default function StockView(props) {
   const { symbol } = props;
+  const [regularMarketOpen, setRegularMarketOpen] = React.useState(false);
   const [dataTime, setDataTime] = React.useState(null);
   const [livePrice, setLivePrice] = React.useState(0.);
   const [change, setChange] = React.useState(0.);
   const [changePercent, setChangePercent] = React.useState(0.);
   // const [dayVolume, setDayVolume] = React.useState(0);
+
+  React.useEffect(() => {
+    getMarketStates([symbol])
+    .then(res => setRegularMarketOpen(res[0] === "REGULAR"))
+  }, [symbol])
 
   React.useEffect(() => {
     /* 
@@ -322,24 +319,34 @@ export default function StockView(props) {
       setChangePercent(roundNumber(liveData.changePercent, 2));
       // setDayVolume(liveData.dayVolume);
     };
-    addTicker(symbol, updateLiveData);
+    if (regularMarketOpen) {
+      addTicker(symbol, updateLiveData);
+    }
 
     return () => {
-      removeTicker(symbol);
-      setLivePrice(0);
-      setChange(0);
-      setChangePercent(0);
+      if (regularMarketOpen) {
+        removeTicker(symbol);
+        setLivePrice(0);
+        setChange(0);
+        setChangePercent(0);
+      }
     };
-  }, [symbol]);
+  }, [symbol, regularMarketOpen]);
 
   return (
-    <StockViewCore 
-      dataTime={dataTime} 
-      livePrice={livePrice} 
-      change={change} 
-      changePercent={changePercent} 
-      // dayVolume={dayVolume} 
-      {...props} 
-    />
+    <>
+      <Helmet>
+        <title>ITrader - {symbol}</title>
+      </Helmet>
+      <StockViewCore
+        marketOpen={regularMarketOpen}
+        dataTime={dataTime}
+        livePrice={livePrice}
+        change={change}
+        changePercent={changePercent}
+        // dayVolume={dayVolume}
+        {...props}
+      />
+    </>
   );
 }
