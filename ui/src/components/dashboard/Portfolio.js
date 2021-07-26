@@ -1,6 +1,8 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -8,7 +10,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Pagination from '@material-ui/lab/Pagination';
 import Typography from '@material-ui/core/Typography';
-// import TradeDialog from './TradeDialogCell';
 import { getPortfolio, getNumOfPositions } from '../../utils/APIUtils';
 import { getBatchStockPrices } from '../../utils/DataAPIUtils';
 
@@ -45,6 +46,14 @@ const useStyles = makeStyles((theme) => ({
       background: '#ffeded',
       cursor: 'pointer',
     },
+  },
+  mobileHidden: {
+    [theme.breakpoints.down('sm')]: {
+      display: 'none'
+    },
+  },
+  specialCellContent: {
+    fontSize: 14
   }
 }));
 
@@ -53,7 +62,7 @@ export default function Portfolio(props) {
   const { onSymbolClick } = props;
 
   const [page, setPage] = React.useState(0);
-  const rowsPerPage = 5;
+  const rowsPerPage = 10;
   // const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [numOfRecords, setNumOfRecords] = React.useState(0);
   const numOfPages = Math.floor((numOfRecords + rowsPerPage - 1) / rowsPerPage);
@@ -112,6 +121,21 @@ export default function Portfolio(props) {
     setPage(newPage - 1);
   };
 
+  const SpecialCellContent = (props) => {
+    return (
+      <ListItem style={{ textAlign: 'right', padding: 0 }}>
+        <ListItemText
+          primary={props.first}
+          secondary={props.second}
+          classes={{
+            primary: classes.specialCellContent,
+            secondary: classes.specialCellContent,
+          }}
+        />
+      </ListItem>
+    );
+  }
+
   return (
     <React.Fragment>
       <Typography 
@@ -140,11 +164,11 @@ export default function Portfolio(props) {
               <TableRow>
                 <TableCell>Symbol</TableCell>
                 <TableCell align="right">Quantity</TableCell>
-                <TableCell align="right">Holding Price (USD)</TableCell>
-                <TableCell align="right">Current Price (USD)</TableCell>
-                <TableCell align="right">Market Capitalization (USD)</TableCell>
-                <TableCell align="right">Floating Profit/Loss (USD)</TableCell>
-                <TableCell align="right">Floating Profit/Loss Percentage</TableCell>
+                <TableCell align="right">Current/Holding Price (USD)</TableCell>
+                <TableCell align="right" className={classes.mobileHidden}>
+                  Market Capitalization (USD)
+                </TableCell>
+                <TableCell align="right">Floating Profit (USD/Percentage)</TableCell>
                 {/* <TableCell align="right" /> */}
               </TableRow>
             </TableHead>
@@ -153,11 +177,16 @@ export default function Portfolio(props) {
                 <TableRow key={row.i} className={row.pl >= 0 ? classes.rowProfit : classes.rowLoss} onClick={() => onRowClick(row.i)}>
                   <TableCell>{row.symbol}</TableCell>
                   <TableCell align="right">{row.quantity}</TableCell>
-                  <TableCell align="right">{row.holdingPrice}</TableCell>
-                  <TableCell align="right">{row.currentPrice || '--'}</TableCell>
-                  <TableCell align="right">{row.currentPrice ? (row.currentPrice * row.quantity).toFixed(4) : '--'}</TableCell>
-                  <TableCell align="right">{row.pl || '--'}</TableCell>
-                  <TableCell align="right">{row.plPercent || '--'}</TableCell>
+                  <TableCell align="right">
+                    <SpecialCellContent first={row.currentPrice || '--'} second={row.holdingPrice} />
+                  </TableCell>
+                  <TableCell align="right" className={classes.mobileHidden}>
+                    {row.currentPrice ? (row.currentPrice * row.quantity).toFixed(4) : '--'}
+                  </TableCell>
+                  <TableCell align="right">
+                    <SpecialCellContent first={row.pl || '--'} second={row.plPercent || '--'} />
+                  </TableCell>
+                  {/*<TableCell align="right">{row.plPercent || '--'}</TableCell>*/}
                   {/* <TableCell align="right">
                     <TradeDialog 
                       symbol={row.symbol} 

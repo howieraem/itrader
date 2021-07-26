@@ -25,7 +25,6 @@ public class TradeService {
 
     @Transactional(rollbackFor=Exception.class)
     public void process(Long userId, String symbol, long quantity, BigDecimal price) {
-        // TODO affordability check
         BigDecimal balanceChange = price.multiply(BigDecimal.valueOf(quantity));
         userRepository.updateBalance(userId, balanceChange);
         BigDecimal newBalance = userRepository.findBalance(userId);

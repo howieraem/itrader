@@ -51,8 +51,9 @@ public class UserController {
     @PreAuthorize("hasRole('USER')")
     public List<PositionDTO> getPortfolio(
             @CurrentUser UserPrincipal userPrincipal,
-            @RequestParam(value = "page") Integer page,
-            @RequestParam(value = "rows") Integer rows) {
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "rows", required = false) Integer rows) {
+        if (page == null || rows == null)  return positionRepository.findByUserId(userPrincipal.getId());
         return positionRepository.findByUserId(userPrincipal.getId(), PageRequest.of(page, rows));
     }
 

@@ -10,7 +10,6 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Typography from '@material-ui/core/Typography';
 import Pagination from '@material-ui/lab/Pagination';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-// import TradeDialog from './TradeDialogCell';
 import { getWatchlist, getWatchlistSize, removeFromWatchlist } from '../../utils/APIUtils';
 import { getStockBasicInfo } from '../../utils/DataAPIUtils';
 
