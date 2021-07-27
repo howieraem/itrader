@@ -2,7 +2,6 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -112,22 +111,15 @@ export default function Watchlist(props) {
                 <ListItemText primary={row.symbol} />
                 <ListItemText primary={row.name} primaryTypographyProps={{ align: "left" }} />
                 <ListItemSecondaryAction>
-                  <ButtonGroup>
-                    {/* <TradeDialog 
-                      symbol={row.symbol} 
-                      authenticated={authenticated} 
-                      marketClosed={row.marketClosed} 
-                    /> */}
-                    <Button 
-                      variant="contained" 
-                      color="secondary" 
-                      startIcon={<DeleteForeverIcon />}
-                      className={classes.removeButton}
-                      onClick={() => handleRemove(row.i)}
-                    >
-                      Remove
-                    </Button>
-                  </ButtonGroup>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<DeleteForeverIcon />}
+                    className={classes.removeButton}
+                    onClick={() => handleRemove(row.i)}
+                  >
+                    Remove
+                  </Button>
                 </ListItemSecondaryAction>
               </ListItem>
             ))}

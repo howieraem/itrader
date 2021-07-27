@@ -32,7 +32,7 @@ export default function NetWorth(props) {
       >
         <AccountBalanceIcon style={{ width: 60, height: 60 }} />
       </Box>
-      <Typography variant="h6">USD {props.total}</Typography>
+      <Typography variant="h6">{props.total}</Typography>
       <Typography variant="subtitle2" style={{ opacity: 0.72 }}>
         Total Worth
       </Typography>

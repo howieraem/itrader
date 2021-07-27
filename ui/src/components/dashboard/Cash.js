@@ -32,7 +32,7 @@ export default function Cash(props) {
       >
         <AccountBalanceWalletIcon style={{ width: 60, height: 60 }} />
       </Box>
-      <Typography variant="h6">USD {props.cash}</Typography>
+      <Typography variant="h6">{props.cash}</Typography>
       <Typography variant="subtitle2" style={{ opacity: 0.72 }}>
         Cash Available
       </Typography>

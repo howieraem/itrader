@@ -57,13 +57,17 @@ function getUserDetails(field, page=-1, rows=-1) {
     }, token);
 }
 
-export function getPortfolio(page, rows=5) {
-    return getUserDetails('portfolio', page, rows);
+export function getPortfolio() {
+    return getUserDetails('portfolio');
 }
 
-export function getNumOfPositions() {
-    return getUserDetails('numOfPositions');
-}
+// export function getPortfolio(page, rows=5) {
+//     return getUserDetails('portfolio', page, rows);
+// }
+
+// export function getNumOfPositions() {
+//     return getUserDetails('numOfPositions');
+// }
 
 export function getTrades(page, rows=10) {
     return getUserDetails('trades', page, rows);
@@ -119,14 +123,6 @@ export function trade(tradeRequest) {
 
 export function getTradable(symbol) {
     return authenticatedPost('tradable', {symbol});
-}
-
-export function getAffordable(symbol) {
-    return authenticatedPost('affordable', {symbol});
-}
-
-export function getSellable(symbol) {
-    return authenticatedPost('sellable', {symbol});
 }
 
 export function addToWatchlist(symbol) {

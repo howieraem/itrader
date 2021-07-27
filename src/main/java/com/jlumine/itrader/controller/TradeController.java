@@ -5,6 +5,8 @@ import com.jlumine.itrader.repository.PositionRepository;
 import com.jlumine.itrader.service.FinanceDataService;
 import com.jlumine.itrader.service.TradeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +18,7 @@ import javax.validation.Valid;
 import java.math.BigDecimal;
 
 @RestController
+@CacheConfig(cacheNames = "userCache")
 public class TradeController {
     @Autowired
     private PositionRepository positionRepository;
@@ -28,6 +31,7 @@ public class TradeController {
 
     @PostMapping("/trade")
     @PreAuthorize("hasRole('USER')")
+    @CacheEvict(cacheNames = "userPortfolio", key = "#authenticatedRequest.getUserId()", beforeInvocation = true)
     public ResponseEntity<?> trade(
             @Valid @RequestBody TradeRequest tradeRequest,
             AuthenticatedRequest authenticatedRequest) {
@@ -51,27 +55,5 @@ public class TradeController {
                 authenticatedRequest.getUserId(), symbolRequest.getSymbol())
                 .orElse(0L);
         return ResponseEntity.ok(new TradableQtyResponse(affordable, sellable));
-    }
-
-    @PostMapping("/affordable")
-    @PreAuthorize("hasRole('USER')")
-    @ResponseBody
-    public Long getAffordable(
-            @Valid @RequestBody SymbolRequest symbolRequest,
-            AuthenticatedRequest authenticatedRequest) {
-        String symbol = symbolRequest.getSymbol();
-        BigDecimal price = financeDataService.getCurrentQuote(symbol).getPrice();
-        return tradeService.getAffordableQty(authenticatedRequest.getUserId(), price);
-    }
-
-    @PostMapping("/sellable")
-    @PreAuthorize("hasRole('USER')")
-    @ResponseBody
-    public Long getSellable(
-            @Valid @RequestBody SymbolRequest symbolRequest,
-            AuthenticatedRequest authenticatedRequest) {
-        return positionRepository.findFirstQuantityByUserIdAndSymbol(
-                authenticatedRequest.getUserId(), symbolRequest.getSymbol())
-                .orElse(0L);
     }
 }

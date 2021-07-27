@@ -10,16 +10,11 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Pagination from '@material-ui/lab/Pagination';
 import Typography from '@material-ui/core/Typography';
-import { getPortfolio, getNumOfPositions } from '../../utils/APIUtils';
-import { getBatchStockPrices } from '../../utils/DataAPIUtils';
 
-function procRawPositionInfo(i, position) {
+const procPositionInfo = (position, i, curPrice) => {
   position.i = i;
   position.holdingPrice = (position.holdingCost / position.quantity).toFixed(4);
-}
-
-function updatePositionPrice(position, currentPrice) {
-  position.currentPrice = currentPrice;
+  position.currentPrice = curPrice;
   const diff = position.currentPrice - position.holdingPrice;
   position.pl = (diff * position.quantity).toFixed(2);
   position.plPercent = `${(diff / position.holdingPrice * 100).toFixed(2)}%`;
@@ -59,14 +54,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Portfolio(props) {
   const classes = useStyles();
-  const { onSymbolClick } = props;
+  const { portfolio, prices, onSymbolClick } = props;
 
   const [page, setPage] = React.useState(0);
-  const rowsPerPage = 10;
+  const rowsPerPage = 5;
   // const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [numOfRecords, setNumOfRecords] = React.useState(0);
+  const numOfRecords = portfolio.length;
   const numOfPages = Math.floor((numOfRecords + rowsPerPage - 1) / rowsPerPage);
-
   const [pageRecords, setPageRecords] = React.useState([]);
 
   let history = useHistory();
@@ -77,45 +71,13 @@ export default function Portfolio(props) {
   }
 
   React.useEffect(() => {
-    getNumOfPositions()
-    .then(res => setNumOfRecords(res))
-    .catch(err => console.log(err));
+    portfolio.map((pos, i) => procPositionInfo(pos, i, prices[i]));
+  }, [portfolio, prices]);
 
-    const updateSymbolPrices = (pageSymbols, pageRecords) => {
-      getBatchStockPrices(pageSymbols)
-      .then(res => {
-        for (let i = 0; i < pageRecords.length; ++i) {
-          updatePositionPrice(pageRecords[i], res[i]);
-        }
-        setPageRecords(pageRecords);
-      })
-      .catch(err => console.log(err))
-    };
-
-    let interval;
-    const initPortfio = () => {
-      getPortfolio(page, rowsPerPage)
-      .then(pageRecords => {
-        let pageSymbols = [];
-        for (let i = 0; i < pageRecords.length; ++i) {
-          procRawPositionInfo(i, pageRecords[i]);
-          pageSymbols.push(pageRecords[i].symbol);
-        }
-        updateSymbolPrices(pageSymbols, pageRecords);
-
-        interval = setInterval(() => {
-          // update portfolio display price every 10s
-          updateSymbolPrices(pageSymbols, pageRecords);
-        }, 10000);
-      })
-      .catch(err => console.log(err));
-    }
-    initPortfio();
-  
-    return () => {
-      clearInterval(interval);
-    };
-  }, [page, rowsPerPage, numOfPages])
+  React.useEffect(() => {
+    const start = page * rowsPerPage;
+    setPageRecords(portfolio.slice(start, start + rowsPerPage));
+  }, [page, portfolio, prices])
 
   const handleChangePage = (ev, newPage) => {
     setPage(newPage - 1);
@@ -169,7 +131,6 @@ export default function Portfolio(props) {
                   Market Capitalization (USD)
                 </TableCell>
                 <TableCell align="right">Floating Profit (USD/Percentage)</TableCell>
-                {/* <TableCell align="right" /> */}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -186,14 +147,6 @@ export default function Portfolio(props) {
                   <TableCell align="right">
                     <SpecialCellContent first={row.pl || '--'} second={row.plPercent || '--'} />
                   </TableCell>
-                  {/*<TableCell align="right">{row.plPercent || '--'}</TableCell>*/}
-                  {/* <TableCell align="right">
-                    <TradeDialog 
-                      symbol={row.symbol} 
-                      authenticated={authenticated} 
-                      marketClosed={row.marketClosed} 
-                    />
-                  </TableCell> */}
                 </TableRow>
               ))}
             </TableBody>

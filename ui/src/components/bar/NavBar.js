@@ -170,41 +170,40 @@ export default function NavBar(props) {
                 >
                   <SettingsIcon />
                 </Button>
+                <Button
+                  aria-label="logout"
+                  color="inherit"
+                  m={2}
+                  className={classes.barButton}
+                  onClick={onLogout}
+                >
+                  Logout
+                </Button>
               </>
-              // <AccountMenu />
             ) : (
-              <Button 
-                aria-label="login" 
-                href="/login"
-                color="inherit"
-                m={2}
-                className={classes.barButton}
-              >
-                Sign In
-              </Button>
-            )}
-
-            { authenticated ? (
-              <Button 
-                aria-label="logout" 
-                color="inherit"
-                m={2}
-                className={classes.barButton}
-              >
-                Logout
-              </Button>
-            ) : (
-              <Button 
-                aria-label="signup" 
-                href="/signup"
-                color="inherit"
-                m={2}
-                className={classes.barButton}
-              >
-                Sign Up
-              </Button>
+              <>
+                <Button
+                  aria-label="login"
+                  href="/login"
+                  color="inherit"
+                  m={2}
+                  className={classes.barButton}
+                >
+                  Sign In
+                </Button>
+                <Button
+                  aria-label="signup"
+                  href="/signup"
+                  color="inherit"
+                  m={2}
+                  className={classes.barButton}
+                >
+                  Sign Up
+                </Button>
+              </>
             )}
           </div>
+
           <div className={classes.sectionMobile}>
             <IconButton
               aria-label="show more"

@@ -49,19 +49,26 @@ public class UserController {
 
     @GetMapping("/portfolio")
     @PreAuthorize("hasRole('USER')")
-    public List<PositionDTO> getPortfolio(
-            @CurrentUser UserPrincipal userPrincipal,
-            @RequestParam(value = "page", required = false) Integer page,
-            @RequestParam(value = "rows", required = false) Integer rows) {
-        if (page == null || rows == null)  return positionRepository.findByUserId(userPrincipal.getId());
-        return positionRepository.findByUserId(userPrincipal.getId(), PageRequest.of(page, rows));
+    @Cacheable(cacheNames = "userPortfolio", key = "#userPrincipal.getId()")
+    public List<PositionDTO> getPortfolio(@CurrentUser UserPrincipal userPrincipal) {
+        return positionRepository.findByUserId(userPrincipal.getId());
     }
 
-    @GetMapping("/numOfPositions")
-    @PreAuthorize("hasRole('USER')")
-    public long getNumberOfPositions(@CurrentUser UserPrincipal userPrincipal) {
-        return positionRepository.countByUserId(userPrincipal.getId());
-    }
+//    @GetMapping("/portfolio")
+//    @PreAuthorize("hasRole('USER')")
+//    public List<PositionDTO> getPortfolio(
+//            @CurrentUser UserPrincipal userPrincipal,
+//            @RequestParam(value = "page", required = false) Integer page,
+//            @RequestParam(value = "rows", required = false) Integer rows) {
+//        if (page == null || rows == null)  return positionRepository.findByUserId(userPrincipal.getId());
+//        return positionRepository.findByUserId(userPrincipal.getId(), PageRequest.of(page, rows));
+//    }
+
+//    @GetMapping("/numOfPositions")
+//    @PreAuthorize("hasRole('USER')")
+//    public long getNumberOfPositions(@CurrentUser UserPrincipal userPrincipal) {
+//        return positionRepository.countByUserId(userPrincipal.getId());
+//    }
 
     @GetMapping("/trades")
     @PreAuthorize("hasRole('USER')")

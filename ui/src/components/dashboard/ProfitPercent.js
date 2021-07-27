@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function FloatingProfit(props) {
+export default function ProfitPercent(props) {
   const classes = useStyles();
 
   return (
@@ -34,7 +34,7 @@ export default function FloatingProfit(props) {
       </Box>
       <Typography variant="h6">{props.percentage} %</Typography>
       <Typography variant="subtitle2" style={{ opacity: 0.72 }}>
-        Floating Profit
+        Profit Percentage
       </Typography>
     </Card>
   );
