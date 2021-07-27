@@ -8,6 +8,7 @@ import {
   Divider,
   TextField
 } from '@material-ui/core';
+import { COLORS } from "../../common/Theme";
 
 const PasswordSetting = (props) => {
   const [values, setValues] = useState({
@@ -27,8 +28,7 @@ const PasswordSetting = (props) => {
     <form {...props}>
       <Card>
         <CardHeader
-          subheader="Update password"
-          title="Password"
+          title="Change Password"
         />
         <Divider />
         <CardContent>
@@ -65,16 +65,14 @@ const PasswordSetting = (props) => {
         </CardContent>
         <Divider />
         <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            p: 2
-          }}
+          display={'flex'}
+          justifyContent={'flex-end'}
+          margin={2}
         >
           <Button
             color="primary"
             variant="contained"
-            style={{ textTransform: "none" }}
+            style={{ textTransform: "none", background: COLORS[1] }}
           >
             Update
           </Button>

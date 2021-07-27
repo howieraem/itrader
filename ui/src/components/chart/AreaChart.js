@@ -23,6 +23,7 @@ const canvasGradient = createVerticalLinearGradient([
 class AreaChart extends React.Component {
 	render() {
 		const { data, symbol, type, width, ratio } = this.props;
+		const height = 400;
 
 		const openTime = data[0].date;
 		let closeTime  = new Date();
@@ -38,8 +39,22 @@ class AreaChart extends React.Component {
 		const xExtents = [closeTime, openTime];
 		const horizontalMargin = width <= 200 ? 0 : 50;
 
+		const showGrid = true;
+		const yGrid = showGrid ? {
+			innerTickSize: -1 * width,
+			tickStrokeDasharray: 'ShortDot',
+			tickStrokeOpacity: 0.2,
+			tickStrokeWidth: 1
+		} : {};
+		const xGrid = showGrid ? {
+			innerTickSize: -1 * height,
+			tickStrokeDasharray: 'ShortDot',
+			tickStrokeOpacity: 0.2,
+			tickStrokeWidth: 1
+		} : {};
+
 		return (
-			<ChartCanvas ratio={ratio} width={width} height={400}
+			<ChartCanvas ratio={ratio} width={width} height={height}
 				margin={{ left: horizontalMargin, right: horizontalMargin, top: 10, bottom: 30 }}
 				seriesName={symbol + '_intraday'}
 				data={data} 
@@ -59,8 +74,14 @@ class AreaChart extends React.Component {
 							<stop offset="100%"  stopColor="#4286f4" stopOpacity={0.8} />
 						</linearGradient>
 					</defs>
-					<XAxis axisAt="bottom" orient="bottom" ticks={width >= 640 ? 14 : 7} zoomEnabled={false}/>
-					<YAxis axisAt="left" orient="left" />
+					<XAxis
+						axisAt="bottom"
+						orient="bottom"
+						ticks={width >= 640 ? 14 : 7}
+						zoomEnabled={false}
+						{...xGrid}
+					/>
+					<YAxis axisAt="left" orient="left" {...yGrid} />
 					<AreaSeries
 						yAccessor={d => d.close}
 						fill="url(#MyGradient)"

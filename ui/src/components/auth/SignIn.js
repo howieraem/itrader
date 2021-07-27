@@ -54,19 +54,20 @@ export default function SignIn(props) {
     const loginRequest = Object.assign({}, { email, password });
 
     login(loginRequest)
-    .then(response => {
-      if (rememberMe) {
-        localStorage.setItem('accessToken', response.accessToken);
-      } else {
-        sessionStorage.setItem('accessToken', response.accessToken);
-      }
+      .then(response => {
+        if (rememberMe) {
+          localStorage.setItem('accessToken', response.accessToken);
+        } else {
+          sessionStorage.setItem('accessToken', response.accessToken);
+        }
 
-      // console.log("Successfully logged in!");
-      history.push("/dashboard");
-      history.go();
-    }).catch(error => {
-      console.log((error && error.message) || 'Oops! Something went wrong. Please try again!');
-    });
+        // console.log("Successfully logged in!");
+        history.push("/dashboard");
+        history.go();
+      })
+      .catch(error => {
+        console.log((error && error.message) || 'Oops! Something went wrong. Please try again!');
+      });
   }
   
   if (authenticated) {

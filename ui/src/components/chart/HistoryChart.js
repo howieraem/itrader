@@ -7,7 +7,7 @@ import LoadingIndicator from '../../common/LoadingIndicator';
 
 
 export default function HistoryChart(props) {
-  const { symbol, interval } = props;
+  const { symbol, interval, latestPrice } = props;
   const [data, setData] = React.useState(null);
 
   React.useEffect(() => {
@@ -34,6 +34,16 @@ export default function HistoryChart(props) {
       }).catch(err => { console.log(err); setData(null); })
     }
   }, [symbol, interval])
+
+  React.useEffect(() => {
+    if (data && data[0].open && latestPrice > 0) {
+      const lastEntry = data[data.length - 1];
+      lastEntry.close = latestPrice;
+      lastEntry.high = Math.max(lastEntry.high, latestPrice);
+      lastEntry.low = Math.min(lastEntry.low, latestPrice);
+      data[data.length - 1] = lastEntry;
+    }
+  }, [data, latestPrice])
 
   if (data && data[0].open === undefined) {
     return (

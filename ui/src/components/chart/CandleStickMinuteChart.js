@@ -31,6 +31,7 @@ import { appearance, candlesAppearance } from "./Appearance";
 class CandleStickChartForDiscontinuousIntraDay extends React.Component {
 	render() {
 		const { type, data: initialData, symbol, width, ratio } = this.props;
+		const height = 450;
 
 		const xScaleProvider = discontinuousTimeScaleProvider
 			.inputDateAccessor(d => d.date);
@@ -45,11 +46,26 @@ class CandleStickChartForDiscontinuousIntraDay extends React.Component {
 		const end = xAccessor(data[Math.max(0, data.length - 150)]);
 		const xExtents = [start, end];
 
+		const margin = { left: 50, right: 50, top: 10, bottom: 30 };
+		const showGrid = true;
+		const yGrid = showGrid ? {
+			innerTickSize: -1 * (width - margin.left - margin.right),
+			tickStrokeDasharray: 'ShortDot',
+			tickStrokeOpacity: 0.2,
+			tickStrokeWidth: 1
+		} : {};
+		const xGrid = showGrid ? {
+			innerTickSize: -1 * (height - margin.top - margin.bottom),
+			tickStrokeDasharray: 'ShortDot',
+			tickStrokeOpacity: 0.2,
+			tickStrokeWidth: 1
+		} : {};
+
 		return (
-			<ChartCanvas height={450}
+			<ChartCanvas height={height}
 				ratio={ratio}
 				width={width}
-				margin={{ left: 50, right: 50, top: 10, bottom: 30 }}
+				margin={margin}
 				type={type}
 				seriesName={symbol + '_minutes'}
 				data={data}
@@ -62,8 +78,8 @@ class CandleStickChartForDiscontinuousIntraDay extends React.Component {
           height={300}
 					yExtents={[d => [d.high, d.low]]}
 				>
-					<XAxis axisAt="bottom" orient="bottom" showTicks={false} />
-					<YAxis axisAt="right" orient="right" ticks={5} />
+					<XAxis axisAt="bottom" orient="bottom" {...xGrid} />
+					<YAxis axisAt="right" orient="right" ticks={5} {...yGrid} />
 
 					<MouseCoordinateX
 						rectWidth={60}
@@ -86,8 +102,8 @@ class CandleStickChartForDiscontinuousIntraDay extends React.Component {
 					yExtents={[d => d.volume]}
 					height={100} origin={(w, h) => [0, h - 100]}
 				>
-          <XAxis axisAt="bottom" orient="bottom"/>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")}/>
+          <XAxis axisAt="bottom" orient="bottom" showTicks={false} />
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")} />
 
 					<MouseCoordinateY
 						at="left"

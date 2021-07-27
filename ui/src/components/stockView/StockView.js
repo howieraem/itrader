@@ -128,7 +128,7 @@ const Blinking = (props) => (
 
 function StockViewCore(props) {
   const classes = useStyles();
-  const { symbol, authenticated, marketOpen, dataTime, livePrice, change, changePercent } = props;
+  const { symbol, authenticated, marketOpen, dataTime, livePrice, change, changePercent, dayVolume } = props;
 
   const [stockName, setStockName] = React.useState(null);
   const [basicInfo, setBasicInfo] = React.useState(null);
@@ -136,9 +136,11 @@ function StockViewCore(props) {
   const [highlight, setHighlight] = React.useState(false);
   const [isRising, setIsRising] = React.useState(false);
   const [watchlisted, setWatchlisted] = React.useState(false);
+  const [regularMarketTime, setRegularMarketTime] = React.useState(null);
   const [regularMarketPrice, setRegularMarketPrice] = React.useState(0);
   const [regularMarketChange, setRegularMarketChange] = React.useState(0);
   const [regularMarketChangePercent, setRegularMarketChangePercent] = React.useState(0);
+  const [regularMarketVolume, setRegularMarketVolume] = React.useState(0);
 
   const handleWlButtonClick = () => {
     if (watchlisted) {
@@ -171,14 +173,17 @@ function StockViewCore(props) {
   React.useEffect(() => {
     const updateBasicInfo = () => {
       getStockBasicInfo(symbol)
-      .then(basicInfo => {
-        setBasicInfo(filterInfo(basicInfo));
-        setStockName(basicInfo.displayName || basicInfo.longName || basicInfo.shortName);
-        setCurrency(basicInfo.currency.toUpperCase());
-        setRegularMarketPrice(roundNumber(basicInfo.regularMarketPrice, 3));
-        setRegularMarketChange(roundNumber(basicInfo.regularMarketChange, 3));
-        setRegularMarketChangePercent(roundNumber(basicInfo.regularMarketChangePercent, 2));
-      }).catch(err => { console.log(err) })
+        .then(basicInfo => {
+          setBasicInfo(filterInfo(basicInfo));
+          setStockName(basicInfo.displayName || basicInfo.longName || basicInfo.shortName);
+          setCurrency(basicInfo.currency.toUpperCase());
+          setRegularMarketTime(new Date(basicInfo.regularMarketTime * 1000));
+          setRegularMarketPrice(roundNumber(basicInfo.regularMarketPrice, 3));
+          setRegularMarketChange(roundNumber(basicInfo.regularMarketChange, 3));
+          setRegularMarketChangePercent(roundNumber(basicInfo.regularMarketChangePercent, 2));
+          setRegularMarketVolume(basicInfo.regularMarketVolume || 0);
+        })
+        .catch(err => { console.log(err) })
     };
     updateBasicInfo();
 
@@ -274,7 +279,12 @@ function StockViewCore(props) {
 
       <Grid container>
         <Grid item xs={12}>
-          <CharTabs symbol={symbol} dateTime={dataTime} lastestPrice={livePrice} />
+          <CharTabs
+            symbol={symbol}
+            latestTime={dataTime || regularMarketTime}
+            latestPrice={livePrice || regularMarketPrice}
+            latestVolume={dayVolume || regularMarketVolume}
+          />
         </Grid>
       </Grid>
 
@@ -290,7 +300,7 @@ export default function StockView(props) {
   const [livePrice, setLivePrice] = React.useState(0.);
   const [change, setChange] = React.useState(0.);
   const [changePercent, setChangePercent] = React.useState(0.);
-  // const [dayVolume, setDayVolume] = React.useState(0);
+  const [dayVolume, setDayVolume] = React.useState(0);
 
   React.useEffect(() => {
     getMarketStates([symbol])
@@ -317,7 +327,7 @@ export default function StockView(props) {
       setLivePrice(roundNumber(liveData.price, 3));
       setChange(roundNumber(liveData.change, 3));
       setChangePercent(roundNumber(liveData.changePercent, 2));
-      // setDayVolume(liveData.dayVolume);
+      setDayVolume(liveData.dayVolume);
     };
     if (regularMarketOpen) {
       addTicker(symbol, updateLiveData);
@@ -344,7 +354,7 @@ export default function StockView(props) {
         livePrice={livePrice}
         change={change}
         changePercent={changePercent}
-        // dayVolume={dayVolume}
+        dayVolume={dayVolume}
         {...props}
       />
     </>

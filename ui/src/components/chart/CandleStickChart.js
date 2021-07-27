@@ -62,6 +62,7 @@ function tooltipContent(ys) {
 class CandleStickChartWithHoverTooltip extends React.Component {
 	render() {
 		let { type, data: initialData, symbol, width, ratio } = this.props;
+		const height = 450;
 
 		const ema20 = ema()
 			.id(0)
@@ -95,9 +96,23 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 		const end = xAccessor(data[Math.max(0, data.length - 150)]);
 		const xExtents = [start, end];
 
+		const showGrid = true;
+		const yGrid = showGrid ? {
+			innerTickSize: -1 * (width - margin.left - margin.right),
+			tickStrokeDasharray: 'ShortDot',
+			tickStrokeOpacity: 0.2,
+			tickStrokeWidth: 1
+		} : {};
+		const xGrid = showGrid ? {
+			innerTickSize: -1 * (height - margin.top - margin.bottom),
+			tickStrokeDasharray: 'ShortDot',
+			tickStrokeOpacity: 0.2,
+			tickStrokeWidth: 1
+		} : {};
+
 		return (
       <ChartCanvas 
-        height={450}
+        height={height}
 				ratio={ratio}
 				width={width}
 				margin={margin}
@@ -110,8 +125,8 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 				xExtents={xExtents}
 			>
 				<Chart id={1} height={300} yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]} >
-					<YAxis axisAt="right" orient="right" ticks={5} />
-					<XAxis axisAt="bottom" orient="bottom" showTicks={false} />
+					<YAxis axisAt="right" orient="right" ticks={5} {...yGrid} />
+					<XAxis axisAt="bottom" orient="bottom" {...xGrid} />
 					<CandlestickSeries {...candlesAppearance} />
           <LineSeries
 						yAccessor={ema20.accessor()}
@@ -150,8 +165,8 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 					/>
 				</Chart>
 				<Chart id={2} origin={(w, h) => [0, h - 100]} height={100} yExtents={d => d.volume}>
-					<XAxis axisAt="bottom" orient="bottom"/>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")}/>
+					<XAxis axisAt="bottom" orient="bottom" showTicks={false} />
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")} />
 					<BarSeries yAccessor={d => d.volume} {...appearance} />
 				</Chart>
 			</ChartCanvas>

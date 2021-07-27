@@ -86,8 +86,6 @@ const useStyles = makeStyles((theme) => ({
 export default function CharTabs(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-  const { symbol, latestPrice, marketClosed } = props;
-
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -120,37 +118,37 @@ export default function CharTabs(props) {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <IntradayChart symbol={symbol} marketClosed={marketClosed} />
+        <IntradayChart {...props} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <HistoryChart symbol={symbol} interval="d" />
+        <HistoryChart interval="d" {...props} />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <HistoryChart symbol={symbol} interval="w" />
+        <HistoryChart interval="w" {...props} />
       </TabPanel>
       <TabPanel value={value} index={3}>
-        <HistoryChart symbol={symbol} interval="m" />
+        <HistoryChart interval="m" {...props} />
       </TabPanel>
       <TabPanel value={value} index={4}>
-        <HistoryChart symbol={symbol} interval="q" />
+        <HistoryChart interval="q" {...props} />
       </TabPanel>
       <TabPanel value={value} index={5}>
-        <MinuteChart symbol={symbol} minute={1} />
+        <MinuteChart minute={1} {...props} />
       </TabPanel>
       <TabPanel value={value} index={6}>
-        <MinuteChart symbol={symbol} minute={5} />
+        <MinuteChart minute={5} {...props} />
       </TabPanel>
       <TabPanel value={value} index={7}>
-        <MinuteChart symbol={symbol} minute={15} />
+        <MinuteChart minute={15} {...props} />
       </TabPanel>
       <TabPanel value={value} index={8}>
-        <MinuteChart symbol={symbol} minute={30} />
+        <MinuteChart minute={30} {...props} />
       </TabPanel>
       <TabPanel value={value} index={9}>
-        <MinuteChart symbol={symbol} minute={60} />
+        <MinuteChart minute={60} {...props} />
       </TabPanel>
       <TabPanel value={value} index={10}>
-        <MinuteChart symbol={symbol} minute={90} />
+        <MinuteChart minute={90} {...props} />
       </TabPanel>
     </div>
   );
