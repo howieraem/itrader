@@ -1,6 +1,7 @@
 import React from 'react';
 import { Helmet } from "react-helmet";
 import { Redirect } from 'react-router-dom';
+import { Alert } from "@material-ui/lab";
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -47,8 +48,10 @@ export default function SignUp(props) {
   const [password2, setPassword2] = React.useState('');
   // const [pin, setPin] = React.useState('');
   const [username, setUsername] = React.useState('');
-
+  const [successMsg, setSuccessMsg] = React.useState('');
+  const [alertMsg, setAlertMsg] = React.useState('');
   const [pwd2ErrMsg, setPwdErrMsg] = React.useState('');
+  const [disabled, setDisabled] = React.useState(false);
 
   const checkPwdMatch = (ev) => {
     const pwd2 = ev.target.value;
@@ -63,21 +66,32 @@ export default function SignUp(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const signUpRequest = Object.assign({}, {
+    const signUpRequest = {
       email,
-      password2,
+      password: password2,
       // pin,
       username,
-    });
+    };
 
     signup(signUpRequest)
     .then(response => {
-      console.log("successfully registered!");
-      // Alert.success("You're successfully registered. Please login to continue!");
-      history.push("/login");
-    }).catch(error => {
-      console.log(error.message);
-      // Alert.error((error && error.message) || 'Oops! Something went wrong. Please try again!');
+      setSuccessMsg("Successfully signed up! Please sign in to proceed.");
+      setDisabled(true);
+      setTimeout(() => {
+        setSuccessMsg("");
+        setDisabled(false);
+        history.push("/login");
+      }, 1500);
+    }).catch(err => {
+      if (err instanceof Error) {
+        setAlertMsg('Oops! Something went wrong. Please try again!');
+      } else {
+        if (err.errors === undefined) {
+          setAlertMsg(err.message);
+        } else {
+          setAlertMsg(err.errors[0].defaultMessage);
+        }
+      }
     });
   };
 
@@ -85,9 +99,6 @@ export default function SignUp(props) {
     if (location.state && location.state.error) {
       setTimeout(() => {
           console.log(location.state.error);
-          // Alert.error(location.state.error, {
-          //     timeout: 5000
-          // });
           history.replace({
               pathname: location.pathname,
               state: {}
@@ -175,13 +186,19 @@ export default function SignUp(props) {
                 id="username"
                 onChange={(ev) => setUsername(ev.target.value)}
               />
+              { alertMsg ? (
+                <Alert severity="error" style={{ fontSize: "15px" }}>{alertMsg}</Alert>
+              ) : null }
+              { successMsg ? (
+                <Alert severity="success" style={{ fontSize: "15px" }}>{successMsg}</Alert>
+              ) : null}
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 className={classes.submit}
                 onClick={handleSubmit}
-                disabled={Boolean(pwd2ErrMsg) || !Boolean(email) || !Boolean(username)}
+                disabled={disabled || Boolean(pwd2ErrMsg) || !Boolean(email) || !Boolean(username)}
               >
                 Sign Up
               </Button>

@@ -2,9 +2,12 @@ package com.jlumine.itrader.controller;
 
 import com.jlumine.itrader.dto.PositionDTO;
 import com.jlumine.itrader.dto.TradeDTO;
+import com.jlumine.itrader.exception.BadRequestException;
 import com.jlumine.itrader.exception.ResourceNotFoundException;
 import com.jlumine.itrader.model.Favorite;
 import com.jlumine.itrader.model.User;
+import com.jlumine.itrader.payload.ApiResponse;
+import com.jlumine.itrader.payload.ChangePasswordRequest;
 import com.jlumine.itrader.payload.SymbolRequest;
 import com.jlumine.itrader.repository.FavoriteRepository;
 import com.jlumine.itrader.repository.PositionRepository;
@@ -14,9 +17,13 @@ import com.jlumine.itrader.security.CurrentUser;
 import com.jlumine.itrader.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +45,9 @@ public class UserController {
 
     @Autowired
     private TradeRepository tradeRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("/user/me")
     @PreAuthorize("hasRole('USER')")
@@ -140,5 +150,22 @@ public class UserController {
     public Boolean clearWatchlist(@CurrentUser UserPrincipal userPrincipal) {
         favoriteRepository.deleteByUserId(userPrincipal.getId());
         return true;
+    }
+
+    @PostMapping("/changePassword")
+    @PreAuthorize("hasRole('USER')")
+    @ResponseBody
+    @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(cacheNames = "user", key = "#userPrincipal.getId()", beforeInvocation = true)
+    public ResponseEntity<?> changePassword(
+            @CurrentUser UserPrincipal userPrincipal,
+            @Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
+        if (passwordEncoder.matches(changePasswordRequest.getOldPassword(), userPrincipal.getPassword())) {
+            userRepository.updatePwd(
+                    userPrincipal.getId(), passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+            return ResponseEntity.ok(new ApiResponse(true, "Password changed! Please sign in again."));
+        }
+        return new ResponseEntity<>(new ApiResponse(
+                false, "The old password you entered was incorrect."), HttpStatus.UNAUTHORIZED);
     }
 }

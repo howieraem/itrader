@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -8,21 +9,55 @@ import {
   Divider,
   TextField
 } from '@material-ui/core';
+import { makeStyles } from "@material-ui/core/styles";
 import { COLORS } from "../../common/Theme";
+import { changePassword } from "../../utils/APIUtils";
+
+const useStyles = makeStyles(theme => ({
+  submit: {
+    textTransform: 'none',
+    background: COLORS[0],
+    color: 'white',
+  },
+}))
 
 const PasswordSetting = (props) => {
-  const [values, setValues] = useState({
-    cur: '',
-    password: '',
-    confirm: ''
-  });
+  const classes = useStyles();
 
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value
-    });
-  };
+  const [cur, setCur] = useState('');
+  const [pwd, setPwd] = useState('');
+  const [pwd2, setPwd2] = useState('');
+  const [newPwdErrMsg, setNewPwdErrMsg] = useState('');
+  const [disabled, setDisabled] = useState(true);
+
+  let history = useHistory();
+
+  const checkPwdMatch = (ev) => {
+    const confirmedPwd = ev.target.value;
+    setPwd2(confirmedPwd);
+    if (confirmedPwd !== pwd) {
+      setNewPwdErrMsg("Passwords don't match!");
+      setDisabled(true);
+    } else {
+      setNewPwdErrMsg('');
+      setDisabled(false);
+    }
+  }
+
+  const handleSubmit = () => {
+    changePassword({
+      oldPassword: cur,
+      newPassword: pwd2
+    }).then(response => {
+      console.log(response.message);
+      if (response.success) {
+        localStorage.removeItem('accessToken');
+        sessionStorage.removeItem('accessToken');
+        history.push('/');
+        history.go(0);
+      }
+    }).catch(err => console.log(err));
+  }
 
   return (
     <form {...props}>
@@ -33,34 +68,36 @@ const PasswordSetting = (props) => {
         <Divider />
         <CardContent>
           <TextField
+            variant="outlined"
+            required
             fullWidth
             label="Current password"
             margin="normal"
-            name="current"
-            onChange={handleChange}
+            name="cur"
+            onChange={ev => setCur(ev.target.value)}
             type="password"
-            value={values.cur}
-            variant="outlined"
           />
           <TextField
+            variant="outlined"
+            required
             fullWidth
             label="Password"
             margin="normal"
             name="password"
-            onChange={handleChange}
+            onChange={ev => setPwd(ev.target.value)}
             type="password"
-            value={values.password}
-            variant="outlined"
           />
           <TextField
+            variant="outlined"
+            required
             fullWidth
             label="Confirm password"
             margin="normal"
             name="confirm"
-            onChange={handleChange}
+            onChange={ev => checkPwdMatch(ev)}
             type="password"
-            value={values.confirm}
-            variant="outlined"
+            helperText={newPwdErrMsg}
+            error={Boolean(newPwdErrMsg)}
           />
         </CardContent>
         <Divider />
@@ -72,7 +109,9 @@ const PasswordSetting = (props) => {
           <Button
             color="primary"
             variant="contained"
-            style={{ textTransform: "none", background: COLORS[1] }}
+            className={classes.submit}
+            onClick={handleSubmit}
+            disabled={disabled || !Boolean(cur) || !Boolean(pwd2)}
           >
             Update
           </Button>

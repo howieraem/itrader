@@ -2,20 +2,23 @@ package com.jlumine.itrader.payload;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 
 public class SignUpRequest {
-    @NotBlank
-    @Email
+    @NotBlank(message = "Email cannot be blank!")
+    @Email(message = "Email address is invalid.")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "Password cannot be blank!")
+    @Size(min = 6, max = 20, message = "Password must be 6-20 characters long!")
     private String password;
 
 //    @NotBlank
 //    private String pin;
 
-    @NotBlank
+    @NotBlank(message = "Username cannot be blank!")
+    @Size(min = 3, message = "Username must be at least 3 characters long!")
     private String username;
 
     public String getEmail() {

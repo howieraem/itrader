@@ -17,7 +17,7 @@ export default function Settings(props) {
   const classes = useStyles();
 
   return (
-    <Container maxWidth="lg" className={classes.container}>
+    <Container maxWidth="md" className={classes.container}>
       <Grid
         container
         spacing={3}
@@ -36,9 +36,7 @@ export default function Settings(props) {
           md={6}
           xs={12}
         >
-          {/*<Box sx={{ pt: 3 }}>*/}
-            <PasswordSetting />
-          {/*</Box>*/}
+          <PasswordSetting />
         </Grid>
       </Grid>
     </Container>

@@ -1645,6 +1645,64 @@
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
 
+"@rpldy/life-events@^0.13.2":
+  version "0.13.2"
+  resolved "https://registry.nlark.com/@rpldy/life-events/download/@rpldy/life-events-0.13.2.tgz#b399be886a53dbd4f48989bdb591b32835264878"
+  integrity sha1-s5m+iGpT29T0iYm9tZGzKDUmSHg=
+  dependencies:
+    "@rpldy/shared" "^0.13.2"
+    is-promise "^4.0.0"
+
+"@rpldy/sender@^0.13.2":
+  version "0.13.2"
+  resolved "https://registry.nlark.com/@rpldy/sender/download/@rpldy/sender-0.13.2.tgz#7b2bb669bfd1eeb9ff6f4e27627b642b238dd9ed"
+  integrity sha1-eyu2ab/R7rn/b04nYntkKyON2e0=
+  dependencies:
+    "@rpldy/shared" "^0.13.2"
+
+"@rpldy/shared-ui@^0.13.2":
+  version "0.13.2"
+  resolved "https://registry.nlark.com/@rpldy/shared-ui/download/@rpldy/shared-ui-0.13.2.tgz#1f8e03fb0225987e0825d842ade71329e25723be"
+  integrity sha1-H44D+wIlmH4IJdhCrecTKeJXI74=
+  dependencies:
+    "@rpldy/shared" "^0.13.2"
+    "@rpldy/uploader" "^0.13.2"
+
+"@rpldy/shared@^0.13.2":
+  version "0.13.2"
+  resolved "https://registry.nlark.com/@rpldy/shared/download/@rpldy/shared-0.13.2.tgz#09d2819f01bbc6c4bb76de59d3178fe2d4e67f75"
+  integrity sha1-CdKBnwG7xsS7dt5Z0xeP4tTmf3U=
+  dependencies:
+    invariant "^2.2.4"
+    just-throttle "^1.1.0"
+
+"@rpldy/simple-state@^0.13.2":
+  version "0.13.2"
+  resolved "https://registry.nlark.com/@rpldy/simple-state/download/@rpldy/simple-state-0.13.2.tgz#9cb6780ea8dc0cce4cfe2bd9ee26cbb63455347d"
+  integrity sha1-nLZ4DqjcDM5M/ivZ7ibLtjRVNH0=
+  dependencies:
+    "@rpldy/shared" "^0.13.2"
+
+"@rpldy/uploader@^0.13.2":
+  version "0.13.2"
+  resolved "https://registry.nlark.com/@rpldy/uploader/download/@rpldy/uploader-0.13.2.tgz#b48a1f2353257050192fddc8e51d7c413ac8982c"
+  integrity sha1-tIofI1MlcFAZL93I5R18QTrImCw=
+  dependencies:
+    "@rpldy/life-events" "^0.13.2"
+    "@rpldy/sender" "^0.13.2"
+    "@rpldy/shared" "^0.13.2"
+    "@rpldy/simple-state" "^0.13.2"
+
+"@rpldy/uploady@^0.13.2":
+  version "0.13.2"
+  resolved "https://registry.nlark.com/@rpldy/uploady/download/@rpldy/uploady-0.13.2.tgz#9bd33ff126d2a161c0f30b15e364e33a463d3d2b"
+  integrity sha1-m9M/8SbSoWHA8wsV42TjOkY9PSs=
+  dependencies:
+    "@rpldy/life-events" "^0.13.2"
+    "@rpldy/shared" "^0.13.2"
+    "@rpldy/shared-ui" "^0.13.2"
+    "@rpldy/uploader" "^0.13.2"
+
 "@sinonjs/commons@^1.7.0":
   version "1.8.3"
   resolved "https://registry.npm.taobao.org/@sinonjs/commons/download/@sinonjs/commons-1.8.3.tgz?cache=0&sync_timestamp=1617868404624&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40sinonjs%2Fcommons%2Fdownload%2F%40sinonjs%2Fcommons-1.8.3.tgz#3802ddd21a50a949b6721ddd72da36e67e7f1b2d"
@@ -6890,7 +6948,7 @@ internmap@^1.0.0:
   resolved "https://registry.npm.taobao.org/internmap/download/internmap-1.0.1.tgz#0017cc8a3b99605f0302f2b198d272e015e5df95"
   integrity sha1-ABfMijuZYF8DAvKxmNJy4BXl35U=
 
-invariant@^2.2.2:
+invariant@^2.2.2, invariant@^2.2.4:
   version "2.2.4"
   resolved "https://registry.npm.taobao.org/invariant/download/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
   integrity sha1-YQ88ksk1nOHbYW5TgAjSP/NRWOY=
@@ -7195,6 +7253,11 @@ is-potential-custom-element-name@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npm.taobao.org/is-potential-custom-element-name/download/is-potential-custom-element-name-1.0.1.tgz#171ed6f19e3ac554394edf78caa05784a45bebb5"
   integrity sha1-Fx7W8Z46xVQ5Tt94yqBXhKRb67U=
+
+is-promise@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.npm.taobao.org/is-promise/download/is-promise-4.0.0.tgz#42ff9f84206c1991d26debf520dd5c01042dd2f3"
+  integrity sha1-Qv+fhCBsGZHSbev1IN1cAQQt0vM=
 
 is-regex@^1.0.4, is-regex@^1.1.2:
   version "1.1.2"
@@ -8009,6 +8072,11 @@ jss@10.6.0, jss@^10.5.1:
   dependencies:
     array-includes "^3.1.2"
     object.assign "^4.1.2"
+
+just-throttle@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.nlark.com/just-throttle/download/just-throttle-1.1.0.tgz#178d305ece9876a8a0759abd8d403aafcc6e4849"
+  integrity sha1-F40wXs6YdqigdZq9jUA6r8xuSEk=
 
 killable@^1.0.1:
   version "1.0.1"

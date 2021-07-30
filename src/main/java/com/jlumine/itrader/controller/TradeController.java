@@ -7,6 +7,7 @@ import com.jlumine.itrader.service.TradeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +32,10 @@ public class TradeController {
 
     @PostMapping("/trade")
     @PreAuthorize("hasRole('USER')")
-    @CacheEvict(cacheNames = "userPortfolio", key = "#authenticatedRequest.getUserId()", beforeInvocation = true)
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "userPortfolio", key = "#authenticatedRequest.getUserId()", beforeInvocation = true),
+            @CacheEvict(cacheNames = "user", key = "#authenticatedRequest.getUserId()", beforeInvocation = true),
+    })
     public ResponseEntity<?> trade(
             @Valid @RequestBody TradeRequest tradeRequest,
             AuthenticatedRequest authenticatedRequest) {

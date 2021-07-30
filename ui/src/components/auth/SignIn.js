@@ -2,6 +2,7 @@ import React from 'react';
 import { Helmet } from "react-helmet";
 import { Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
+import { Alert } from "@material-ui/lab";
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import Container from '@material-ui/core/Container';
@@ -46,6 +47,8 @@ export default function SignIn(props) {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [rememberMe, setRememberMe] = React.useState(false);
+  const [alertMsg, setAlertMsg] = React.useState('');
+
   const classes = useStyles();
 
   const handleSubmit = (event) => {
@@ -65,8 +68,12 @@ export default function SignIn(props) {
         history.push("/dashboard");
         history.go();
       })
-      .catch(error => {
-        console.log((error && error.message) || 'Oops! Something went wrong. Please try again!');
+      .catch(err => {
+        if (err instanceof Error) {
+          setAlertMsg('Oops! Something went wrong. Please try again!');
+        } else {
+          setAlertMsg('Incorrect email or password.')
+        }
       });
   }
   
@@ -121,6 +128,9 @@ export default function SignIn(props) {
                 label="Remember me"
                 onChange={(ev) => setRememberMe(ev.target.checked)}
               />
+              { alertMsg ? (
+                <Alert severity="error" style={{ fontSize: "15px" }}>{alertMsg}</Alert>
+              ) : null }
               <Button
                 type="submit"
                 fullWidth

@@ -2,12 +2,10 @@ package com.jlumine.itrader.controller;
 
 import com.jlumine.itrader.exception.BadRequestException;
 import com.jlumine.itrader.model.User;
-import com.jlumine.itrader.payload.ApiResponse;
-import com.jlumine.itrader.payload.AuthResponse;
-import com.jlumine.itrader.payload.LoginRequest;
-import com.jlumine.itrader.payload.SignUpRequest;
+import com.jlumine.itrader.payload.*;
 import com.jlumine.itrader.repository.UserRepository;
 import com.jlumine.itrader.security.TokenProvider;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,7 +15,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.net.URI;
@@ -40,25 +37,23 @@ public class AuthController {
     private TokenProvider tokenProvider;
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-
+    public ResponseEntity<?> signIn(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getEmail(),
                         loginRequest.getPassword()
                 )
         );
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         String token = tokenProvider.createToken(authentication);
         return ResponseEntity.ok(new AuthResponse(token));
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<?> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            throw new BadRequestException("This email address has already been registered.");
+            throw new BadRequestException("This email has been registered. " +
+                    "Sign in, or register with a different email.");
         }
 
         // Creating user's account

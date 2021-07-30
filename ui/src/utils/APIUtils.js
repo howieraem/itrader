@@ -132,3 +132,7 @@ export function addToWatchlist(symbol) {
 export function removeFromWatchlist(symbol) {
     return authenticatedPost('rmFromWatchlist', {symbol});
 }
+
+export function changePassword(changePwdRequest) {
+    return authenticatedPost('changePassword', changePwdRequest);
+}

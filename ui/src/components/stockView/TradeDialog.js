@@ -134,7 +134,7 @@ export default function TradeDialog(props) {
 
     trade(tradeRequest)
     .then(response => {
-      console.log(response);
+      // console.log(response);
       if (response.success) {
         setAlertMsg(response.message);
         setAlertSeverity("success");
@@ -145,7 +145,7 @@ export default function TradeDialog(props) {
           setButtonsDisabled(false);
         }, 1500);
       } else {
-        setAlertMsg("An error occurred. Please try again.")
+        setAlertMsg(response.message);
         setAlertSeverity("error");
       }
     }).catch(error => {
@@ -176,7 +176,6 @@ export default function TradeDialog(props) {
               </DialogActions>
             </DialogContent>
           ) : (
-            // authenticated ? (
             <>
               <DialogContent>
                 <DialogContentText>
@@ -232,25 +231,6 @@ export default function TradeDialog(props) {
                 </Button>
               </DialogActions>
             </>
-            // ) : (
-            //   <>
-            //     <DialogContent>
-            //       <DialogContentText>
-            //         <Alert severity="error" style={{fontSize: "15px"}}>
-            //           Please sign in first.
-            //         </Alert>
-            //       </DialogContentText>
-            //       <DialogActions>
-            //         <Button href="/login" color="primary" className={classes.dialogButton}>
-            //           Login
-            //         </Button>
-            //         <Button onClick={handleClose} color="primary" className={classes.dialogButton}>
-            //           Cancel
-            //         </Button>
-            //       </DialogActions>
-            //     </DialogContent>
-            //   </>
-            // )
           ) }
       </Dialog>
     </>
