@@ -150,6 +150,7 @@ const Profile = (props) => {
       formData.append('file', cropped);
       authenticatedUpload('uploadAvatar', formData)
         .then(response => {
+          console.log(response);
           if (response.data.success) {
             setDisableUpload(true);
             setDisableCancel(true);
@@ -184,6 +185,7 @@ const Profile = (props) => {
     setCropCfg({ aspect: 1 });
     imgRef.current = null;
     document.getElementById("button-avatar").value = "";
+    setAlertMsg(null);
   }
 
   const AvatarDialog = (

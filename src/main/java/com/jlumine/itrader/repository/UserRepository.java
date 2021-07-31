@@ -39,4 +39,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query("update User user set user.avatar = :avatar where user.id = :id")
     void updateAvatar(@Param("id") Long id, @Param("avatar") String avatar);
+
+    @Query("select user.avatar from User user where user.id = :id")
+    String getAvatar(@Param("id") Long id);
 }

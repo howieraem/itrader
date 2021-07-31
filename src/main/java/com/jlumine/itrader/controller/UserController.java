@@ -1,6 +1,5 @@
 package com.jlumine.itrader.controller;
 
-import com.google.common.io.Files;
 import com.jlumine.itrader.dto.PositionDTO;
 import com.jlumine.itrader.dto.TradeDTO;
 import com.jlumine.itrader.exception.BadRequestException;
@@ -16,6 +15,7 @@ import com.jlumine.itrader.repository.TradeRepository;
 import com.jlumine.itrader.repository.UserRepository;
 import com.jlumine.itrader.security.CurrentUser;
 import com.jlumine.itrader.security.UserPrincipal;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
@@ -170,7 +170,7 @@ public class UserController {
     public ResponseEntity<?> uploadAvatar(
             @CurrentUser UserPrincipal userPrincipal,
             @RequestPart("file") MultipartFile file,
-            HttpServletRequest request) {
+            HttpServletRequest request) throws IOException {
         if (file.isEmpty()) {
             throw new BadRequestException("Your upload was empty. Please select an image and try again!");
         }
@@ -182,17 +182,18 @@ public class UserController {
         if (originalFilename == null) {
             throw new BadRequestException("The filename of the uploaded image was empty. Please select another image and try again!");
         }
-        String filename = UUID.randomUUID().toString().replaceAll("-", "") + '.' + Files.getFileExtension(originalFilename);
+        String filename = UUID.randomUUID().toString().replaceAll("-", "") + '.' + FilenameUtils.getExtension(originalFilename);
         String saveFilename = avatarDir + filename;
+        file.transferTo(new File(saveFilename));
 
-        try {
-            file.transferTo(new File(saveFilename));
-        } catch (IOException e) {
-            e.printStackTrace();
+        Long userId = userPrincipal.getId();
+        String oldUrl = userRepository.getAvatar(userId);
+        if (oldUrl != null && !oldUrl.isEmpty()) {
+            File oldAvatar = new File(avatarDir + FilenameUtils.getBaseName(oldUrl) + '.' + FilenameUtils.getExtension(oldUrl));
+            oldAvatar.delete();
         }
-
         String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/userAvatar/" + filename;
-        userRepository.updateAvatar(userPrincipal.getId(), url);
+        userRepository.updateAvatar(userId, url);
         return ResponseEntity.ok(new ApiResponse(true, "Avatar changed successfully."));
     }
 
