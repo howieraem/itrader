@@ -22,7 +22,6 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "react-stockcharts": "^0.7.8",
-    "reactstrap": "^8.9.0",
     "recharts": "^2.0.9",
     "redux": "^4.1.0",
     "stocksocket": "^2.1.0",

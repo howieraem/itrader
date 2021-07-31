@@ -7,6 +7,11 @@ import {
   Card,
   CardActions,
   CardContent,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   Typography
 } from '@material-ui/core';
@@ -14,11 +19,27 @@ import { makeStyles } from "@material-ui/core/styles";
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { authenticatedUpload } from "../../utils/APIUtils";
+import {Alert} from "@material-ui/lab";
 
 const useStyles = makeStyles(theme => ({
   profileAvatar: {
-    minWidth: "100px",
-    minHeight: "100px"
+    minWidth: 150,
+    minHeight: 150
+  },
+  previewS: {
+    minWidth: 50,
+    minHeight: 50,
+    margin: theme.spacing(2)
+  },
+  previewM: {
+    minWidth: 100,
+    minHeight: 100,
+    margin: theme.spacing(2)
+  },
+  previewL: {
+    minWidth: 150,
+    minHeight: 150,
+    margin: theme.spacing(2)
   },
 }));
 
@@ -29,12 +50,13 @@ const Profile = (props) => {
   const [srcUrl, setSrcUrl] = useState(null);
   const [cropped, setCropped] = useState(null);
   const [croppedUrl, setCroppedUrl] = useState(null);
-  const [cropCfg, setCropCfg] = useState(null);
+  const [cropCfg, setCropCfg] = useState({ aspect: 1 });
   const imgRef = useRef(null);
 
   const [disableUpload, setDisableUpload] = useState(true);
-  const [disableCrop, setDisableCrop] = useState(false);
   const [disableCancel, setDisableCancel] = useState(false);
+  const [severity, setSeverity] = useState("success");
+  const [alertMsg, setAlertMsg] = useState(null);
 
   let history = useHistory();
 
@@ -44,7 +66,6 @@ const Profile = (props) => {
     fileReader.onloadend = () => {
       const url = fileReader.result;
       setSrcUrl(url);
-      setCroppedUrl(url);
     }
     if (file) {
       fileReader.readAsDataURL(file);
@@ -53,29 +74,28 @@ const Profile = (props) => {
 
   const onLoad = useCallback(img => {
     imgRef.current = img;
-
-    const aspect = 1;
-    const width = img.width / aspect < img.height * aspect ? 100 : ((img.height * aspect) / img.width) * 100;
-    const height = img.width / aspect > img.height * aspect ? 100 : (img.width / aspect / img.height) * 100;
-    const y = (100 - height) / 2;
-    const x = (100 - width) / 2;
-
-    setCropCfg({
-      unit: '%',
-      width,
-      height,
-      x,
-      y,
-      aspect,
-    });
-
-    return false; // Return false if you set crop state in here.
+    // const aspect = 1;
+    // const width = img.width / aspect < img.height * aspect ? 100 : ((img.height * aspect) / img.width) * 100;
+    // const height = img.width / aspect > img.height * aspect ? 100 : (img.width / aspect / img.height) * 100;
+    // const y = (100 - height) / 2;
+    // const x = (100 - width) / 2;
+    // const cropCfg = {
+    //   unit: '%',
+    //   width,
+    //   height,
+    //   x,
+    //   y,
+    //   aspect,
+    // }
+    //
+    // setCropCfg(cropCfg);
+    return true;
   }, []);
 
   const onCropComplete = cropCfg => {
     if (imgRef.current && cropCfg.width && cropCfg.height) {
       getCroppedImg(imgRef.current, cropCfg);
-      setDisableCrop(false);
+      setDisableUpload(false);
     }
   }
 
@@ -131,19 +151,110 @@ const Profile = (props) => {
       authenticatedUpload('uploadAvatar', formData)
         .then(response => {
           if (response.data.success) {
-            setDisableCrop(true);
             setDisableUpload(true);
             setDisableCancel(true);
+            setSeverity("success");
+            setAlertMsg("Profile image changed successfully!")
 
             setTimeout(() => {
               setSrcUrl(null);
               history.go(0);
+              setAlertMsg(null);
             }, 2000);
+          } else {
+            setSeverity("error");
+            setAlertMsg(response.data.message);
           }
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+          setSeverity("error");
+          if (err instanceof Error) {
+            setAlertMsg("Oops! Something went wrong. Please try again!");
+          } else {
+            setAlertMsg(err.errors[0].defaultMessage);
+          }
+        });
     }
   }
+
+  const handleClose = () => {
+    setSrcUrl(null);
+    setCroppedUrl(null);
+    setCropped(null);
+    setCropCfg({ aspect: 1 });
+    imgRef.current = null;
+    document.getElementById("button-avatar").value = "";
+  }
+
+  const AvatarDialog = (
+      <div>
+        <Dialog
+          open={Boolean(srcUrl)}
+          onClose={handleClose}
+          aria-labelledby="avatar-dialog-title"
+          aria-describedby="avatar-dialog-description"
+        >
+          <DialogTitle id="avatar-dialog-title">{"Crop and Upload Image"}</DialogTitle>
+          <DialogContent>
+            <Box
+              alignItems="center"
+              display="flex"
+              flexDirection="column"
+            >
+              <ReactCrop
+                src={srcUrl}
+                crop={cropCfg}
+                onChange={newCropCfg => {
+                  setCropCfg(newCropCfg);
+                  setDisableUpload(true);
+                }}
+                onComplete={onCropComplete}
+                onImageLoaded={onLoad}
+              />
+              {croppedUrl && (
+                <>
+                  <DialogContentText
+                    id="avatar-dialog-description"
+                    style={{ marginTop: 15, marginBottom: 0 }}
+                  >
+                    Preview
+                  </DialogContentText>
+                  <Box
+                    alignItems="center"
+                    display="flex"
+                    flexDirection="row"
+                  >
+                    <Avatar src={croppedUrl} className={classes.previewS} />
+                    <Avatar src={croppedUrl} className={classes.previewM} />
+                    <Avatar src={croppedUrl} className={classes.previewL} />
+                  </Box>
+                </>
+              )}
+            </Box>
+            { alertMsg && <Alert severity={severity}>{alertMsg}</Alert> }
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={handleClose}
+              color="primary"
+              style={{ textTransform: 'none' }}
+              disabled={disableCancel}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSubmit}
+              color="primary"
+              autoFocus
+              style={{ textTransform: 'none' }}
+              disabled={disableUpload}
+            >
+              Upload
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+  );
 
   return (
     <>
@@ -174,66 +285,17 @@ const Profile = (props) => {
             </Typography>
           </Box>
         </CardContent>
-        { srcUrl && (
-          <>
-            <Divider />
-            <Box
-              alignItems="center"
-              display="flex"
-              flexDirection="column"
-            >
-              <ReactCrop
-                src={srcUrl}
-                crop={cropCfg}
-                onChange={newCropCfg => setCropCfg(newCropCfg)}
-                onComplete={onCropComplete}
-                onImageLoaded={onLoad}
-              />
-            </Box>
-            <Button
-              color="primary"
-              fullWidth
-              style={{ textTransform: 'none' }}
-              disabled={disableCrop}
-              onClick={() => {
-                setSrcUrl(croppedUrl);
-                setDisableCrop(true);
-                setDisableUpload(false);
-              }}
-            >
-              Crop
-            </Button>
-            <Button
-              color="primary"
-              fullWidth
-              style={{ textTransform: 'none' }}
-              disabled={disableUpload}
-              onClick={handleSubmit}
-            >
-              Upload
-            </Button>
-            <Button
-              color="primary"
-              fullWidth
-              style={{ textTransform: 'none' }}
-              disabled={disableCancel}
-              onClick={() => { setSrcUrl(null) }}
-            >
-              Cancel
-            </Button>
-          </>
-        )}
         <Divider />
         <CardActions>
           <input
             accept="image/*"
             hidden
-            id="button-file"
+            id="button-avatar"
             type="file"
             onChange={handleImgInput}
           />
           <label
-            htmlFor="button-file"
+            htmlFor="button-avatar"
             style={{ width: "100%" }}
           >
             <Button
@@ -247,6 +309,7 @@ const Profile = (props) => {
             </Button>
           </label>
         </CardActions>
+        {AvatarDialog}
       </Card>
     </>
   )
