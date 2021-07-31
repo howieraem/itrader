@@ -1,5 +1,6 @@
 package com.jlumine.itrader.controller;
 
+import com.google.common.io.Files;
 import com.jlumine.itrader.dto.PositionDTO;
 import com.jlumine.itrader.dto.TradeDTO;
 import com.jlumine.itrader.exception.BadRequestException;
@@ -16,6 +17,7 @@ import com.jlumine.itrader.repository.UserRepository;
 import com.jlumine.itrader.security.CurrentUser;
 import com.jlumine.itrader.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -26,9 +28,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @CacheConfig(cacheNames = "userCache")
@@ -48,6 +55,9 @@ public class UserController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Value("${app.avatar-save-dir}")
+    private String avatarDir;
 
     @GetMapping("/user/me")
     @PreAuthorize("hasRole('USER')")
@@ -150,6 +160,40 @@ public class UserController {
     public Boolean clearWatchlist(@CurrentUser UserPrincipal userPrincipal) {
         favoriteRepository.deleteByUserId(userPrincipal.getId());
         return true;
+    }
+
+    @PostMapping("/uploadAvatar")
+    @PreAuthorize("hasRole('USER')")
+    @CacheEvict(cacheNames = "user", key = "#userPrincipal.getId()", beforeInvocation = true)
+    @ResponseBody
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseEntity<?> uploadAvatar(
+            @CurrentUser UserPrincipal userPrincipal,
+            @RequestPart("file") MultipartFile file,
+            HttpServletRequest request) {
+        if (file.isEmpty()) {
+            throw new BadRequestException("Your upload was empty. Please select an image and try again!");
+        }
+        if (file.getSize() > 2e6) {
+            throw new BadRequestException("The image uploaded is larger than 2 MB. Please select a smaller one.");
+        }
+
+        String originalFilename = file.getOriginalFilename();
+        if (originalFilename == null) {
+            throw new BadRequestException("The filename of the uploaded image was empty. Please select another image and try again!");
+        }
+        String filename = UUID.randomUUID().toString().replaceAll("-", "") + '.' + Files.getFileExtension(originalFilename);
+        String saveFilename = avatarDir + filename;
+
+        try {
+            file.transferTo(new File(saveFilename));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/userAvatar/" + filename;
+        userRepository.updateAvatar(userPrincipal.getId(), url);
+        return ResponseEntity.ok(new ApiResponse(true, "Avatar changed successfully."));
     }
 
     @PostMapping("/changePassword")

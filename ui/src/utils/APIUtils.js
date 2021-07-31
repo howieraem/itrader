@@ -1,3 +1,4 @@
+import { post } from 'axios';
 import { SERVER_URL } from '../constants';
 
 
@@ -12,7 +13,6 @@ const request = (options, token=null) => {
 
     const defaults = {headers: headers};
     options = Object.assign({}, defaults, options);
-
     return fetch(options.url, options)
     .then(response => 
         response.json().then(json => {
@@ -135,4 +135,18 @@ export function removeFromWatchlist(symbol) {
 
 export function changePassword(changePwdRequest) {
     return authenticatedPost('changePassword', changePwdRequest);
+}
+
+export function authenticatedUpload(api, formData) {
+    const token = getToken();
+    if (!token) {
+        return Promise.reject("No access token set. Please sign in again.");
+    }
+    const config = {
+        headers: {
+            'content-type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`,
+        }
+    }
+    return post(SERVER_URL + `/${api}`, formData, config);
 }
