@@ -45,14 +45,18 @@ public class FinanceDataService {
         return forward(String.format(URL_BASIC, String.join(",", symbols)));
     }
 
+    @Cacheable(cacheNames = "stockDetails", key = "{#symbol, #modules}", unless = "#result == null")
     public String getStockDetails(String symbol, List<String> modules) {
         return forward(String.format(URL_SNAPSHOT, symbol, String.join(",", modules)));
     }
 
+    @Cacheable(cacheNames = "stockHistory", key = "{#symbol, #from, #to, #interval}",
+            condition = "!#interval.equals(\"1d\")", unless = "#result == null")
     public String getStockHistory(String symbol, String from, String to, String interval) {
         return forward(String.format(URL_HISTORY, symbol, from, to, interval, "history"));
     }
 
+    @Cacheable(cacheNames = "stockDividend", key = "{#symbol, #from, #to}", unless = "#result == null")
     public String getStockDividend(String symbol, String from, String to) {
         return forward(String.format(URL_HISTORY, symbol, from, to, "1d", "div"));
     }

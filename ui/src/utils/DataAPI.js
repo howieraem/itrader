@@ -3,6 +3,10 @@ import axios from 'axios';
 import { csvParse } from "d3";
 import { timeParse } from "d3-time-format";
 
+function toUnixTime(date) {
+  return Math.floor(date.getTime() / 1000).toString();
+}
+
 export function getExchangeRate(currency) {
   return new Promise((resolve, reject) => {
     if (!currency || currency === "USD") return resolve(1);
@@ -147,26 +151,24 @@ export function getStockHistory(symbol, interval="w", from="0", to="9999999999")
     case 'y': interval = '3mo'; break;  // TODO convert quarter to year
     default: interval = '1d'; break;
   }
-  const promise = fetch(SERVER_URL + `/stockHistory?symbol=${symbol}&from=${from}&to=${to}&interval=${interval}`)
-  .then(response => response.text())
-  .then(data => csvParse(data, parseRow))
-    .catch(err => { 
-      console.log(err) 
-    })
-  return promise;
+  return fetch(SERVER_URL + `/stockHistory?symbol=${symbol}&from=${from}&to=${to}&interval=${interval}`)
+    .then(response => response.text())
+    .then(data => csvParse(data, parseRow))
+    .catch(err => {
+      console.log(err)
+    });
 }
 
 export function getStockDividend(symbol, from="0", to="9999999999") {
-  const promise = fetch(SERVER_URL + `/stockDividend?symbol=${symbol}&from=${from}&to=${to}`)
+  return fetch(SERVER_URL + `/stockDividend?symbol=${symbol}&from=${from}&to=${to}`)
     .then(response => response.text())
     .then(data => csvParse(data, parseRow))
-      .catch(err => { 
-        console.log(err) 
-      })
-  return promise;
+    .catch(err => {
+      console.log(err)
+    });
 }
 
-export function getStockToday(symbol, minuteInterval=1, dayRange=5, includePrePost=false) {
+export function getStockToday(symbol, minuteInterval=1, dayRange=7, includePrePost=false) {
   // Volume data for pre/post market are missing, so `includePrePost` is false by default
   let interval;
   switch (minuteInterval) {
@@ -177,11 +179,28 @@ export function getStockToday(symbol, minuteInterval=1, dayRange=5, includePrePo
     case 90: interval = "90m"; break;
     default: interval = "1m"; break;
   }
-  const promise = fetch(SERVER_URL + `/stockHistoryIntraday?symbol=${symbol}&interval=${interval}&range=${dayRange}d&includePrePost=${includePrePost}`)
-    .then(response => response.text())
-    .then(data => parseIntraday(data))
-    .catch(err => { 
-      console.log(err) 
-    })
-  return promise;
+  dayRange = Math.max(dayRange, 1);
+
+  // Check if day range is too large, i.e. just IPOed.
+  // Currently, Yahoo Finance only provides minute data for a maximum of 7 days.
+  const cur = new Date();
+  let pre = new Date();
+  pre.setDate(cur.getDate() - 7);
+  return new Promise((resolve, reject) => {
+    getStockHistory(symbol, "d", toUnixTime(pre), toUnixTime(cur))
+      .then(data => {
+          if (data && data.length) {
+            if (dayRange > data.length) dayRange = data.length;
+            const url = SERVER_URL + `/stockHistoryIntraday?symbol=${symbol}&interval=${interval}&range=${dayRange}d&includePrePost=${includePrePost}`;
+            return fetch(url)
+              .then(response => response.text())
+              .then(data => resolve(parseIntraday(data)))
+              .catch(err => {
+                reject(err)
+              });
+          }
+        })
+      .catch(err => reject(err))
+    }
+  )
 }

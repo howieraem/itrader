@@ -50,7 +50,7 @@ public class RedisConfig {
 		RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig();
 		RedisCacheConfiguration redisCacheConfiguration = config
 				.disableCachingNullValues()
-				.entryTtl(Duration.ofMinutes(60))
+				.entryTtl(Duration.ofMinutes(120))
 				.serializeKeysWith(
 						RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
 				.serializeValuesWith(RedisSerializationContext.SerializationPair

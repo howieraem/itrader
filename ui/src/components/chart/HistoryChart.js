@@ -7,7 +7,7 @@ import LoadingIndicator from '../../common/LoadingIndicator';
 
 
 export default function HistoryChart(props) {
-  const { symbol, interval, latestPrice } = props;
+  const { symbol, interval, latestTime, latestPrice } = props;
   const [data, setData] = React.useState(null);
 
   React.useEffect(() => {
@@ -21,36 +21,46 @@ export default function HistoryChart(props) {
       });
       const lastCachedDate = data[data.length - 1].date;
       const cur = new Date();
-      const isWeekend = cur.getDay() === 6 || cur.getDay() === 0;
+      const isWeekend = (cur.getDate() - lastCachedDate.getDate() < 2) && (cur.getDay() === 6 || cur.getDay() === 0);
       if (isWeekend || lastCachedDate.getDate() === cur.getDate()) {
         setData(data);
+        return;
       } else {
         localStorage.removeItem(symbolKey);
       }
-    } else {
-      getStockHistory(symbol, interval).then(data => {
+    }
+
+    getStockHistory(symbol, interval)
+      .then(data => {
         if (data && data.length) {
+          const lastEntry = data[data.length - 1];
+          if (!lastEntry.open && !lastEntry.close && !lastEntry.high && !lastEntry.low) {
+            // this may happen on the first day of a month
+            data.pop();
+          }
           setData(data);
           try {
             localStorage.setItem(symbolKey, JSON.stringify(data));
           } catch (e) {
-            // don't store cache if quota exceeded
+            // don't cache if quota exceeded
           }
-        }
-        else setData(null);
-      }).catch(err => { console.log(err); setData(null); })
-    }
+        } else {
+          setData(null);
+        }})
+      .catch(err => { console.log(err); setData(null); })
   }, [symbol, interval])
 
   React.useEffect(() => {
     if (data && data[0].open && latestPrice > 0) {
       const lastEntry = data[data.length - 1];
-      lastEntry.close = latestPrice;
-      lastEntry.high = Math.max(lastEntry.high, latestPrice);
-      lastEntry.low = Math.min(lastEntry.low, latestPrice);
-      data[data.length - 1] = lastEntry;
+      if (lastEntry.open !== undefined && lastEntry.date.getDate() === latestTime.getDate()) {
+        lastEntry.close = latestPrice;
+        lastEntry.high = Math.max(lastEntry.high, latestPrice);
+        lastEntry.low = Math.min(lastEntry.low, latestPrice);
+        data[data.length - 1] = lastEntry;
+      }
     }
-  }, [data, latestPrice])
+  }, [data, latestTime, latestPrice])
 
   if (data && data[0].open === undefined) {
     return (

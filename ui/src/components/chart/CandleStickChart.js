@@ -62,6 +62,16 @@ function tooltipContent(ys) {
 class CandleStickChartWithHoverTooltip extends React.Component {
 	render() {
 		let { type, data: initialData, symbol, width, ratio } = this.props;
+
+		if (initialData.length === 1) {
+			// If only one valid data point is available (e.g. recently IPOed),
+			// need to add a made-up data point to the front.
+			// See https://github.com/rrag/react-stockcharts/issues/393
+			initialData.push(Object.assign({}, initialData[0]));
+			initialData[0].high = initialData[0].low = initialData[0].close = initialData[0].open;
+			initialData[0].volume = 0;
+		}
+
 		const height = 450;
 
 		const ema20 = ema()
