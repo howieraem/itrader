@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from "@material-ui/core/styles";
 import { COLORS } from "../../common/Theme";
-import { changePassword } from "../../utils/APIUtils";
+import { changePassword } from "../../utils/API";
 
 const useStyles = makeStyles(theme => ({
   submit: {

@@ -9,8 +9,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Paper from '@material-ui/core/Paper';
 import { Alert } from "@material-ui/lab"
 import { makeStyles } from '@material-ui/core/styles';
-import { getExchangeRate } from '../../utils/DataAPIUtils';
-import { trade, getTradable } from '../../utils/APIUtils';
+import { getExchangeRate } from '../../utils/DataAPI';
+import { trade, getTradable } from '../../utils/API';
 import { COLORS } from '../../common/Theme';
 
 

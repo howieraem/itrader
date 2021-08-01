@@ -2,7 +2,7 @@ import './ChartHolder.css';
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Chart from './CandleStickMinuteChart';
-import { getStockToday } from '../../utils/DataAPIUtils';
+import { getStockToday } from '../../utils/DataAPI';
 import LoadingIndicator from '../../common/LoadingIndicator';
 
 const getTimeout = (minuteInterval) => {

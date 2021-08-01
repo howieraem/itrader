@@ -80,7 +80,7 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 			})
 			.accessor(d => d.ema50);
 
-		const margin = { left: 50, right: 50, top: 10, bottom: 30 };
+		const margin = { left: 50, right: 50, top: 10, bottom: 20 };
 
 		const calculatedData = ema50(ema20(initialData));
 		const xScaleProvider = discontinuousTimeScaleProvider

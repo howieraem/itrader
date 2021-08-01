@@ -7,12 +7,12 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { Helmet } from "react-helmet";
-import InfoTable from './Table';
 import CharTabs from './ChartTabs';
+import InfoTabs from './InfoTabs';
 import TradeDialog from './TradeDialog';
 import { addTicker, removeTicker } from 'stocksocket';
-import { existInWatchlist, addToWatchlist, removeFromWatchlist } from '../../utils/APIUtils';
-import { getMarketStates, getStockBasicInfo } from '../../utils/DataAPIUtils';
+import { existInWatchlist, addToWatchlist, removeFromWatchlist } from '../../utils/API';
+import { getMarketStates, getStockBasicInfo } from '../../utils/DataAPI';
 import { COLORS } from '../../common/Theme';
 import { MARKET_LOC } from '../../constants';
 
@@ -277,7 +277,7 @@ function StockViewCore(props) {
         </Grid>
       </Grid>
 
-      <Grid container>
+      <Grid container spacing={2}>
         <Grid item xs={12}>
           <CharTabs
             symbol={symbol}
@@ -286,9 +286,13 @@ function StockViewCore(props) {
             latestVolume={dayVolume || regularMarketVolume}
           />
         </Grid>
+        <Grid item xs={12}>
+          <InfoTabs
+            symbol={symbol}
+            overviewData={basicInfo}
+          />
+        </Grid>
       </Grid>
-
-      <InfoTable data={basicInfo} />
     </Grid>
   )
 }

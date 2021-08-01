@@ -9,8 +9,8 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Typography from '@material-ui/core/Typography';
 import Pagination from '@material-ui/lab/Pagination';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import { getWatchlist, getWatchlistSize, removeFromWatchlist } from '../../utils/APIUtils';
-import { getStockBasicInfo } from '../../utils/DataAPIUtils';
+import { getWatchlist, getWatchlistSize, removeFromWatchlist } from '../../utils/API';
+import { getStockBasicInfo } from '../../utils/DataAPI';
 
 
 const useStyles = makeStyles((theme) => ({

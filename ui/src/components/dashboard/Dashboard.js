@@ -14,8 +14,8 @@ import ProfitPercent from "./ProfitPercent";
 import Trades from './Trades';
 import Portfolio from './Portfolio';
 import Watchlist from './Watchlist';
-import { getPortfolio } from "../../utils/APIUtils";
-import { getBatchStockPrices } from "../../utils/DataAPIUtils";
+import { getPortfolio } from "../../utils/API";
+import { getBatchStockPrices } from "../../utils/DataAPI";
 
 const useStyles = makeStyles((theme) => ({
   topBox: {

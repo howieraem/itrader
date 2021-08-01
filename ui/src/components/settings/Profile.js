@@ -18,7 +18,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
-import { authenticatedUpload } from "../../utils/APIUtils";
+import { authenticatedUpload } from "../../utils/API";
 import {Alert} from "@material-ui/lab";
 
 const useStyles = makeStyles(theme => ({

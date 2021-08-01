@@ -34,13 +34,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function tabulate(data, keysPerRow=3) {
+function tabulate(data, columns) {
   let pairs = Object.entries(data);
   let results = [], row = [], i = 0;
   while (i < pairs.length) {
     row.push(pairs[i][0]);
     row.push(pairs[i][1]);
-    if (i && (i + 1) % keysPerRow === 0) {
+    if ((i + 1) % columns === 0) {
       results.push(row);
       row = [];
     }
@@ -49,7 +49,7 @@ function tabulate(data, keysPerRow=3) {
 
   // handle the last row
   if (row.length) {
-    while (row.length < keysPerRow * 2) {
+    while (row.length < columns * 2) {
       row.push('');
     }
     results.push(row);
@@ -57,8 +57,20 @@ function tabulate(data, keysPerRow=3) {
   return results;
 }
 
-export default function InfoTable({ data }) {
+export default function InfoTable(props) {
   const classes = useStyles();
+  const { getData, preparedData, columns, columnsMobile } = props;
+  const [data, setData] = React.useState(null);
+
+  React.useEffect(() => {
+    if (getData) {
+      getData()
+        .then(res => setData(res))
+        .catch(err => console.log(err));
+    } else {
+      setData(preparedData);
+    }
+  }, [getData, preparedData])
 
   return (
     <TableContainer component={Paper}>
@@ -66,36 +78,34 @@ export default function InfoTable({ data }) {
         <>
           <Table className={classes.table} aria-label="info table">
             <TableBody>
-              {tabulate(data, 3).map((row, idx) => (
+              {tabulate(data, columns).map((row, idx) => (
                 <TableRow key={idx}>
-                  <TableCell component="th" scope="row">
-                    <strong>{row[0]}</strong>
-                  </TableCell>
-                  <TableCell align="left">{row[1]}</TableCell>
-                  <TableCell component="th" scope="row">
-                    <strong>{row[2]}</strong>
-                  </TableCell>
-                  <TableCell align="left">{row[3]}</TableCell>
-                  <TableCell component="th" scope="row">
-                    <strong>{row[4]}</strong>
-                  </TableCell>
-                  <TableCell align="left">{row[5]}</TableCell>
+                  {row.map((elem, j) => (
+                    (j & 1) ? (
+                      <TableCell align="left">{elem}</TableCell>
+                    ) : (
+                      <TableCell component="th" scope="row">
+                        <strong>{elem}</strong>
+                      </TableCell>
+                    )
+                  ))}
                 </TableRow>
               ))}
             </TableBody>
           </Table>
           <Table className={classes.tableMobile} aria-label="info table mobile">
             <TableBody>
-              {tabulate(data, 2).map((row, idx) => (
+              {tabulate(data, columnsMobile).map((row, idx) => (
                 <TableRow key={idx}>
-                  <TableCell component="th" scope="row">
-                    <strong>{row[0]}</strong>
-                  </TableCell>
-                  <TableCell align="left">{row[1]}</TableCell>
-                  <TableCell component="th" scope="row">
-                    <strong>{row[2]}</strong>
-                  </TableCell>
-                  <TableCell align="left">{row[3]}</TableCell>
+                  {row.map((elem, j) => (
+                    (j & 1) ? (
+                      <TableCell align="left">{elem}</TableCell>
+                    ) : (
+                      <TableCell component="th" scope="row">
+                        <strong>{elem}</strong>
+                      </TableCell>
+                    )
+                  ))}
                 </TableRow>
               ))}
             </TableBody>
@@ -110,4 +120,11 @@ export default function InfoTable({ data }) {
       
     </TableContainer>
   );
+}
+
+InfoTable.defaultProps = {
+  getData: null,
+  preparedData: null,
+  columns: 3,
+  columnsMobile: 2,
 }

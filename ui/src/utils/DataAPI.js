@@ -75,6 +75,21 @@ export function getMarketStates(symbols) {
   });
 }
 
+export function getStockDetails(symbol, module) {
+  return new Promise((resolve, reject) => {
+    if (!symbol || !module) return reject(Error('Stock symbol or module name cannot be empty!'));
+
+    const url = SERVER_URL + `/stockDetails?symbol=${symbol}&modules=${module}`;
+    return axios.get(url).then((res) => {
+      const { data } = res;
+      if (!data || !data.quoteSummary || !data.quoteSummary.result || data.quoteSummary.result.length === 0) {
+        return resolve(new Error(`Error retrieving ${module} info for symbol ${symbol}.`));
+      }
+      return resolve(data.quoteSummary.result[0][module]);
+    }).catch(err => reject(err));
+  });
+}
+
 const parseDate = timeParse("%Y-%m-%d");
 
 function parseRow(d) {
@@ -139,7 +154,7 @@ export function getStockHistory(symbol, interval="w", from="0", to="9999999999")
       console.log(err) 
     })
   return promise;
-};
+}
 
 export function getStockDividend(symbol, from="0", to="9999999999") {
   const promise = fetch(SERVER_URL + `/stockDividend?symbol=${symbol}&from=${from}&to=${to}`)
@@ -149,7 +164,7 @@ export function getStockDividend(symbol, from="0", to="9999999999") {
         console.log(err) 
       })
   return promise;
-};
+}
 
 export function getStockToday(symbol, minuteInterval=1, dayRange=5, includePrePost=false) {
   // Volume data for pre/post market are missing, so `includePrePost` is false by default
@@ -169,4 +184,4 @@ export function getStockToday(symbol, minuteInterval=1, dayRange=5, includePrePo
       console.log(err) 
     })
   return promise;
-};
+}

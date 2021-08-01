@@ -12,7 +12,7 @@ import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import { login } from '../../utils/APIUtils';
+import { login } from '../../utils/API';
 import Background from '../../common/Background';
 import { COLORS } from '../../common/Theme';
 

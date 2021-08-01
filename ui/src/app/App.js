@@ -21,7 +21,7 @@ import AlertMessage from '../common/Alert';
 import PrivateRoute from '../common/PrivateRoute';
 import LoadingIndicator from '../common/LoadingIndicator';
 import { COLORS } from '../common/Theme';
-import { getCurrentUser } from '../utils/APIUtils';
+import { getCurrentUser } from '../utils/API';
 
 
 const useStyles = makeStyles((theme) => ({

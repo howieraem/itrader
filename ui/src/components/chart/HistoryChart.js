@@ -2,7 +2,7 @@ import './ChartHolder.css';
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Chart from './CandleStickChart';
-import { getStockHistory } from '../../utils/DataAPIUtils';
+import { getStockHistory } from '../../utils/DataAPI';
 import LoadingIndicator from '../../common/LoadingIndicator';
 
 
@@ -19,7 +19,14 @@ export default function HistoryChart(props) {
         // recover date format
         entry.date = new Date(entry.date);
       });
-      setData(data);
+      const lastCachedDate = data[data.length - 1].date;
+      const cur = new Date();
+      const isWeekend = cur.getDay() === 6 || cur.getDay() === 0;
+      if (isWeekend || lastCachedDate.getDate() === cur.getDate()) {
+        setData(data);
+      } else {
+        localStorage.removeItem(symbolKey);
+      }
     } else {
       getStockHistory(symbol, interval).then(data => {
         if (data && data.length) {

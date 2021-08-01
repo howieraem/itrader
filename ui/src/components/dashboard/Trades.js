@@ -7,7 +7,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TablePagination from '@material-ui/core/TablePagination';
 import Typography from '@material-ui/core/Typography';
-import { getTrades, getNumOfTrades } from '../../utils/APIUtils';
+import { getTrades, getNumOfTrades } from '../../utils/API';
 
 
 function processTimeFormat(rawTime) {

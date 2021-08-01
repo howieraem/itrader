@@ -5,7 +5,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import InputBase from '@material-ui/core/InputBase';
 import ListItemText from '@material-ui/core/ListItemText';
 import SearchIcon from '@material-ui/icons/Search';
-import { searchTicker } from '../../utils/DataAPIUtils'; 
+import { searchTicker } from '../../utils/DataAPI';
 
 
 const useStyles = makeStyles((theme) => ({

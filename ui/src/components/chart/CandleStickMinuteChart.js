@@ -46,7 +46,7 @@ class CandleStickChartForDiscontinuousIntraDay extends React.Component {
 		const end = xAccessor(data[Math.max(0, data.length - 150)]);
 		const xExtents = [start, end];
 
-		const margin = { left: 50, right: 50, top: 10, bottom: 30 };
+		const margin = { left: 50, right: 50, top: 10, bottom: 20 };
 		const showGrid = true;
 		const yGrid = showGrid ? {
 			innerTickSize: -1 * (width - margin.left - margin.right),
