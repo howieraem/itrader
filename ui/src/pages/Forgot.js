@@ -2,8 +2,6 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
-import { COLORS } from '../common/Theme';
-
 
 const useStyles = makeStyles((theme) => ({
   forgotPage: {
@@ -20,13 +18,13 @@ const useStyles = makeStyles((theme) => ({
   button: {
     textTransform: 'none', 
     fontSize: 18, 
-    backgroundColor: COLORS[0], 
+    backgroundColor: theme.palette.secondary.main,
     color: "white",
     margin: theme.spacing(3, 2, 2),
     maxWidth: 150,
     minWidth: 150,
     '&:hover': {
-      backgroundColor: COLORS[0],
+      backgroundColor: theme.palette.secondary.light,
       color: "white",
     },
   }

@@ -10,7 +10,6 @@ import Menu from '@material-ui/core/Menu';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import SettingsIcon from '@material-ui/icons/Settings';
 import Search from './Search';
-import { COLORS } from '../../common/Theme';
 
 
 const Clock = ({ date }) => (
@@ -24,16 +23,22 @@ const ClockMobile = ({ date }) => (
 
 
 const useStyles = makeStyles((theme) => ({
+  bar: {
+    backgroundColor: theme.palette.type === 'light' ?
+      theme.palette.primary.main : theme.palette.primary.dark
+  },
   barButton: {
     textTransform: 'none',
     fontSize: 17,
   },
   iconButton: {
-    background: COLORS[0],
+    background: theme.palette.type === 'light' ?
+      theme.palette.primary.main : theme.palette.primary.dark,
     textTransform: 'none', 
     alignItems: 'center',
     '&:hover': {
-      backgroundColor: COLORS[0],
+      backgroundColor: theme.palette.type === 'light' ?
+        theme.palette.primary.main : theme.palette.primary.dark,
     },
   },
   grow: {
@@ -121,7 +126,7 @@ export default function NavBar(props) {
 
   return (
     <div className={classes.grow}>
-      <AppBar style={{ background: COLORS[0] }}>
+      <AppBar className={classes.bar}>
         <Toolbar>
           <Button 
             aria-label="home" 

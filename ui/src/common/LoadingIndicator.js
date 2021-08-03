@@ -9,14 +9,17 @@ const useStyles = makeStyles((theme) => ({
       marginTop: theme.spacing(2),
     },
   },
+  bar: {
+    backgroundColor: theme.palette.secondary.main
+  },
 }));
 
-export default function LoadingIndicator(props) {
+export default function LoadingIndicator() {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
-      <LinearProgress />
+      <LinearProgress classes={{ bar: classes.bar }} />
     </div>
   );
 }

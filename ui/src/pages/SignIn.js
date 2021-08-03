@@ -14,8 +14,6 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import { login } from '../utils/API';
 import Background from '../common/Background';
-import { COLORS } from '../common/Theme';
-
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -25,18 +23,18 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     background: "rgba(255,255,255,0.3)",
   },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
   form: {
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(1),
   },
   submit: {
     textTransform: 'none', 
-    background: COLORS[0], 
+    background: theme.palette.secondary.main,
     color: 'white',
+    '&:hover': {
+      backgroundColor: theme.palette.secondary.light,
+      color: "white",
+    },
     margin: theme.spacing(3, 0, 2),
   },
 }));

@@ -9,8 +9,6 @@ import Box from '@material-ui/core/Box';
 import IntradayChart from '../chart/IntradayChart';
 import HistoryChart from '../chart/HistoryChart';
 import MinuteChart from '../chart/MinuteChart';
-import { COLORS } from '../../common/Theme';
-
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -49,6 +47,9 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
+  },
+  bar: {
+    backgroundColor: theme.palette.secondary.main,
   },
   tab: {
     textTransform: 'none',
@@ -92,7 +93,7 @@ export default function CharTabs(props) {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static" style={{ background: COLORS[1] }}>
+      <AppBar position="static" className={classes.bar}>
         <Tabs 
           value={value} 
           onChange={handleChange} 

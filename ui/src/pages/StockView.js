@@ -1,7 +1,7 @@
 import '../components/stockView/StockView.css';
 import React from 'react';
 import { addTicker, removeTicker } from 'stocksocket';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
@@ -17,16 +17,13 @@ import {
   removeFromWatchlist
 } from '../utils/API';
 import { getMarketStates, getStockBasicInfo } from '../utils/DataAPI';
-import { COLORS } from '../common/Theme';
 import { MARKET_LOC } from '../constants';
-
 
 const useStyles = makeStyles((theme) => ({
   watchlistButton: {
     textTransform: 'none', 
     fontSize: 14, 
-    color: "white", 
-    // borderRadius: 12,
+    color: "white",
     margin: theme.spacing(3, 0, 2),
     maxHeight: '50px', 
     minHeight: '50px',
@@ -230,6 +227,8 @@ function StockViewCore(props) {
     tradeNotAvailMsg = "Market is closed.";
   }
 
+  const theme = useTheme();
+
   return (
     <Grid container spacing={0}>
       <Grid container spacing={2} className={classes.topContainer}>
@@ -266,7 +265,7 @@ function StockViewCore(props) {
                   variant="contained" 
                   className={classes.watchlistButton} 
                   onClick={handleWlButtonClick}
-                  style={{ background: (watchlisted ? "#ee0000" : COLORS[0]) }}
+                  style={{ background: (watchlisted ? "#ee0000" : `${theme.palette.primary.main}`) }}
                 >
                   {watchlisted ? <DeleteForeverIcon /> : <AddIcon />}
                   <div className={classes.buttonLabel}>Watchlist</div>

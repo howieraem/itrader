@@ -5,14 +5,13 @@ import {
   Typography
 } from '@material-ui/core';
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
-import { COLORS } from "../../common/Theme";
 
 const useStyles = makeStyles(theme => ({
   card: {
     boxShadow: 'none',
     textAlign: 'center',
     padding: theme.spacing(3, 0),
-    backgroundColor: COLORS[5],
+    backgroundColor: '#30b7ff',
   },
   iconBox: {
     margin: theme.spacing(2, 0)

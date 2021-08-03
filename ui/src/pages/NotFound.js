@@ -2,8 +2,6 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
-import { COLORS } from '../common/Theme';
-
 
 const useStyles = makeStyles((theme) => ({
   pageNotFound: {
@@ -18,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '60px',
     letterSpacing: '10px',
     marginBottom: '10px',
-    color: COLORS[0],
+    color: theme.palette.primary.main,
   },
   desc: {
     fontSize: '20px',
@@ -27,10 +25,10 @@ const useStyles = makeStyles((theme) => ({
   homeButton: {
     textTransform: 'none', 
     fontSize: 18, 
-    backgroundColor: COLORS[0], 
+    backgroundColor: theme.palette.primary.main,
     color: "white",
     '&:hover': {
-      backgroundColor: COLORS[0],
+      backgroundColor: theme.palette.primary.light,
       color: "white",
     },
   }

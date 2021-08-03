@@ -6,7 +6,6 @@ import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import InfoTable from "./Table";
-import { COLORS } from "../../common/Theme";
 import {
   getAssetProfile,
   getFinancialData,
@@ -17,6 +16,9 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
+  },
+  bar: {
+    backgroundColor: theme.palette.secondary.main,
   },
   tab: {
     textTransform: 'none',
@@ -29,10 +31,6 @@ const useStyles = makeStyles((theme) => ({
     width: 'initial',
 
     '&:first-child': {
-      // backgroundColor:
-      //   theme.palette.type === 'dark'
-      //     ? theme.palette.grey[800]
-      //     : theme.palette.grey[50],
       paddingRight: theme.spacing(2),
       height: '100%',
       position: 'absolute',
@@ -87,7 +85,7 @@ export default function InfoTabs({ symbol, overviewData }) {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static" style={{ background: COLORS[1] }}>
+      <AppBar position="static" className={classes.bar}>
         <Tabs
           value={value}
           onChange={handleChange}

@@ -2,10 +2,8 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
-// import Button from '@material-ui/core/Button';
 import Paper from "@material-ui/core/Paper";
 import Typography from '@material-ui/core/Typography';
-import { COLORS } from "../../common/Theme";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -33,7 +31,7 @@ const useStyles = makeStyles(theme => ({
   number: {
     fontSize: 24,
     fontFamily: theme.typography.fontFamily,
-    color: COLORS[1],
+    color: theme.palette.secondary.main,
     fontWeight: theme.typography.fontWeightMedium,
   },
   image: {
@@ -71,12 +69,7 @@ function Instructions() {
               {instructions.map((instruction, i) => (
                 <Grid item xs={12} md={6} lg={3}>
                   <div className={classes.item}>
-                    <div className={classes.number}>{i + 1}.</div>
-                    {/*<img*/}
-                    {/*  src=`/static/instructions/${i}.svg`*/}
-                    {/*  alt=`instruction${i}`*/}
-                    {/*  className={classes.image}*/}
-                    {/*/>*/}
+                    <div className={classes.number}>{i + 1}</div>
                     <Typography variant="h6" align="center">
                       {instruction}
                     </Typography>

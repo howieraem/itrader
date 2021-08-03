@@ -11,16 +11,17 @@ import { Alert } from "@material-ui/lab"
 import { makeStyles } from '@material-ui/core/styles';
 import { getExchangeRate } from '../../utils/DataAPI';
 import { trade, getTradable } from '../../utils/API';
-import { COLORS } from '../../common/Theme';
-
 
 const useStyles = makeStyles((theme) => ({
   tradeButton: {
     textTransform: 'none', 
     fontSize: 14, 
-    backgroundColor: COLORS[2], 
-    color: "white", 
-    // borderRadius: 12,
+    backgroundColor: theme.palette.secondary.main,
+    color: "white",
+    '&:hover': {
+      backgroundColor: theme.palette.secondary.light,
+      color: "white",
+    },
     margin: theme.spacing(3, 0, 2),
     maxHeight: '50px', 
     minHeight: '50px',
@@ -47,7 +48,6 @@ const useStyles = makeStyles((theme) => ({
     border: 0
   }
 }))
-
 
 export default function TradeDialog(props) {
   const classes = useStyles();

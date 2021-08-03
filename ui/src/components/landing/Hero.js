@@ -5,7 +5,6 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
-import { COLORS } from '../../common/Theme';
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -25,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   button: {
     textTransform: 'none', 
     fontSize: 18, 
-    backgroundColor: COLORS[1], 
+    backgroundColor: theme.palette.primary.main,
     color: "white",
     [theme.breakpoints.down('md')]: {
       marginLeft: theme.spacing(3),
@@ -34,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 230,
     minWidth: 230,
     '&:hover': {
-      backgroundColor: COLORS[1],
+      backgroundColor: theme.palette.primary.light,
       color: "white",
     },
   }

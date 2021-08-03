@@ -16,6 +16,11 @@ import { getStockBasicInfo } from '../../utils/DataAPI';
 const useStyles = makeStyles((theme) => ({
   removeButton: {
     textTransform: 'none',
+    backgroundColor: '#ee0000',
+    color: 'white',
+    '&:hover': {
+      backgroundColor: '#ee6666',
+    }
   },
   title: {
     display: 'flex',
@@ -113,7 +118,6 @@ export default function Watchlist(props) {
                 <ListItemSecondaryAction>
                   <Button
                     variant="contained"
-                    color="secondary"
                     startIcon={<DeleteForeverIcon />}
                     className={classes.removeButton}
                     onClick={() => handleRemove(row.i)}

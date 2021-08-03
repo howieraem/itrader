@@ -1,6 +1,14 @@
 import ParticlesBg from 'particles-bg';
-import { COLORS } from './Theme';
+import { useTheme } from '@material-ui/core/styles';
 
 export default function Background(props) {
-  return <ParticlesBg num={props.num || 80} type="cobweb" color={COLORS[5]} bg={true} />;
+  const theme = useTheme();
+  return (
+    <ParticlesBg
+      num={props.num || 80}
+      type="cobweb"
+      color={`${theme.palette.secondary.light}`}
+      bg={true}
+    />
+  );
 }

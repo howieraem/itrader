@@ -10,13 +10,12 @@ import {
 } from '@material-ui/core';
 import Alert from "@material-ui/lab/Alert";
 import { makeStyles } from "@material-ui/core/styles";
-import { COLORS } from "../../common/Theme";
 import { changePassword } from "../../utils/API";
 
 const useStyles = makeStyles(theme => ({
   submit: {
     textTransform: 'none',
-    background: COLORS[0],
+    backgroundColor: theme.palette.primary.main,
     color: 'white',
   },
 }))

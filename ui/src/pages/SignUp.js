@@ -12,8 +12,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { signup } from '../utils/API';
 import Background from '../common/Background';
-import { COLORS } from '../common/Theme';
-
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -32,9 +30,13 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
   },
   submit: {
-    textTransform: 'none', 
-    background: COLORS[0],
-    color: 'white', 
+    textTransform: 'none',
+    background: theme.palette.secondary.main,
+    color: 'white',
+    '&:hover': {
+      backgroundColor: theme.palette.secondary.light,
+      color: "white",
+    },
     margin: theme.spacing(3, 0, 2),
   },
 }));
