@@ -8,7 +8,9 @@ import Typography from "@material-ui/core/Typography";
 import InfoTable from "./Table";
 import { COLORS } from "../../common/Theme";
 import {
-  getAssetProfile
+  getAssetProfile,
+  getFinancialData,
+  getOtherStats
 } from "../../utils/DataProc";
 
 const useStyles = makeStyles((theme) => ({
@@ -99,6 +101,8 @@ export default function InfoTabs({ symbol, overviewData }) {
         >
           <Tab label="Overview" {...a11yProps(0)} className={classes.tab} />
           <Tab label="Asset Profile" {...a11yProps(1)} className={classes.tab} />
+          <Tab label="Financial Data" {...a11yProps(2)} className={classes.tab} />
+          <Tab label="Other Stats" {...a11yProps(3)} className={classes.tab} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -106,6 +110,12 @@ export default function InfoTabs({ symbol, overviewData }) {
       </TabPanel>
       <TabPanel value={value} index={1}>
         <InfoTable getData={() => getAssetProfile(symbol)} columns={1} columnsMobile={1} />
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        <InfoTable getData={() => getFinancialData(symbol)} columns={3} columnsMobile={2} />
+      </TabPanel>
+      <TabPanel value={value} index={3}>
+        <InfoTable getData={() => getOtherStats(symbol)} columns={3} columnsMobile={2} />
       </TabPanel>
     </div>
   );

@@ -2,8 +2,8 @@ import React from "react";
 // import Box from "@material-ui/core/Box";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
-import Profile from "./Profile";
-import PasswordSetting from "./Password";
+import Profile from "../components/settings/Profile";
+import PasswordSetting from "../components/settings/Password";
 import {makeStyles} from "@material-ui/core/styles";
 
 const useStyles = makeStyles(theme => ({
@@ -36,7 +36,7 @@ export default function Settings(props) {
           md={6}
           xs={12}
         >
-          <PasswordSetting />
+          <PasswordSetting {...props} />
         </Grid>
       </Grid>
     </Container>

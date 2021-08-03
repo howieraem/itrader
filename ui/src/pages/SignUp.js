@@ -10,9 +10,9 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { signup } from '../../utils/API';
-import Background from '../../common/Background';
-import { COLORS } from '../../common/Theme';
+import { signup } from '../utils/API';
+import Background from '../common/Background';
+import { COLORS } from '../common/Theme';
 
 
 const useStyles = makeStyles((theme) => ({

@@ -1,10 +1,10 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import Hero from "./Hero";
-import Feats from "./Feats";
-import Instructions from "./Instructions";
-import Background from '../../common/Background';
+import Hero from "../components/landing/Hero";
+import Feats from "../components/landing/Feats";
+import Instructions from "../components/landing/Instructions";
+import Background from '../common/Background';
 
 const useStyles = makeStyles((theme) => ({
   container: {

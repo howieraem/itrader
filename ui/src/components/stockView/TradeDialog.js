@@ -118,12 +118,12 @@ export default function TradeDialog(props) {
     if (textFieldErr)  return;
     if (isBuy) {
       if (qty > maxBuyQty) {
-        setTextFieldErr("Quantity exceeds the maximum affordable quantity!")
+        setTextFieldErr("Quantity exceeds the maximum affordable quantity! Margin call not yet supported.")
         return;
       }
     } else {
       if (qty > maxSellQty) {
-        setTextFieldErr("You cannot sell more than you hold! Short not yet supported.")
+        setTextFieldErr("You cannot sell more than you hold! Short calls not yet supported.")
         return;
       }
     }
@@ -148,8 +148,8 @@ export default function TradeDialog(props) {
         setAlertMsg(response.message);
         setAlertSeverity("error");
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch(e => {
+      console.log(e);
       setAlertMsg("An error occurred. Please try again.")
       setAlertSeverity("error");
     });

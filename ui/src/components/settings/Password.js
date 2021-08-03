@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -9,6 +8,7 @@ import {
   Divider,
   TextField
 } from '@material-ui/core';
+import Alert from "@material-ui/lab/Alert";
 import { makeStyles } from "@material-ui/core/styles";
 import { COLORS } from "../../common/Theme";
 import { changePassword } from "../../utils/API";
@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const PasswordSetting = (props) => {
+const PasswordSetting = ({ onLogout }) => {
   const classes = useStyles();
 
   const [cur, setCur] = useState('');
@@ -30,7 +30,8 @@ const PasswordSetting = (props) => {
   const [newPwdErrMsg, setNewPwdErrMsg] = useState('');
   const [disabled, setDisabled] = useState(true);
 
-  let history = useHistory();
+  const [alertMsg, setAlertMsg] = useState(null);
+  const [severity, setSeverity] = useState("success");
 
   const checkPwdMatch = (ev) => {
     const confirmedPwd = ev.target.value;
@@ -49,18 +50,30 @@ const PasswordSetting = (props) => {
       oldPassword: cur,
       newPassword: pwd2
     }).then(response => {
-      console.log(response.message);
       if (response.success) {
-        localStorage.removeItem('accessToken');
-        sessionStorage.removeItem('accessToken');
-        history.push('/');
-        history.go(0);
+        setAlertMsg("Password changed successfully! Please sign in again.")
+        setSeverity("success");
+        setDisabled(true);
+        setTimeout(() => {
+          setAlertMsg(null);
+          onLogout(false);
+        }, 2000);
+      } else {
+        setAlertMsg(response.message);
+        setSeverity("error");
       }
-    }).catch(err => console.log(err));
+    }).catch(e => {
+      setSeverity("error");
+      if (e instanceof Error) {
+        setAlertMsg('Oops! Something went wrong. Please try again!');
+      } else {
+        setAlertMsg('Incorrect old password.')
+      }
+    });
   }
 
   return (
-    <form {...props}>
+    <form>
       <Card>
         <CardHeader
           title="Change Password"
@@ -116,6 +129,7 @@ const PasswordSetting = (props) => {
             Update
           </Button>
         </Box>
+        { alertMsg && <Alert severity={severity}>{alertMsg}</Alert> }
       </Card>
     </form>
   );

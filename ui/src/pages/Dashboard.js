@@ -1,5 +1,4 @@
 import React from 'react';
-// import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Box from "@material-ui/core/Box";
@@ -7,15 +6,15 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Typography from "@material-ui/core/Typography";
-import Cash from './Cash';
-import NetWorth from "./NetWorth";
-import PositionPercent from "./PositionPercent";
-import ProfitPercent from "./ProfitPercent";
-import Trades from './Trades';
-import Portfolio from './Portfolio';
-import Watchlist from './Watchlist';
-import { getPortfolio } from "../../utils/API";
-import { getBatchStockPrices } from "../../utils/DataAPI";
+import Cash from '../components/dashboard/Cash';
+import NetWorth from "../components/dashboard/NetWorth";
+import PositionPercent from "../components/dashboard/PositionPercent";
+import ProfitPercent from "../components/dashboard/ProfitPercent";
+import Portfolio from '../components/dashboard/Portfolio';
+import Trades from '../components/dashboard/Trades';
+import Watchlist from '../components/dashboard/Watchlist';
+import { getPortfolio } from "../utils/API";
+import { getBatchStockPrices } from "../utils/DataAPI";
 
 const useStyles = makeStyles((theme) => ({
   topBox: {
@@ -107,7 +106,7 @@ export default function Dashboard(props) {
                     <PositionPercent percentage={(portfolioWorth / totalWorth * 100).toFixed(2)} />
                   </Grid>
                   <Grid item xs={6} md={3}>
-                    <ProfitPercent percentage={Math.abs(1 - totalWorth / initCash).toFixed(2)} />
+                    <ProfitPercent percentage={Math.abs((1 - totalWorth / initCash) * 100).toFixed(2)} />
                   </Grid>
                 </>
               ) : null

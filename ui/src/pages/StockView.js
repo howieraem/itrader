@@ -1,5 +1,6 @@
-import './StockView.css';
+import '../components/stockView/StockView.css';
 import React from 'react';
+import { addTicker, removeTicker } from 'stocksocket';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
@@ -7,14 +8,17 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { Helmet } from "react-helmet";
-import CharTabs from './ChartTabs';
-import InfoTabs from './InfoTabs';
-import TradeDialog from './TradeDialog';
-import { addTicker, removeTicker } from 'stocksocket';
-import { existInWatchlist, addToWatchlist, removeFromWatchlist } from '../../utils/API';
-import { getMarketStates, getStockBasicInfo } from '../../utils/DataAPI';
-import { COLORS } from '../../common/Theme';
-import { MARKET_LOC } from '../../constants';
+import CharTabs from '../components/stockView/ChartTabs';
+import InfoTabs from '../components/stockView/InfoTabs';
+import TradeDialog from '../components/stockView/TradeDialog';
+import {
+  existInWatchlist,
+  addToWatchlist,
+  removeFromWatchlist
+} from '../utils/API';
+import { getMarketStates, getStockBasicInfo } from '../utils/DataAPI';
+import { COLORS } from '../common/Theme';
+import { MARKET_LOC } from '../constants';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -117,6 +121,7 @@ function filterInfo(info) {
     "Trailing PE": roundNumber(info.trailingPE) || "N/A",
     "Forward PE": roundNumber(info.forwardPE) || "N/A",
     "Book Value": roundNumber(info.bookValue) || "N/A",
+    "P/B Ratio": roundNumber(info.priceToBook) || "N/A",
   };
 }
 

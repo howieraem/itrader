@@ -1,5 +1,4 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import InputBase from '@material-ui/core/InputBase';
@@ -47,7 +46,6 @@ export default function Search(props) {
   const classes = useStyles();
 
   const [searchRes, setSearchRes] = React.useState([]);
-  let history = useHistory();
 
   const handleOptionFetch = (str) => {
     searchTicker(str)
@@ -57,7 +55,6 @@ export default function Search(props) {
 
   const handleSearchClick = (symbol) => {
     onSearch(symbol);
-    history.push('/stockView');
   }
 
   return (

@@ -1,9 +1,6 @@
 import React from "react";
 import { Alert } from "@material-ui/lab"
 import Snackbar from "@material-ui/core/Snackbar";
-// import IconButton from "@material-ui/core/IconButton";
-// import CloseIcon from "@material-ui/icons/Close";
-
 
 export default function AlertMessage({ message, rank=1, severity="info" }) {
   const [open, setOpen] = React.useState(true);
