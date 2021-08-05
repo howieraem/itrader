@@ -40,8 +40,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const content = {
-  title: "Paper trading made easy.",
-  description: "ITrader is a platform for viewing stocks and simulating trades with real market prices."
+  title: "Paper trading made easy and authentic.",
+  description: "ITrader is a platform for viewing stocks and simulating trades with real market prices. Enjoy practicing at zero financial risk!"
 }
 
 export default function Hero() {

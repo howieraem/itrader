@@ -1,28 +1,23 @@
 # ITrader Project
 
-A paper trading system built with Springboot and React.js. Data from Yahoo Finance are used.
+A paper trading system built with Spring Boot and React.js. Data from Yahoo Finance are used.
+
+MySQL and Redis details can be edited in `application.properties`.
 
 ## Notes on Yahoo Finance APIs
-If you do not have access to Yahoo Finance in your region, you can try the following:
+If you do not have (smooth) access to Yahoo Finance in your region, you can try the following:
 
 - Add `87.248.114.11 finance.yahoo.com query1.yahoo.com query2.yahoo.com` to your host file in OS
 - Use a proxy and enter its information in `application.properties`
 
 ## TODOs
 
-### Backend
-- [ ] User details: balance, nickname, avatar (as file path on server), trade (filled/unfilled order) history, position, etc
-- [ ] REST API to retrive user details
-- [ ] "Remember me" or not when log in 
-- [ ] Using NoSQL to store sessions and real-time user updates 
-- [ ] Distributed computing (Advanced) 
+### Back end
+- [ ] Implement limit order (trade won't happen if order price does not match market price)
+- [ ] User preferences on showing/hiding specific chart indicators  
+- [ ] Statistics of the platform: active users, total turnover, etc.
 
-### Frontend
-- [ ] Rearrange the layout to have more containers with different functionalities
-- [ ] Order history (no matter filled or not) table
-- [ ] Alert
-- [ ] Charts for other frequencies: 1week, 1month, 1year, etc
-- [ ] Stock details page (refer to yahoo finance API for all available fields)
-- [ ] User profile and settings (link to user details in backend)
-- [ ] Lazy-loading, especially chart data
-- [ ] Auto-correct current (last) price of non-intraday charts with real-time data from websocket
+### Front end
+- [ ] Rewrite the top right buttons to show user avatar when signed in, and fix the drop down menu in narrow screen
+- [ ] Add more indicators to the chart, and user preferences on these on the settings page
+- [ ] Add a left menu, and make watchlist, portfolio and trade history separate pages
