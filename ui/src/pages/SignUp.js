@@ -77,6 +77,7 @@ export default function SignUp(props) {
 
     signup(signUpRequest)
     .then(response => {
+      setAlertMsg('');
       setSuccessMsg("Successfully signed up! Please sign in to proceed.");
       setDisabled(true);
       setTimeout(() => {
@@ -85,6 +86,7 @@ export default function SignUp(props) {
         history.push("/login");
       }, 1500);
     }).catch(err => {
+      setSuccessMsg('');
       if (err instanceof Error) {
         setAlertMsg('Oops! Something went wrong. Please try again!');
       } else {
