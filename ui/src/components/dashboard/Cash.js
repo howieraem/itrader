@@ -20,7 +20,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function Cash(props) {
   const classes = useStyles();
-
   return (
     <Card className={classes.card}>
       <Box

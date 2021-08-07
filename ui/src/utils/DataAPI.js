@@ -38,7 +38,7 @@ export function searchTicker(str) {
 
 export function getStockBasicInfo(symbol) {  
   return new Promise((resolve, reject) => {
-    if (!symbol) return reject(Error('Stock symbol cannot be empty!'));
+    if (!symbol || symbol.length === 0) return reject(Error('Stock symbol cannot be empty!'));
 
     const isMulti = symbol instanceof Array;
     const url = SERVER_URL + `/stockBasic?symbols=${isMulti ? symbol.join() : symbol}`;

@@ -60,16 +60,22 @@ export default function Dashboard(props) {
             quantities.push(positions[i].quantity);
           }
 
-          getBatchStockPrices(symbols)
-            .then(prices => {
-              setPortfolioPrices(prices);
-              const pWorths = prices.map((price, i) => price * quantities[i]);
-              const pWorth = pWorths.reduce((a, b) => a + b, 0);
-              setPortfolioWorth(pWorth);
-              setTotalWorth(cash + pWorth);
-              setPortfolioLoaded(true);
-            })
-            .catch(err => console.log(err));
+          if (symbols.length) {
+            getBatchStockPrices(symbols)
+              .then(prices => {
+                setPortfolioPrices(prices);
+                const pWorths = prices.map((price, i) => price * quantities[i]);
+                const pWorth = pWorths.reduce((a, b) => a + b, 0);
+                setPortfolioWorth(pWorth);
+                setTotalWorth(cash + pWorth);
+                setPortfolioLoaded(true);
+              })
+              .catch(err => console.log(err));
+          } else {
+            // no positions
+            setTotalWorth(cash);
+            setPortfolioLoaded(true);
+          }
         })
         .catch(err => console.log(err));
     }
@@ -100,7 +106,7 @@ export default function Dashboard(props) {
                     <NetWorth total={`USD ${totalWorth.toFixed(2)}`} />
                   </Grid>
                   <Grid item xs={6} md={3}>
-                    <Cash cash={`USD ${cash}`} />
+                    <Cash cash={`USD ${cash.toFixed(2)}`} />
                   </Grid>
                   <Grid item xs={6} md={3}>
                     <PositionPercent percentage={(portfolioWorth / totalWorth * 100).toFixed(2)} />
