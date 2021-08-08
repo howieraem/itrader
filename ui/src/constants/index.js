@@ -1,4 +1,4 @@
-export const SERVER_URL = 'http://itrader.ap-southeast-1.elasticbeanstalk.com'  // 'http://127.0.0.1:5000';
+export const SERVER_URL = 'http://127.0.0.1:5000';
 export const MARKET_LOC = {
   "us_market": "United States",
   "cn_market": "China (Mainland)",
