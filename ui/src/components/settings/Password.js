@@ -83,7 +83,7 @@ const PasswordSetting = ({ onLogout }) => {
             variant="outlined"
             required
             fullWidth
-            label="Current password"
+            label="Old password"
             margin="normal"
             name="cur"
             onChange={ev => setCur(ev.target.value)}
@@ -113,6 +113,7 @@ const PasswordSetting = ({ onLogout }) => {
           />
         </CardContent>
         <Divider />
+        { alertMsg && <Alert severity={severity}>{alertMsg}</Alert> }
         <Box
           display={'flex'}
           justifyContent={'flex-end'}
@@ -128,7 +129,6 @@ const PasswordSetting = ({ onLogout }) => {
             Update
           </Button>
         </Box>
-        { alertMsg && <Alert severity={severity}>{alertMsg}</Alert> }
       </Card>
     </form>
   );
