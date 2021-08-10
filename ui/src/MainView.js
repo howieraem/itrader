@@ -81,22 +81,20 @@ export default function MainView() {
       <CssBaseline />
       <Container component="main" className={classes.main} maxWidth="xl">
         <Grid container spacing={0}>
-          <Grid container>
-            <Grid item xs>
-              <NavBar authenticated={authenticated} onLogout={handleLogout} onSearch={changeSymbol} />
-            </Grid>
-          </Grid>
+          <NavBar authenticated={authenticated} onLogout={handleLogout} onSearch={changeSymbol} />
 
           { justLoggedOut && <AlertMessage message={"Successfully logged out!"} severity={"success"} /> }
 
-          <Routes
-            initialized={initialized}
-            symbol={symbol}
-            authenticated={authenticated}
-            curUser={curUser}
-            changeSymbol={changeSymbol}
-            handleLogout={handleLogout}
-          />
+          <Grid container maxWidth="xl">
+            <Routes
+              initialized={initialized}
+              symbol={symbol}
+              authenticated={authenticated}
+              curUser={curUser}
+              changeSymbol={changeSymbol}
+              handleLogout={handleLogout}
+            />
+          </Grid>
         </Grid>
       </Container>
       <footer className={classes.footer}>

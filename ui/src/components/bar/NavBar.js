@@ -128,6 +128,9 @@ export default function NavBar(props) {
     <div className={classes.grow}>
       <AppBar className={classes.bar}>
         <Toolbar>
+          <Typography component="a" href="/" className={classes.title} variant="h5" noWrap>
+            ITrader
+          </Typography>
           <Button 
             aria-label="home" 
             href="/"
@@ -138,9 +141,6 @@ export default function NavBar(props) {
           >
             <img alt="Logo" src="/logo_small.png" />
           </Button>
-          <Typography component="a" href="/" className={classes.title} variant="h5" noWrap>
-            ITrader
-          </Typography>
 
           <div className={classes.grow} />
           <Search onSearch={onSearch} /> 

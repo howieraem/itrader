@@ -17,12 +17,14 @@ export default function Landing() {
   const classes = useStyles();
   return (
     <>
-      <Container maxWidth="lg" className={classes.container}>
+      <Container maxWidth="xl" className={classes.container}>
         <Hero />
+        <Background num={150} />
+      </Container>
+      <Container maxWidth="lg">
         <Feats />
         <Instructions />
       </Container>
-      <Background num={150} />
     </>
   );
 }

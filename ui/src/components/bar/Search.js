@@ -20,7 +20,11 @@ const useStyles = makeStyles((theme) => ({
     width: '46%',
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(3),
-      width: '30ch',
+      width: '28ch',
+    },
+    [theme.breakpoints.up('lg')]: {
+      marginLeft: theme.spacing(3),
+      width: '33ch',
     },
   },
   // searchOptions: {

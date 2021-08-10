@@ -8,7 +8,7 @@ export default function Background(props) {
       num={props.num || 80}
       type="cobweb"
       color={`${theme.palette.secondary.light}`}
-      bg={true}
+      bg={props.bg || true}
     />
   );
 }
