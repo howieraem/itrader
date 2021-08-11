@@ -52,15 +52,16 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function Portfolio(props) {
+export default function PortfolioTable(props) {
   const classes = useStyles();
-  const { portfolio, prices, onSymbolClick } = props;
+  const { portfolio, prices, onSymbolClick, rowsPerPage } = props;
 
   const [page, setPage] = React.useState(0);
-  const rowsPerPage = 5;
-  // const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  const pageRows = rowsPerPage || 5;
+  // const [pageRows, setPageRows] = React.useState(5);
   const numOfRecords = portfolio.length;
-  const numOfPages = Math.floor((numOfRecords + rowsPerPage - 1) / rowsPerPage);
+  const numOfPages = Math.floor((numOfRecords + pageRows - 1) / pageRows);
   const [pageRecords, setPageRecords] = React.useState([]);
 
   let history = useHistory();
@@ -75,8 +76,8 @@ export default function Portfolio(props) {
   }, [portfolio, prices]);
 
   React.useEffect(() => {
-    const start = page * rowsPerPage;
-    setPageRecords(portfolio.slice(start, start + rowsPerPage));
+    const start = page * pageRows;
+    setPageRecords(portfolio.slice(start, start + pageRows));
   }, [page, portfolio, prices])
 
   const handleChangePage = (ev, newPage) => {

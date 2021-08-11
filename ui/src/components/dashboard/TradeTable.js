@@ -10,8 +10,8 @@ import Typography from '@material-ui/core/Typography';
 import { getTrades, getNumOfTrades } from '../../utils/API';
 
 
-function processTimeFormat(rawTime) {
-  const date = new Date(rawTime); 
+function processTimeFormat(rawTimeStr) {
+  const date = new Date(rawTimeStr);
   return `${date.toDateString()} ${date.toLocaleTimeString()} UTC+${0 - date.getTimezoneOffset() / 60}`;
 }
 
@@ -45,7 +45,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function Trades() {
+export default function TradeTable({ rowsPerPageOptions }) {
+  const pageRowsOpts = rowsPerPageOptions || [5, 10, 20];
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -88,10 +89,10 @@ export default function Trades() {
           component="div"
           count={numOfRecords}
           page={page}
-          onChangePage={handleChangePage}   // onChangePage for Material UI ^5
+          onChangePage={handleChangePage}   // onPageChange for Material UI ^5
           rowsPerPage={rowsPerPage}
           onChangeRowsPerPage={handleChangeRowsPerPage}   // onRowsPerPageChange for Material UI ^5
-          rowsPerPageOptions={[5, 10, 20]}
+          rowsPerPageOptions={pageRowsOpts}
         />
       </Typography>
       {numOfRecords ? (

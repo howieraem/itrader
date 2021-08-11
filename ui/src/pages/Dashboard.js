@@ -10,8 +10,8 @@ import Cash from '../components/dashboard/Cash';
 import NetWorth from "../components/dashboard/NetWorth";
 import PositionPercent from "../components/dashboard/PositionPercent";
 import ProfitPercent from "../components/dashboard/ProfitPercent";
-import Portfolio from '../components/dashboard/Portfolio';
-import Trades from '../components/dashboard/Trades';
+import PortfolioTable from '../components/dashboard/PortfolioTable';
+import TradeTable from '../components/dashboard/TradeTable';
 import Watchlist from '../components/dashboard/Watchlist';
 import { getPortfolio } from "../utils/API";
 import { getBatchStockPrices } from "../utils/DataAPI";
@@ -124,19 +124,21 @@ export default function Dashboard(props) {
               </Paper>
             </Grid>
 
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <Portfolio
-                  portfolio={portfolio}
-                  prices={portfolioPrices}
-                  onSymbolClick={onSymbolClick}
-                />
-              </Paper>
-            </Grid>
+            { portfolioLoaded ? (
+                <Grid item xs={12}>
+                  <Paper className={classes.paper}>
+                    <PortfolioTable
+                      portfolio={portfolio}
+                      prices={portfolioPrices}
+                      onSymbolClick={onSymbolClick}
+                    />
+                  </Paper>
+                </Grid>
+              ) : null }
 
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                <Trades />
+                <TradeTable />
               </Paper>
             </Grid>
           </Grid>
