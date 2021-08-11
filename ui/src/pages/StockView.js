@@ -61,6 +61,8 @@ const useStyles = makeStyles((theme) => ({
   },
   topContainer: {
     backgroundColor: '#fafaff',
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
   },
   symbolTitle1: {
     minHeight: '35px',
@@ -281,7 +283,7 @@ function StockViewCore(props) {
         </Grid>
       </Grid>
 
-      <Grid container spacing={2}>
+      <Grid container>
         <Grid item xs={12}>
           <CharTabs
             symbol={symbol}

@@ -2,7 +2,6 @@ import React from 'react'
 import { useHistory } from 'react-router-dom';
 import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import AlertMessage from './common/SnackbarAlert';
@@ -20,6 +19,9 @@ const useStyles = makeStyles((theme) => ({
   main: {
     marginTop: theme.spacing(8),
     marginBottom: theme.spacing(2),
+    marginLeft: 0,
+    marginRight: 0,
+    padding: 0,
   },
   footer: {
     padding: theme.spacing(3, 2),
@@ -80,22 +82,18 @@ export default function MainView() {
     <div className={classes.root}>
       <CssBaseline />
       <Container component="main" className={classes.main} maxWidth="xl">
-        <Grid container spacing={0}>
           <NavBar authenticated={authenticated} onLogout={handleLogout} onSearch={changeSymbol} />
 
           { justLoggedOut && <AlertMessage message={"Successfully logged out!"} severity={"success"} /> }
 
-          <Grid container maxWidth="xl">
-            <Routes
-              initialized={initialized}
-              symbol={symbol}
-              authenticated={authenticated}
-              curUser={curUser}
-              changeSymbol={changeSymbol}
-              handleLogout={handleLogout}
-            />
-          </Grid>
-        </Grid>
+          <Routes
+            initialized={initialized}
+            symbol={symbol}
+            authenticated={authenticated}
+            curUser={curUser}
+            changeSymbol={changeSymbol}
+            handleLogout={handleLogout}
+          />
       </Container>
       <footer className={classes.footer}>
         <Container maxWidth="xl">

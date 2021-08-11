@@ -62,9 +62,10 @@ class CandleStickChartForDiscontinuousIntraDay extends React.Component {
 		} : {};
 
 		return (
-			<ChartCanvas height={height}
-				ratio={ratio}
+			<ChartCanvas
+				height={height}
 				width={width}
+				ratio={ratio}
 				margin={margin}
 				type={type}
 				seriesName={symbol + '_minutes'}

@@ -9,7 +9,6 @@ const useStyles = makeStyles((theme) => ({
     margin: '0 auto',
     marginTop: '50px',
     padding: '40px',
-    // border: '1px solid #c8c8c8', 
     textAlign: 'center',
   },
   title: {

@@ -7,9 +7,10 @@ import Instructions from "../components/landing/Instructions";
 import Background from '../common/Background';
 
 const useStyles = makeStyles((theme) => ({
-  container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
+  heroContent: {
+    padding: theme.spacing(8, 0, 6),
+    backgroundColor:"transparent",
+    position:"relative",
   },
 }));
 
@@ -17,10 +18,10 @@ export default function Landing() {
   const classes = useStyles();
   return (
     <>
-      <Container maxWidth="xl" className={classes.container}>
+      <div className={classes.heroContent}>
         <Hero />
-        <Background num={150} />
-      </Container>
+        <Background num={100} />
+      </div>
       <Container maxWidth="lg">
         <Feats />
         <Instructions />

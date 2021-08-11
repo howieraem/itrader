@@ -22,7 +22,7 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box p={3}>
+        <Box p={1}>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -62,10 +62,6 @@ const useStyles = makeStyles((theme) => ({
     width: 'initial',
 
     '&:first-child': {
-      // backgroundColor:
-      //   theme.palette.type === 'dark'
-      //     ? theme.palette.grey[800]
-      //     : theme.palette.grey[50],
       paddingRight: theme.spacing(2),
       height: '100%',
       position: 'absolute',

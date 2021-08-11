@@ -1,11 +1,13 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
+import {
+  Box,
+  Card,
+  CardContent,
+  CardMedia,
+  Grid,
+  Typography
+} from "@material-ui/core";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -16,10 +18,6 @@ const useStyles = makeStyles((theme) => ({
   },
   icon: {
     marginRight: theme.spacing(2),
-  },
-  heroContent: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(8, 0, 6),
   },
   heroButtons: {
     marginTop: theme.spacing(4),
@@ -33,7 +31,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     border: 'none',
-    boxShadow: "none"
+    boxShadow: "none",
+    backgroundColor: theme.palette.background.default,
   },
   cardMedia: {
     // height: 0,
@@ -77,11 +76,15 @@ export default function Feats() {
   const classes = useStyles();
   return (
     <section id="feats">
-      <Paper className={classes.main}>
-        <Grid container spacing={2}>
-          {cards.map((card, i) => (
-            <Grid item key={i} xs={12} sm={6} md={3}>
-              <Card className={classes.card}>
+      <Grid container spacing={2}>
+        {cards.map((card, i) => (
+          <Grid item key={i} xs={12} sm={6} md={3}>
+            <Card className={classes.card}>
+              <Box
+                alignItems="center"
+                display="flex"
+                flexDirection="column"
+              >
                 <CardMedia
                   component="img"
                   classes={{
@@ -90,19 +93,19 @@ export default function Feats() {
                   }}
                   image={card.icon}
                 />
-                <CardContent className={classes.cardContent}>
-                  <Typography gutterBottom variant="h5" component="h2">
-                    {card.heading}
-                  </Typography>
-                  <Typography>
-                    {card.desc}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </Paper>
+              </Box>
+              <CardContent className={classes.cardContent}>
+                <Typography gutterBottom variant="h5" component="h2">
+                  {card.heading}
+                </Typography>
+                <Typography align="justify">
+                  {card.desc}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
     </section>
   );
 }

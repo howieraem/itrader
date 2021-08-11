@@ -1,6 +1,5 @@
 import './ChartHolder.css';
 import React from 'react';
-import Grid from '@material-ui/core/Grid';
 import Chart from './CandleStickChart';
 import { getStockHistory } from '../../utils/DataAPI';
 import LoadingIndicator from '../../common/LoadingIndicator';
@@ -71,18 +70,11 @@ export default function HistoryChart(props) {
   }
 
   return (
-    <Grid container>
-      <Grid item xs />
-      <Grid item xs={11} align="left">
-        { data ? 
-          <Chart type="hybrid" data={data} symbol={symbol} /> : (
-          <header className="Chart-holder">
-            {"Loading chart..."}
-            <LoadingIndicator />
-          </header> )
-        }
-      </Grid>
-      <Grid item xs />
-    </Grid>
+    data ? <Chart type="hybrid" data={data} symbol={symbol} /> : (
+      <header className="Chart-holder">
+        {"Loading chart..."}
+        <LoadingIndicator />
+      </header>
+    )
   )
 }

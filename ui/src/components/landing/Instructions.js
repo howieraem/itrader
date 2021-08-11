@@ -2,7 +2,6 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
-import Paper from "@material-ui/core/Paper";
 import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(theme => ({
@@ -59,27 +58,25 @@ function Instructions() {
   const classes = useStyles();
   return (
     <section id="instructions">
-      <Paper className={classes.root}>
-        <Container className={classes.container}>
-          <Typography variant="h4" marked="center" className={classes.title} component="h2">
-            How it works
-          </Typography>
-          <div>
-            <Grid container spacing={5}>
-              {instructions.map((instruction, i) => (
-                <Grid item xs={12} md={6} lg={3}>
-                  <div className={classes.item}>
-                    <div className={classes.number}>{i + 1}</div>
-                    <Typography variant="h6" align="center">
-                      {instruction}
-                    </Typography>
-                  </div>
-                </Grid>
-              ))}
-            </Grid>
-          </div>
-        </Container>
-      </Paper>
+      <Container className={classes.container}>
+        <Typography variant="h4" marked="center" className={classes.title} component="h2">
+          How it works
+        </Typography>
+        <div>
+          <Grid container spacing={5}>
+            {instructions.map((instruction, i) => (
+              <Grid item xs={12} md={6} lg={3}>
+                <div className={classes.item}>
+                  <div className={classes.number}>{i + 1}</div>
+                  <Typography variant="h6" align="center">
+                    {instruction}
+                  </Typography>
+                </div>
+              </Grid>
+            ))}
+          </Grid>
+        </div>
+      </Container>
     </section>
   );
 }

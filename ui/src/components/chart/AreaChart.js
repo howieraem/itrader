@@ -56,7 +56,10 @@ class AreaChart extends React.Component {
 		} : {};
 
 		return (
-			<ChartCanvas ratio={ratio} width={width} height={height}
+			<ChartCanvas
+				ratio={ratio}
+				width={width}
+				height={height}
 				margin={{ left: horizontalMargin, right: horizontalMargin, top: 10, bottom: 30 }}
 				seriesName={symbol + '_intraday'}
 				data={data} 
