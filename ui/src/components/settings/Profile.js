@@ -148,7 +148,7 @@ const Profile = (props) => {
       ev.preventDefault()
       const formData = new FormData();
       formData.append('file', cropped);
-      authenticatedUpload('uploadAvatar', formData)
+      authenticatedUpload('user/uploadAvatar', formData)
         .then(response => {
           console.log(response);
           if (response.data.success) {
