@@ -106,13 +106,13 @@ export default function Dashboard(props) {
                     <NetWorth total={`USD ${totalWorth.toFixed(2)}`} />
                   </Grid>
                   <Grid item xs={6} md={3}>
+                    <ProfitPercent percentage={((totalWorth / initCash - 1) * 100).toFixed(2)} />
+                  </Grid>
+                  <Grid item xs={6} md={3}>
                     <Cash cash={`USD ${cash.toFixed(2)}`} />
                   </Grid>
                   <Grid item xs={6} md={3}>
                     <PositionPercent percentage={(portfolioWorth / totalWorth * 100).toFixed(2)} />
-                  </Grid>
-                  <Grid item xs={6} md={3}>
-                    <ProfitPercent percentage={((totalWorth / initCash - 1) * 100).toFixed(2)} />
                   </Grid>
                 </>
               ) : null

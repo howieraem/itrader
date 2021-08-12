@@ -43,7 +43,7 @@ export default function NotFound() {
               404
           </h1>
           <div className={classes.desc}>
-              The page was not found.
+              The resource was not found.
           </div>
           <Button 
               href="/"

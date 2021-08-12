@@ -5,7 +5,6 @@ import {
   Typography
 } from '@material-ui/core';
 import PieChartIcon from '@material-ui/icons/PieChart';
-// import { COLORS } from "../../common/Theme";
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -19,7 +18,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function PositionPercent(props) {
+export default function PositionPercent({ percentage }) {
   const classes = useStyles();
 
   return (
@@ -32,7 +31,7 @@ export default function PositionPercent(props) {
       >
         <PieChartIcon style={{ width: 60, height: 60 }} />
       </Box>
-      <Typography variant="h6">{props.percentage} %</Typography>
+      <Typography variant="h6">{percentage} %</Typography>
       <Typography variant="subtitle2" style={{ opacity: 0.72 }}>
         Position Percentage
       </Typography>

@@ -5,7 +5,7 @@ import {
   Typography
 } from '@material-ui/core';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
-// import { COLORS } from "../../common/Theme";
+import TrendingDownIcon from '@material-ui/icons/TrendingDown';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -30,7 +30,8 @@ export default function ProfitPercent({ percentage }) {
         flexDirection="column"
         className={classes.iconBox}
       >
-        <TrendingUpIcon style={{ width: 60, height: 60 }} />
+        {percentage >= 0 ? <TrendingUpIcon style={{ width: 60, height: 60 }} /> :
+          <TrendingDownIcon style={{ width: 60, height: 60 }} />}
       </Box>
       <Typography variant="h6">{percentage} %</Typography>
       <Typography variant="subtitle2" style={{ opacity: 0.72 }}>

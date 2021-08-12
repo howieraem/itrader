@@ -5,7 +5,6 @@ import {
   Typography
 } from '@material-ui/core';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
-// import { COLORS } from "../../common/Theme";
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -19,7 +18,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function NetWorth(props) {
+export default function NetWorth({ total }) {
   const classes = useStyles();
 
   return (
@@ -32,7 +31,7 @@ export default function NetWorth(props) {
       >
         <AccountBalanceIcon style={{ width: 60, height: 60 }} />
       </Box>
-      <Typography variant="h6">{props.total}</Typography>
+      <Typography variant="h6">{total}</Typography>
       <Typography variant="subtitle2" style={{ opacity: 0.72 }}>
         Total Worth
       </Typography>

@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Cash(props) {
+export default function Cash({ cash }) {
   const classes = useStyles();
   return (
     <Card className={classes.card}>
@@ -30,7 +30,7 @@ export default function Cash(props) {
       >
         <AccountBalanceWalletIcon style={{ width: 60, height: 60 }} />
       </Box>
-      <Typography variant="h6">{props.cash}</Typography>
+      <Typography variant="h6">{cash}</Typography>
       <Typography variant="subtitle2" style={{ opacity: 0.72 }}>
         Cash Available
       </Typography>
