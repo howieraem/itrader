@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequestMapping("/user")
 @CacheConfig(cacheNames = "userCache")
 public class UserController {
 
@@ -59,7 +60,7 @@ public class UserController {
     @Value("${app.avatar-save-dir}")
     private String avatarDir;
 
-    @GetMapping("/user/me")
+    @GetMapping("/me")
     @PreAuthorize("hasRole('USER')")
     @Cacheable(cacheNames = "user", key = "#userPrincipal.getId()", unless = "#result == null")
     public User getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {

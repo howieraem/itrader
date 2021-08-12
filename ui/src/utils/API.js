@@ -44,7 +44,7 @@ function getUserDetails(field, page=-1, rows=-1) {
     if (!token) {
         return Promise.reject("No access token set. Please sign in again.");
     }
-    let url = SERVER_URL + `/${field}`
+    let url = SERVER_URL + `/user/${field}`
     if (page >= 0) {
         url += `?page=${page}`;
     }
