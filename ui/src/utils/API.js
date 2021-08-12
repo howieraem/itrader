@@ -126,15 +126,15 @@ export function getTradable(symbol) {
 }
 
 export function addToWatchlist(symbol) {
-    return authenticatedPost('addToWatchlist', {symbol});
+    return authenticatedPost('user/addToWatchlist', {symbol});
 }
 
 export function removeFromWatchlist(symbol) {
-    return authenticatedPost('rmFromWatchlist', {symbol});
+    return authenticatedPost('user/rmFromWatchlist', {symbol});
 }
 
 export function changePassword(changePwdRequest) {
-    return authenticatedPost('changePassword', changePwdRequest);
+    return authenticatedPost('user/changePassword', changePwdRequest);
 }
 
 export function authenticatedUpload(api, formData) {
