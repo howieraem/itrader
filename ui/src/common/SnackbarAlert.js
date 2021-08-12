@@ -2,9 +2,10 @@ import React from "react";
 import { Alert } from "@material-ui/lab"
 import Snackbar from "@material-ui/core/Snackbar";
 
-export default function AlertMessage({ message, rank=1, severity="info" }) {
+export default function AlertMessage({ message, rank=0, severity="info" }) {
   const [open, setOpen] = React.useState(true);
-  function handleClose(event, reason) {
+
+  const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
@@ -26,7 +27,7 @@ export default function AlertMessage({ message, rank=1, severity="info" }) {
           "aria-describedby": "message-id"
         }}
         style={{
-          marginTop: `${30 * rank}px`
+          marginTop: `${65 + 25 * rank}px`
         }}
       >
         <Alert severity={severity} style={{fontSize: "15px"}}><strong>{message}</strong></Alert>

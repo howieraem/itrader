@@ -112,7 +112,7 @@ export default function Dashboard(props) {
                     <PositionPercent percentage={(portfolioWorth / totalWorth * 100).toFixed(2)} />
                   </Grid>
                   <Grid item xs={6} md={3}>
-                    <ProfitPercent percentage={Math.abs((1 - totalWorth / initCash) * 100).toFixed(2)} />
+                    <ProfitPercent percentage={((totalWorth / initCash - 1) * 100).toFixed(2)} />
                   </Grid>
                 </>
               ) : null
