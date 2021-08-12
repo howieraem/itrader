@@ -10,6 +10,8 @@ import NavBar from './components/bar/NavBar';
 import Routes from './Routes';
 import { getCurrentUser } from './utils/API';
 
+import Drawer from "./Drawer";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -82,18 +84,18 @@ export default function MainView() {
     <div className={classes.root}>
       <CssBaseline />
       <Container component="main" className={classes.main} maxWidth="xl">
-          <NavBar authenticated={authenticated} onLogout={handleLogout} onSearch={changeSymbol} />
+        <NavBar authenticated={authenticated} onLogout={handleLogout} onSearch={changeSymbol} />
 
-          { justLoggedOut && <AlertMessage message={"Successfully logged out!"} severity={"success"} /> }
+        { justLoggedOut && <AlertMessage message={"Successfully logged out!"} severity={"success"} /> }
 
-          <Routes
-            initialized={initialized}
-            symbol={symbol}
-            authenticated={authenticated}
-            curUser={curUser}
-            changeSymbol={changeSymbol}
-            handleLogout={handleLogout}
-          />
+        <Routes
+          initialized={initialized}
+          symbol={symbol}
+          authenticated={authenticated}
+          curUser={curUser}
+          changeSymbol={changeSymbol}
+          handleLogout={handleLogout}
+        />
       </Container>
       <footer className={classes.footer}>
         <Container maxWidth="xl">
@@ -105,6 +107,7 @@ export default function MainView() {
           </Typography>
         </Container>
       </footer>
+      {/*<Drawer />*/}
     </div>
   ));
 }

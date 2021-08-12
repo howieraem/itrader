@@ -21,7 +21,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    background: "rgba(255,255,255,0.3)",
+    background: "rgba(255, 255, 255, .6)",
+    padding: 20,
   },
   form: {
     width: '100%', // Fix IE 11 issue.
@@ -90,7 +91,7 @@ export default function SignIn(props) {
       </Helmet>
       <Grid item xs={12}>
         <CssBaseline />
-        <Container component="main" maxWidth="xs">
+        <Container maxWidth="xs">
           <Grid item xs={12} style={{ minHeight: "10vh" }} />
           <div className={classes.paper}>
             <Typography component="h1" variant="h5">

@@ -76,7 +76,7 @@ export default function Feats() {
   const classes = useStyles();
   return (
     <section id="feats">
-      <Grid container spacing={2}>
+      <Grid container spacing={8}>
         {cards.map((card, i) => (
           <Grid item key={i} xs={12} sm={6} md={3}>
             <Card className={classes.card}>
@@ -98,9 +98,7 @@ export default function Feats() {
                 <Typography gutterBottom variant="h5" component="h2">
                   {card.heading}
                 </Typography>
-                <Typography align="justify">
-                  {card.desc}
-                </Typography>
+                <Typography>{card.desc}</Typography>
               </CardContent>
             </Card>
           </Grid>

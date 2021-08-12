@@ -19,7 +19,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    background: "rgba(255, 255, 255, .3)",
+    background: "rgba(255, 255, 255, .5)",
+    padding: 20,
   },
   avatar: {
     margin: theme.spacing(1),
@@ -126,7 +127,7 @@ export default function SignUp(props) {
       </Helmet>
       <Grid item xs={12}>
         <CssBaseline />
-        <Container component="main" maxWidth="xs">
+        <Container maxWidth="xs">
           <Grid item xs={12} style={{ minHeight: "10vh" }} />
           <div className={classes.paper}>
             <Typography component="h1" variant="h5">
