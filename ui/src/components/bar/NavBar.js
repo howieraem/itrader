@@ -1,26 +1,22 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
+import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import MoreIcon from '@material-ui/icons/MoreVert';
-import SettingsIcon from '@material-ui/icons/Settings';
+import MenuIcon from "@material-ui/icons/Menu";
 import Search from './Search';
-
+import DrawerMenu from "./DrawerMenu";
 
 const Clock = ({ date }) => (
   <div>{`${date.toDateString()} ${date.toLocaleTimeString()} UTC+${0 - date.getTimezoneOffset() / 60}`}</div>
 )
 
-
 const ClockMobile = ({ date }) => (
   <div>{`${date.toLocaleTimeString()} +${0 - date.getTimezoneOffset() / 60}`}</div>
 )
-
 
 const useStyles = makeStyles((theme) => ({
   bar: {
@@ -44,9 +40,6 @@ const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
   },
-  menuButton: {
-    marginRight: theme.spacing(3),
-  },
   title: {
     color: 'white',
     textDecoration: 'none',
@@ -67,16 +60,21 @@ const useStyles = makeStyles((theme) => ({
       display: 'none',
     },
   },
+  menuIcon: {
+    minWidth: 30,
+    minHeight: 30
+  }
 }));
 
-
 export default function NavBar(props) {
-  const { authenticated, onLogout, onSearch } = props;
+  const { authenticated, curUser, onLogout, onSearch } = props;
   const classes = useStyles();
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [date, setDate] = React.useState(new Date());
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
 
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const handleDrawerToggle = () => {
+    setDrawerOpen(!drawerOpen);
+  };
 
   React.useEffect(() => {
     const interval = setInterval(() => {
@@ -88,51 +86,12 @@ export default function NavBar(props) {
     };
   }, []);
 
-  const handleMobileMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget);
-  };
-
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-  };
-
-  const mobileMenuId = 'primary-search-account-menu-mobile';
-  const renderMobileMenu = (
-    <Menu
-      anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      id={mobileMenuId}
-      keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={isMobileMenuOpen}
-      onClose={handleMobileMenuClose}
-      // If false and a vertical scroll bar exists , the popover will add padding to body
-      MenuProps={{ disableScrollLock: true }}
-    >
-      {authenticated ? (
-        <div>
-          <MenuItem component="a" href="/dashboard">Dashboard</MenuItem>
-          <MenuItem component="a" href="/settings">Settings</MenuItem>
-          <MenuItem onClick={onLogout}>Logout</MenuItem>
-        </div>
-      ) : (
-        <div>
-          <MenuItem component="a" href="/login">Sign In</MenuItem>
-          <MenuItem component="a" href="/signup">Sign Up</MenuItem>
-        </div>
-      )}
-    </Menu>
-  );
-
   return (
-    <div className={classes.grow}>
+    <div>
       <AppBar className={classes.bar}>
         <Toolbar>
-          <Typography component="a" href="/" className={classes.title} variant="h5" noWrap>
-            ITrader
-          </Typography>
-          <Button 
-            aria-label="home" 
+          <Button
+            aria-label="home"
             href="/"
             color="inherit"
             m={2}
@@ -141,6 +100,9 @@ export default function NavBar(props) {
           >
             <img alt="Logo" src="/logo_small.png" />
           </Button>
+          <Typography component="a" href="/" className={classes.title} variant="h5" noWrap>
+            ITrader
+          </Typography>
 
           <div className={classes.grow} />
           <Search onSearch={onSearch} /> 
@@ -156,73 +118,63 @@ export default function NavBar(props) {
 
           <div className={classes.sectionDesktop}>
             { authenticated ? (
-              <>
-                <Button 
-                  aria-label="dashboard" 
-                  href="/dashboard"
-                  color="inherit"
-                  m={2}
-                  className={classes.barButton}
-                >
-                  Dashboard
-                </Button>
-                <Button 
-                  aria-label="settings" 
-                  href="/settings"
-                  color="inherit"
-                  m={2}
-                  className={classes.barButton}
-                >
-                  <SettingsIcon />
-                </Button>
-                <Button
-                  aria-label="logout"
-                  color="inherit"
-                  m={2}
-                  className={classes.barButton}
-                  onClick={onLogout}
-                >
-                  Logout
-                </Button>
-              </>
+              <IconButton
+                color="inherit"
+                aria-label="Open drawer"
+                edge="end"
+                onClick={handleDrawerToggle}
+              >
+                <MenuIcon className={classes.menuIcon} />
+              </IconButton>
             ) : (
               <>
-                <Button
-                  aria-label="login"
-                  href="/login"
-                  color="inherit"
-                  m={2}
-                  className={classes.barButton}
-                >
-                  Sign In
-                </Button>
-                <Button
-                  aria-label="signup"
-                  href="/signup"
-                  color="inherit"
-                  m={2}
-                  className={classes.barButton}
-                >
-                  Sign Up
-                </Button>
+                <Box ml={2}>
+                  <Button
+                    aria-label="login"
+                    href="/login"
+                    color="inherit"
+                    className={classes.barButton}
+                  >
+                    Sign in
+                  </Button>
+                </Box>
+                <Box ml={2}>
+                  <Button
+                    aria-label="signup"
+                    href="/signup"
+                    color="inherit"
+                    className={classes.barButton}
+                    style={{border: '1px solid'}}
+                  >
+                    Sign up
+                  </Button>
+                </Box>
               </>
             )}
           </div>
 
           <div className={classes.sectionMobile}>
             <IconButton
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
               color="inherit"
+              aria-label="Open drawer"
+              edge="end"
+              onClick={handleDrawerToggle}
             >
-              <MoreIcon />
+              <MenuIcon className={classes.menuIcon} />
             </IconButton>
           </div>
         </Toolbar>
       </AppBar>
-      {renderMobileMenu}
+      <DrawerMenu
+        open={drawerOpen}
+        onClose={handleDrawerToggle}
+        authenticated={authenticated}
+        curUser={curUser}
+        onLogout={() => {
+          onLogout();
+          setDrawerOpen(false);
+        }}
+      />
     </div>
   );
 };

@@ -10,8 +10,6 @@ import NavBar from './components/bar/NavBar';
 import Routes from './Routes';
 import { getCurrentUser } from './utils/API';
 
-import Drawer from "./Drawer";
-
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -37,12 +35,12 @@ const useStyles = makeStyles((theme) => ({
 export default function MainView() {
   const classes = useStyles();
 
+  const [initialized, setInitialized] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [symbol, setSymbol] = React.useState(sessionStorage.getItem('symbol') || 'TSLA');
   const [authenticated, setAuthenticated] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
-  const [initialized, setInitialized] = React.useState(false);
-  const [justLoggedOut, setJustLoggedOut] = React.useState(false);
   const [curUser, setCurUser] = React.useState(null);
+  const [justLoggedOut, setJustLoggedOut] = React.useState(false);
 
   let history = useHistory();
 
@@ -83,8 +81,8 @@ export default function MainView() {
   return ( loading ? <LoadingIndicator /> : (
     <div className={classes.root}>
       <CssBaseline />
+      <NavBar authenticated={authenticated} curUser={curUser} onLogout={handleLogout} onSearch={changeSymbol} />
       <Container component="main" className={classes.main} maxWidth="xl">
-        <NavBar authenticated={authenticated} onLogout={handleLogout} onSearch={changeSymbol} />
 
         { justLoggedOut && <AlertMessage message={"Successfully logged out!"} severity={"success"} /> }
 
@@ -107,7 +105,6 @@ export default function MainView() {
           </Typography>
         </Container>
       </footer>
-      {/*<Drawer />*/}
     </div>
   ));
 }

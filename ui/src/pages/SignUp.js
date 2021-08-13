@@ -123,7 +123,7 @@ export default function SignUp(props) {
   return (
     <>
       <Helmet>
-        <title>ITrader - Sign Up</title>
+        <title>ITrader - Sign up</title>
       </Helmet>
       <Grid item xs={12}>
         <CssBaseline />
@@ -205,7 +205,7 @@ export default function SignUp(props) {
                 onClick={handleSubmit}
                 disabled={disabled || Boolean(pwd2ErrMsg) || !Boolean(email) || !Boolean(username)}
               >
-                Sign Up
+                Sign up
               </Button>
               <Grid container justify="flex-end">
                 <Grid item style={{marginTop: '5px'}}>

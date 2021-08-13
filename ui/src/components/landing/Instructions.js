@@ -51,7 +51,7 @@ const instructions = [
   // "View the stock's charts and statistics",
   // "Add the stock to watchlist, or remove it from the watchlist",
   "Click on the \"Trade\" button, then confirm the details",
-  "View your watchlist, portfolio and trades on the dashboard",
+  "Click on the top-right menu button to see more",
 ]
 
 function Instructions() {

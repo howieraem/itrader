@@ -51,7 +51,7 @@ export default function Forgot() {
               variant="contained"
               className={classes.button}
           >
-            Sign Up
+            Sign up
           </Button>
         </div>
       </Grid>

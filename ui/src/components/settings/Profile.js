@@ -44,7 +44,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Profile = (props) => {
-  const { currentUser } = props;
+  const { curUser } = props;
   const classes = useStyles();
 
   const [srcUrl, setSrcUrl] = useState(null);
@@ -268,7 +268,7 @@ const Profile = (props) => {
             flexDirection="column"
           >
             <Avatar
-              src={currentUser.avatar}
+              src={curUser.avatar}
               className={classes.profileAvatar}
             />
             <Typography
@@ -276,14 +276,14 @@ const Profile = (props) => {
               gutterBottom
               variant="h3"
             >
-              {currentUser.username}
+              {curUser.username}
             </Typography>
             <Typography
               color="textPrimary"
               gutterBottom
               variant="h5"
             >
-              {currentUser.email}
+              {curUser.email}
             </Typography>
           </Box>
         </CardContent>

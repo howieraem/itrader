@@ -28,7 +28,7 @@ export default function Routes(props) {
         path="/dashboard"
         authenticated={authenticated}
         initialized={initialized}
-        currentUser={curUser}
+        curUser={curUser}
         onSymbolClick={changeSymbol}
         component={Dashboard}
       />
@@ -36,7 +36,7 @@ export default function Routes(props) {
         path="/settings"
         authenticated={authenticated}
         initialized={initialized}
-        currentUser={curUser}
+        curUser={curUser}
         onLogout={handleLogout}
         component={Settings}
       />

@@ -87,7 +87,7 @@ export default function SignIn(props) {
   return (
     <>
       <Helmet>
-        <title>ITrader - Sign In</title>
+        <title>ITrader - Sign in</title>
       </Helmet>
       <Grid item xs={12}>
         <CssBaseline />
@@ -138,7 +138,7 @@ export default function SignIn(props) {
                 onClick={handleSubmit}
                 disabled={!Boolean(email) || !Boolean(password)}
               >
-                Sign In
+                Sign in
               </Button>
               <Grid container>
                 <Grid item xs style={{marginTop: "5px"}}>
@@ -148,7 +148,7 @@ export default function SignIn(props) {
                 </Grid>
                 <Grid item style={{marginTop: "5px"}}>
                   <Link href="/signup" variant="body2">
-                    {"New user? Sign Up!"}
+                    {"New user? Sign up!"}
                   </Link>
                 </Grid>
               </Grid>
