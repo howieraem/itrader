@@ -7,6 +7,7 @@ import com.jlumine.itrader.repository.UserRepository;
 import com.jlumine.itrader.security.TokenProvider;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,6 +24,8 @@ import java.net.URI;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+    @Value("${app.init-cash}")
+    private long initCash;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -62,7 +65,7 @@ public class AuthController {
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
 //        user.setPin(passwordEncoder.encode(signUpRequest.getPin()));
         user.setUsername(signUpRequest.getUsername());
-        user.setBalance(new BigDecimal(10000));
+        user.setBalance(new BigDecimal(initCash));
 
         User result = userRepository.save(user);
 

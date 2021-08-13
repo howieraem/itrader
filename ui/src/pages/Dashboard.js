@@ -12,6 +12,7 @@ import NetWorth from "../components/dashboard/NetWorth";
 import PositionPercent from "../components/dashboard/PositionPercent";
 import ProfitPercent from "../components/dashboard/ProfitPercent";
 import PortfolioTable from '../components/dashboard/PortfolioTable';
+import { INIT_CASH } from "../constants";
 import { getPortfolio } from "../utils/API";
 import { getBatchStockPrices } from "../utils/DataAPI";
 
@@ -40,7 +41,6 @@ export default function Dashboard(props) {
   const classes = useStyles();
   const { onSymbolClick, curUser } = props;
   const cash = curUser.balance;
-  const initCash = 100000;
 
   const [portfolioLoaded, setPortfolioLoaded] = React.useState(false);
   const [totalWorth, setTotalWorth] = React.useState(-1);
@@ -105,7 +105,7 @@ export default function Dashboard(props) {
                     <NetWorth total={`USD ${totalWorth.toFixed(2)}`} />
                   </Grid>
                   <Grid item xs={6} md={3}>
-                    <ProfitPercent percentage={((totalWorth / initCash - 1) * 100).toFixed(2)} />
+                    <ProfitPercent percentage={((totalWorth / INIT_CASH - 1) * 100).toFixed(2)} />
                   </Grid>
                   <Grid item xs={6} md={3}>
                     <Cash cash={`USD ${cash.toFixed(2)}`} />

@@ -42,12 +42,4 @@ public class User {
 
     @Column(name = "avatar")
     private String avatar;
-
-    public User(String email, String password, String username) {
-        this.email = email;
-        this.password = password;
-//        this.pin = pin;
-        this.username = username;
-        this.balance = new BigDecimal(100000);
-    }
 }

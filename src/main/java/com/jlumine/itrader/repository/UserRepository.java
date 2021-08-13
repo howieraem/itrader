@@ -18,8 +18,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Boolean existsByEmail(String email);
 
     @Modifying
-    @Query("update User user set user.balance = 10000 where user.id = :id")
-    void resetBalance(@Param("id") Long id);
+    @Query("update User user set user.balance = :cash where user.id = :id")
+    void resetBalance(@Param("id") Long id, @Param("id") long cash);
 
     @Modifying
     @Query("update User user set user.balance = user.balance - :balanceChange where user.id = :id")
