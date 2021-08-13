@@ -40,7 +40,7 @@ export default function Dashboard(props) {
   const classes = useStyles();
   const { onSymbolClick, curUser } = props;
   const cash = curUser.balance;
-  const initCash = 10000;
+  const initCash = 100000;
 
   const [portfolioLoaded, setPortfolioLoaded] = React.useState(false);
   const [totalWorth, setTotalWorth] = React.useState(-1);
