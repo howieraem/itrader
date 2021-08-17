@@ -33,8 +33,11 @@ public class TradeController {
     @PostMapping("/trade")
     @PreAuthorize("hasRole('USER')")
     @Caching(evict = {
+            @CacheEvict(cacheNames = "userC", key = "#authenticatedRequest.getUserId()", beforeInvocation = true),
+            @CacheEvict(cacheNames = "userR", key = "#authenticatedRequest.getUserId()", beforeInvocation = true),
             @CacheEvict(cacheNames = "userPortfolio", key = "#authenticatedRequest.getUserId()", beforeInvocation = true),
-            @CacheEvict(cacheNames = "user", key = "#authenticatedRequest.getUserId()", beforeInvocation = true),
+            @CacheEvict(cacheNames = "userTrades", key = "#authenticatedRequest.getUserId()", beforeInvocation = true),
+            @CacheEvict(cacheNames = "userNumTrades", key = "#authenticatedRequest.getUserId()", beforeInvocation = true),
     })
     public ResponseEntity<?> trade(
             @Valid @RequestBody TradeRequest tradeRequest,
@@ -43,8 +46,10 @@ public class TradeController {
         long qty = Long.parseLong(tradeRequest.getQty());
         BigDecimal price = financeDataService.getCurrentQuote(symbol).getPrice();
         tradeService.process(authenticatedRequest.getUserId(), symbol, qty, price);
+        String action = qty > 0 ? "Buying" : "Selling";
         return ResponseEntity.ok(new ApiResponse(true,
-                String.format("Trade filled! Quantity: %d. Price: USD %s.", qty, price.setScale(4).toPlainString())));
+                String.format("%s filled! Quantity: %d. Price: USD %s.",
+                        action, Math.abs(qty), price.setScale(4).toPlainString())));
     }
 
     @PostMapping("/tradable")

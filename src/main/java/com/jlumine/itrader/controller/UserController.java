@@ -62,7 +62,7 @@ public class UserController {
 
     @GetMapping("/me")
     @PreAuthorize("hasRole('USER')")
-    @Cacheable(cacheNames = "user", key = "#userPrincipal.getId()", unless = "#result == null")
+    @Cacheable(cacheNames = "userC", key = "#userPrincipal.getId()", unless = "#result == null")
     public User getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
         return userRepository.findById(userPrincipal.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
@@ -70,29 +70,14 @@ public class UserController {
 
     @GetMapping("/portfolio")
     @PreAuthorize("hasRole('USER')")
-    @Cacheable(cacheNames = "userPortfolio", key = "#userPrincipal.getId()")
+    @Cacheable(cacheNames = "userPortfolio", key = "#userPrincipal.getId()", unless = "#result.size() == 0")
     public List<PositionDTO> getPortfolio(@CurrentUser UserPrincipal userPrincipal) {
         return positionRepository.findByUserId(userPrincipal.getId());
     }
 
-//    @GetMapping("/portfolio")
-//    @PreAuthorize("hasRole('USER')")
-//    public List<PositionDTO> getPortfolio(
-//            @CurrentUser UserPrincipal userPrincipal,
-//            @RequestParam(value = "page", required = false) Integer page,
-//            @RequestParam(value = "rows", required = false) Integer rows) {
-//        if (page == null || rows == null)  return positionRepository.findByUserId(userPrincipal.getId());
-//        return positionRepository.findByUserId(userPrincipal.getId(), PageRequest.of(page, rows));
-//    }
-
-//    @GetMapping("/numOfPositions")
-//    @PreAuthorize("hasRole('USER')")
-//    public long getNumberOfPositions(@CurrentUser UserPrincipal userPrincipal) {
-//        return positionRepository.countByUserId(userPrincipal.getId());
-//    }
-
     @GetMapping("/trades")
     @PreAuthorize("hasRole('USER')")
+    @Cacheable(cacheNames = "userTrades", key = "{#userPrincipal.getId(), #page, #rows}", unless = "#result.size() == 0")
     public List<TradeDTO> getTrades(
             @CurrentUser UserPrincipal userPrincipal,
             @RequestParam(value = "page") Integer page,
@@ -102,6 +87,7 @@ public class UserController {
 
     @GetMapping("/numOfTrades")
     @PreAuthorize("hasRole('USER')")
+    @Cacheable(cacheNames = "userNumTrades", key = "#userPrincipal.getId()")
     public long getNumberOfTrade(@CurrentUser UserPrincipal userPrincipal) {
         return tradeRepository.countByUserId(userPrincipal.getId());
     }

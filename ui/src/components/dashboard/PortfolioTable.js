@@ -17,12 +17,13 @@ const nf4 = new Intl.NumberFormat('en-US', { minimumFractionDigits: 4 });
 
 const procPositionInfo = (position, i, curPrice, value, totValue) => {
   position.i = i;
-  position.holdingPrice = nf4.format(position.holdingCost / position.quantity);
+  const holdingPrice = position.holdingCost / position.quantity;
+  const diff = curPrice - holdingPrice;
   position.currentPrice = nf4.format(curPrice);
-  const diff = position.currentPrice - position.holdingPrice;
+  position.holdingPrice = nf4.format(holdingPrice);
   position.positive = (diff >= 0);
   position.pl = nf2.format(diff * position.quantity);
-  position.plPercent = nfp.format(diff / position.holdingPrice * 100) + '%';
+  position.plPercent = nfp.format(diff / holdingPrice * 100) + '%';
   position.value = nf2.format(value);
   position.ratio = nfp.format(value / totValue * 100) + '%';
   position.qty = nf.format(position.quantity);

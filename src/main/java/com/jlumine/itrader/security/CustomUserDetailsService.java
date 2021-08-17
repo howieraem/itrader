@@ -32,7 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Transactional
-    @Cacheable(cacheNames = "user", key = "#id", unless = "#result == null")
+    @Cacheable(cacheNames = "userR", key = "#id", unless = "#result == null")
     public User getUser(Long id) {
         return userRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("User", "id", id)

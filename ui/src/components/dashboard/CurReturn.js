@@ -18,9 +18,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function CurReturn({ percentage }) {
+export default function CurReturn({ percentage, positive }) {
   const classes = useStyles();
-  const bgColor = percentage >= 0 ?  "#45ff38" : "#ff7777";
+  const bgColor = positive ? "#45ff38" : "#ff7777";
 
   return (
     <Card className={classes.card} style={{ backgroundColor: bgColor }}>
@@ -30,7 +30,7 @@ export default function CurReturn({ percentage }) {
         flexDirection="column"
         className={classes.iconBox}
       >
-        {percentage >= 0 ? <TrendingUpIcon style={{ width: 60, height: 60 }} /> :
+        {positive ? <TrendingUpIcon style={{ width: 60, height: 60 }} /> :
           <TrendingDownIcon style={{ width: 60, height: 60 }} />}
       </Box>
       <Typography variant="h6">{percentage}</Typography>

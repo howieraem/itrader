@@ -107,7 +107,10 @@ export default function Dashboard(props) {
                     <TotalAssets total={"USD " + nf2.format(totalValue)} />
                   </Grid>
                   <Grid item xs={6} md={3}>
-                    <CurReturn percentage={nfp.format((totalValue / INIT_CASH - 1) * 100) + '%'} />
+                    <CurReturn
+                      percentage={nfp.format((totalValue / INIT_CASH - 1) * 100) + '%'}
+                      positive={totalValue >= INIT_CASH}
+                    />
                   </Grid>
                   <Grid item xs={6} md={3}>
                     <Cash cash={"USD " + nf2.format(cash)} />
