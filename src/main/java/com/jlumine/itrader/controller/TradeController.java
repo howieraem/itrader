@@ -43,7 +43,8 @@ public class TradeController {
         long qty = Long.parseLong(tradeRequest.getQty());
         BigDecimal price = financeDataService.getCurrentQuote(symbol).getPrice();
         tradeService.process(authenticatedRequest.getUserId(), symbol, qty, price);
-        return ResponseEntity.ok(new ApiResponse(true, "Trade completed!"));
+        return ResponseEntity.ok(new ApiResponse(true,
+                String.format("Trade filled! Quantity: %d. Price: USD %s.", qty, price.setScale(4).toPlainString())));
     }
 
     @PostMapping("/tradable")

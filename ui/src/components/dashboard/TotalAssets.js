@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function NetWorth({ total }) {
+export default function TotalAssets({ total }) {
   const classes = useStyles();
 
   return (
@@ -33,7 +33,7 @@ export default function NetWorth({ total }) {
       </Box>
       <Typography variant="h6">{total}</Typography>
       <Typography variant="subtitle2" style={{ opacity: 0.72 }}>
-        Total Worth
+        Total Assets
       </Typography>
     </Card>
   );

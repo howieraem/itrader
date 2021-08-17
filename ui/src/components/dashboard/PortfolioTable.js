@@ -1,5 +1,4 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -11,14 +10,24 @@ import TableRow from '@material-ui/core/TableRow';
 import Pagination from '@material-ui/lab/Pagination';
 import Typography from '@material-ui/core/Typography';
 
-const procPositionInfo = (position, i, curPrice) => {
+const nf = new Intl.NumberFormat('en-US');
+export const nfp = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+export const nf2 = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2 });
+const nf4 = new Intl.NumberFormat('en-US', { minimumFractionDigits: 4 });
+
+const procPositionInfo = (position, i, curPrice, value, totValue) => {
   position.i = i;
-  position.holdingPrice = (position.holdingCost / position.quantity).toFixed(4);
-  position.currentPrice = curPrice;
+  position.holdingPrice = nf4.format(position.holdingCost / position.quantity);
+  position.currentPrice = nf4.format(curPrice);
   const diff = position.currentPrice - position.holdingPrice;
-  position.pl = (diff * position.quantity).toFixed(2);
-  position.plPercent = `${(diff / position.holdingPrice * 100).toFixed(2)}%`;
+  position.positive = (diff >= 0);
+  position.pl = nf2.format(diff * position.quantity);
+  position.plPercent = nfp.format(diff / position.holdingPrice * 100) + '%';
+  position.value = nf2.format(value);
+  position.ratio = nfp.format(value / totValue * 100) + '%';
+  position.qty = nf.format(position.quantity);
 }
+
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -54,26 +63,23 @@ const useStyles = makeStyles((theme) => ({
 
 export default function PortfolioTable(props) {
   const classes = useStyles();
-  const { portfolio, prices, onSymbolClick, rowsPerPage } = props;
+  const { portfolio, prices, positionValues, totalValue, onSymbolClick } = props;
 
   const [page, setPage] = React.useState(0);
 
-  const pageRows = rowsPerPage || 5;
+  const pageRows = 10;
   // const [pageRows, setPageRows] = React.useState(5);
   const numOfRecords = portfolio.length;
   const numOfPages = Math.floor((numOfRecords + pageRows - 1) / pageRows);
   const [pageRecords, setPageRecords] = React.useState([]);
 
-  let history = useHistory();
-
   const onRowClick = (i) => {
     onSymbolClick(pageRecords[i].symbol);
-    history.push('/stockView');
   }
 
   React.useEffect(() => {
-    portfolio.map((pos, i) => procPositionInfo(pos, i, prices[i]));
-  }, [portfolio, prices]);
+    portfolio.map((pos, i) => procPositionInfo(pos, i, prices[i], positionValues[i], totalValue));
+  }, [portfolio, prices, positionValues, totalValue]);
 
   React.useEffect(() => {
     const start = page * pageRows;
@@ -84,7 +90,7 @@ export default function PortfolioTable(props) {
     setPage(newPage - 1);
   };
 
-  const SpecialCellContent = (props) => {
+  const CellContent = (props) => {
     return (
       <ListItem style={{ textAlign: 'right', padding: 0 }}>
         <ListItemText
@@ -126,27 +132,40 @@ export default function PortfolioTable(props) {
             <TableHead>
               <TableRow>
                 <TableCell>Symbol</TableCell>
-                <TableCell align="right">Quantity</TableCell>
-                <TableCell align="right">Current/Holding Price (USD)</TableCell>
-                <TableCell align="right" className={classes.mobileHidden}>
-                  Market Capitalization (USD)
+                <TableCell align="right">
+                  <CellContent first={"Quantity"} second={"Position Ratio"} />
                 </TableCell>
-                <TableCell align="right">Floating Profit (USD/Percentage)</TableCell>
+                <TableCell align="right">
+                  Price (USD)
+                  <CellContent first={"Current"} second={"Holding"} />
+                </TableCell>
+                <TableCell align="right">
+                  Floating P/L
+                  <CellContent first={"USD"} second={"Percentage"} />
+                </TableCell>
+                <TableCell align="right" className={classes.mobileHidden}>
+                  Value (USD)
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {pageRecords.map((row) => (
-                <TableRow key={row.i} className={row.pl >= 0 ? classes.rowProfit : classes.rowLoss} onClick={() => onRowClick(row.i)}>
+                <TableRow key={row.i} className={row.positive ? classes.rowProfit : classes.rowLoss} onClick={() => onRowClick(row.i)}>
                   <TableCell>{row.symbol}</TableCell>
-                  <TableCell align="right">{row.quantity}</TableCell>
                   <TableCell align="right">
-                    <SpecialCellContent first={row.currentPrice || '--'} second={row.holdingPrice} />
+                    <CellContent
+                      first={row.qty}
+                      second={row.ratio}
+                    />
+                  </TableCell>
+                  <TableCell align="right">
+                    <CellContent first={row.currentPrice} second={row.holdingPrice} />
+                  </TableCell>
+                  <TableCell align="right">
+                    <CellContent first={row.pl} second={row.plPercent} />
                   </TableCell>
                   <TableCell align="right" className={classes.mobileHidden}>
-                    {row.currentPrice ? (row.currentPrice * row.quantity).toFixed(4) : '--'}
-                  </TableCell>
-                  <TableCell align="right">
-                    <SpecialCellContent first={row.pl || '--'} second={row.plPercent || '--'} />
+                    {row.value}
                   </TableCell>
                 </TableRow>
               ))}
@@ -156,7 +175,6 @@ export default function PortfolioTable(props) {
       ) : (
         <div>You don't hold any position.</div>
       )}
-      
     </React.Fragment>
   );
 }
