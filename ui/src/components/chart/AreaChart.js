@@ -9,7 +9,12 @@ import { timeFormat } from "d3-time-format";
 import { ChartCanvas, Chart } from "react-stockcharts";
 import { AreaSeries } from "react-stockcharts/lib/series";
 import { XAxis, YAxis } from "react-stockcharts/lib/axes";
-import { CrossHairCursor, MouseCoordinateX, MouseCoordinateY } from "react-stockcharts/lib/coordinates";
+import {
+	CrossHairCursor,
+	CurrentCoordinate,
+	MouseCoordinateX,
+	MouseCoordinateY
+} from "react-stockcharts/lib/coordinates";
 import { fitWidth } from "react-stockcharts/lib/helper";
 import { createVerticalLinearGradient, hexToRGBA } from "react-stockcharts/lib/utils";
 
@@ -94,6 +99,7 @@ class AreaChart extends React.Component {
 						interpolation={curveMonotoneX}
 						canvasGradient={canvasGradient}
 					/>
+					<CurrentCoordinate yAccessor={d => d.close} fill={"#4682b4"} />
 					<MouseCoordinateX
 						rectWidth={60}
 						at="bottom"

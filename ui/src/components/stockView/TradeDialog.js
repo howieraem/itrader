@@ -179,7 +179,7 @@ export default function TradeDialog(props) {
             <>
               <DialogContent>
                 <DialogContentText>
-                  Be sure to double check details below before you trade.
+                  Be sure to double check details below before confirmation.
                 </DialogContentText>
                 <Paper variant='outlined' className={classes.symbolLabel}>Stock Symbol: {symbol}</Paper>
                 { foreignCurrency ? (
@@ -187,8 +187,25 @@ export default function TradeDialog(props) {
                       Exchange rate: 1 USD = {exchangeRate} {foreignCurrency}
                     </Paper>
                   ) : null }
-                <Paper variant='outlined' className={classes.validQuantityLabel}>Max. affordable: {maxBuyQty}</Paper>
-                <Paper variant='outlined' className={classes.validQuantityLabel}>Max. sellable: {maxSellQty}</Paper>
+                <div
+                  style={{ display: "flex", flexDirection: "row" }}
+                >
+                  <Paper
+                    variant='outlined'
+                    className={classes.validQuantityLabel}
+                    style={{ color: '#6933ff' }}
+                  >
+                    Buy on cash: {maxBuyQty}
+                  </Paper>
+                  <div style={{ flexGrow: 1 }} />
+                  <Paper
+                    variant='outlined'
+                    className={classes.validQuantityLabel}
+                    style={{ color: '#ffb133' }}
+                  >
+                    Sell on position: {maxSellQty}
+                  </Paper>
+                </div>
                 <TextField
                   autoFocus
                   onChange={handleQtyChange}
