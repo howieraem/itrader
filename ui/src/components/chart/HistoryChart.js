@@ -1,6 +1,6 @@
 import './ChartHolder.css';
 import React from 'react';
-import Chart from './CandleStickChart';
+import HistoryChartCore from './HistoryChartCore';
 import { getStockHistory } from '../../utils/DataAPI';
 import LoadingIndicator from '../../common/LoadingIndicator';
 
@@ -32,20 +32,19 @@ export default function HistoryChart(props) {
     getStockHistory(symbol, interval)
       .then(data => {
         if (data && data.length) {
-          const lastEntry = data[data.length - 1];
-          if (!lastEntry.open && !lastEntry.close && !lastEntry.high && !lastEntry.low) {
-            // this may happen on the first day of a month
-            data.pop();
-          }
-          setData(data);
-          try {
-            localStorage.setItem(symbolKey, JSON.stringify(data));
-          } catch (e) {
-            // don't cache if quota exceeded
-          }
-        } else {
-          setData(null);
-        }})
+          data = data.filter(d => {
+            return d.open && d.close && d.high && d.low
+          });
+          if (data.length) {
+            setData(data);
+            try {
+              localStorage.setItem(symbolKey, JSON.stringify(data));
+            } catch (e) {
+              // don't cache if quota exceeded
+            }
+          } else setData(null);
+        } else setData(null);
+      })
       .catch(err => { console.log(err); setData(null); })
   }, [symbol, interval])
 
@@ -70,7 +69,23 @@ export default function HistoryChart(props) {
   }
 
   return (
-    data ? <Chart type="hybrid" data={data} symbol={symbol} /> : (
+    data ? (
+      <HistoryChartCore
+        type="hybrid"
+        data={data}
+        symbol={symbol}
+        chartType="candlestick"
+        showCfg={{
+          showSma: false,
+          showEma: true,
+          showBoll: true,
+          showVol: false,
+          showMacd: false,
+          showRsi: true,
+          showHover: true,
+        }}
+      />
+    ) : (
       <header className="Chart-holder">
         {"Loading chart..."}
         <LoadingIndicator />

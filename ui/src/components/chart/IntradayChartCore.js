@@ -25,7 +25,7 @@ const canvasGradient = createVerticalLinearGradient([
 	{ stop: 1, color: hexToRGBA("#4286f4", 0.8) },
 ]);
 
-class AreaChart extends React.Component {
+class IntradayChartCore extends React.Component {
 	render() {
 		const { data, symbol, type, width, ratio } = this.props;
 		const height = 400;
@@ -117,16 +117,16 @@ class AreaChart extends React.Component {
 }
 
 
-AreaChart.propTypes = {
+IntradayChartCore.propTypes = {
 	data: PropTypes.array.isRequired,
 	width: PropTypes.number.isRequired,
 	ratio: PropTypes.number.isRequired,
 	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
-AreaChart.defaultProps = {
+IntradayChartCore.defaultProps = {
 	type: "svg",
 };
-AreaChart = fitWidth(AreaChart);
+IntradayChartCore = fitWidth(IntradayChartCore);
 
-export default AreaChart;
+export default IntradayChartCore;

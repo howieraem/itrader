@@ -121,9 +121,7 @@ export default function Watchlist(props) {
                     startIcon={<DeleteForeverIcon />}
                     className={classes.removeButton}
                     onClick={() => handleRemove(row.i)}
-                  >
-                    Remove
-                  </Button>
+                  />
                 </ListItemSecondaryAction>
               </ListItem>
             ))}

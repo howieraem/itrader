@@ -50,9 +50,9 @@ public class FinanceDataService {
         return forward(String.format(URL_SNAPSHOT, symbol, String.join(",", modules)));
     }
 
-    @Cacheable(cacheNames = "stockHistory", key = "{#symbol, #from, #to, #interval}",
-            condition = "!#interval.equals(\"1d\")", unless = "#result == null")
+    @Cacheable(cacheNames = "stockHistory", key = "{#symbol, #from, #to, #interval}", unless = "#result == null")
     public String getStockHistory(String symbol, String from, String to, String interval) {
+        if (interval.equals("1d"))  return forward(String.format(URL_HISTORY + "&range=10y", symbol, from, to, interval, "history"));
         return forward(String.format(URL_HISTORY, symbol, from, to, interval, "history"));
     }
 

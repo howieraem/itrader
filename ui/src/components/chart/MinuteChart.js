@@ -1,6 +1,6 @@
 import './ChartHolder.css';
 import React from 'react';
-import Chart from './CandleStickMinuteChart';
+import MinuteChartCore from './MinuteChartCore';
 import { getStockToday } from '../../utils/DataAPI';
 import LoadingIndicator from '../../common/LoadingIndicator';
 
@@ -29,14 +29,18 @@ export default function MinuteChart(props) {
         getStockToday(symbol, minute)
           .then(data => {
             if (data && data.length) {
-              setData(data);
-              try {
-                localStorage.setItem(cacheKey, JSON.stringify(data));
-              } catch (e) {
-                // don't store cache if quota exceeded
-              }
-            }
-            else setData(null);
+              data = data.filter(d => {
+                return d.open && d.close && d.high && d.low
+              });
+              if (data.length) {
+                setData(data);
+                try {
+                  localStorage.setItem(cacheKey, JSON.stringify(data));
+                } catch (e) {
+                  // don't store cache if quota exceeded
+                }
+              } else setData(null);
+            } else setData(null);
           })
           .catch(err => { console.log(err); setData(null); })
       }
@@ -69,10 +73,15 @@ export default function MinuteChart(props) {
   return (
     data ? data[0].open === undefined ? (
       <header className="Chart-holder">
-        {"Minute data not available. The stock might have been suspended or delisted."}
+        {"Failed to fetch minute data. Please try refreshing the page, or check whether the stock is listed."}
       </header>
     ) : (
-      <Chart type="hybrid" data={data} symbol={symbol} />
+      <>
+        <MinuteChartCore type="hybrid" data={data} symbol={symbol} />
+        <div style={{ fontSize: 12, marginLeft: 5 }}>
+          Due to data source limitations, minute chart can only cover a maximum of 7 days.
+        </div>
+      </>
     ) : (
       <header className="Chart-holder">
         {"Loading chart..."}

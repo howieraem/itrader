@@ -1,4 +1,5 @@
 import '../components/stockView/StockView.css';
+import { format } from "d3-format";
 import React from 'react';
 import { addTicker, removeTicker } from 'stocksocket';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -90,37 +91,42 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('md')]: {
       fontSize: '16px',
     },
+  },
+  note: {
+    fontSize: 13,
+    color: theme.palette.secondary.light,
+    margin: 17,
+    marginTop: 0
   }
 }));
 
 function roundNumber(number, places=4) {
-  if (!number)  return null;
-  return parseFloat(number.toFixed(places));
+  if (number === undefined || number === null)  return "N/A";
+  return number.toFixed(places);
 }
 
-function procLargeNum(number, places=2) {
-  if (!number)  return number;
-  else if (number > 1e9)  return `${(number / 1e9).toFixed(places)}B`;
-  else if (number > 1e6)  return `${(number / 1e6).toFixed(places)}M`;
-  else if (number > 1e3)  return `${(number / 1e3).toFixed(places)}K`;
-  else return number.toFixed(places);
+const numFormat = format(".4s");
+
+function formatLargeNum(number) {
+  if (number === undefined || number === null)  return "N/A";
+  return numFormat(number).replace(/G/, "B");   // Billion is a special case
 }
 
 function filterInfo(info) {
   return {
     "Market Region": MARKET_LOC[info.market] || info.market,
-    "Outstanding Shares": procLargeNum(info.sharesOutstanding) || "N/A",
-    "Market Capitalization": info.marketCap ? `${info.currency.toUpperCase()} ${procLargeNum(info.marketCap)}` : "N/A",
+    "Outstanding Shares": formatLargeNum(info.sharesOutstanding),
+    "Market Capitalization": info.marketCap ? `${info.currency.toUpperCase()} ${formatLargeNum(info.marketCap)}` : "N/A",
     "Volume": info.regularMarketVolume || 0,
     "Day Price Range": info.regularMarketDayRange,
     "52-week High": roundNumber(info.fiftyTwoWeekHigh),
     "52-week Low": roundNumber(info.fiftyTwoWeekLow),
-    "Current Year EPS": roundNumber(info.epsCurrentYear) || "N/A",
-    "Forward EPS": roundNumber(info.epsForward) || "N/A",
-    "Trailing PE": roundNumber(info.trailingPE) || "N/A",
-    "Forward PE": roundNumber(info.forwardPE) || "N/A",
-    "Book Value": roundNumber(info.bookValue) || "N/A",
-    "P/B Ratio": roundNumber(info.priceToBook) || "N/A",
+    "Current Year EPS": roundNumber(info.epsCurrentYear),
+    "Forward EPS": roundNumber(info.epsForward),
+    "Trailing PE": roundNumber(info.trailingPE),
+    "Forward PE": roundNumber(info.forwardPE),
+    "Book Value": roundNumber(info.bookValue),
+    "P/B Ratio": roundNumber(info.priceToBook),
   };
 }
 
@@ -284,6 +290,15 @@ function StockViewCore(props) {
       </Grid>
 
       <Grid container>
+        {/*
+        { symbol.indexOf('.') > -1 && (
+          <Grid item xs={12}>
+            <div className={classes.note}>
+              NOTE: Due to data source limitations, some non-US quotes might have a 15-minute delay during regular trading hours.
+            </div>
+          </Grid>
+        )}
+        */}
         <Grid item xs={12}>
           <CharTabs
             symbol={symbol}

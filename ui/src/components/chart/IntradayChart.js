@@ -1,6 +1,6 @@
 import './ChartHolder.css';
 import React from 'react';
-import Chart from './AreaChart';
+import Chart from './IntradayChartCore';
 import { getStockToday } from '../../utils/DataAPI';
 import LoadingIndicator from '../../common/LoadingIndicator';
 
@@ -73,7 +73,7 @@ export default function IntradayChart(props) {
   if (data && data[0].open === undefined) {
     return (
       <header className="Chart-holder">
-        {"Failed to fetch intraday data. Please try refreshing the page, or check whether the stock has been delisted."}
+        {"Failed to fetch intraday data. Please try refreshing the page, or check whether the stock is listed."}
       </header>
     )
   }

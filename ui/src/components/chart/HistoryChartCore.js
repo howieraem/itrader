@@ -5,26 +5,43 @@ import { timeFormat } from "d3-time-format";
 import { ChartCanvas, Chart } from "react-stockcharts";
 import {
 	BarSeries,
+	BollingerSeries,
 	CandlestickSeries,
 	LineSeries,
+	OHLCSeries,
 	RSISeries,
 } from "react-stockcharts/lib/series";
 import { XAxis, YAxis } from "react-stockcharts/lib/axes";
-import { EdgeIndicator, MouseCoordinateY } from "react-stockcharts/lib/coordinates";
+import {
+	CrossHairCursor,
+	CurrentCoordinate,
+	EdgeIndicator,
+	MouseCoordinateY
+} from "react-stockcharts/lib/coordinates";
 import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
 import {
+	BollingerBandTooltip,
 	HoverTooltip,
+	MovingAverageTooltip,
+	OHLCTooltip,
 	RSITooltip,
 } from "react-stockcharts/lib/tooltip";
-import { ema, rsi } from "react-stockcharts/lib/indicator";
+import {
+	bollingerBand,
+	change,
+	ema,
+	rsi,
+	sma
+} from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
 import { last } from "react-stockcharts/lib/utils";
 
-import { appearance, candlesAppearance } from "./Appearance";
+import { appearance, candlesAppearance, stroke, bollStroke } from "./Appearance";
 
 
 const dateFormat = timeFormat("%Y-%m-%d");
 const numberFormat = format(".2f");
+const volFormat = format(".4s");
 
 function tooltipContent(ys) {
 	return ({ currentItem, xAccessor }) => {
@@ -60,9 +77,27 @@ function tooltipContent(ys) {
 	};
 }
 
-class CandleStickChartWithHoverTooltip extends React.Component {
+class HistoryChartCore extends React.Component {
 	render() {
-		let { type, data: initialData, symbol, width, ratio } = this.props;
+		let {
+			type,
+			data: initialData,
+			symbol,
+			width,
+			ratio,
+			chartType,
+			showCfg
+		} = this.props;
+
+		const {
+			showSma,
+			showEma,
+			showBoll,
+			showVol,
+			showMacd,
+			showRsi,
+			showHover
+		} = showCfg;
 
 		if (initialData.length === 1) {
 			// If only one valid data point is available (e.g. recently IPOed),
@@ -73,8 +108,15 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 			initialData[0].volume = 0;
 		}
 
-		const heights = [300, 100, 100];	// TODO show/hide charts by setting heights to nonzero/zero
+		const heights = [
+			300,	// main chart
+			100 * (showVol | 0),
+			// 100 * (showMacd | 0),
+			100 * (showRsi | 0),
+		];
 		const height = heights.reduce((a, b) => a + b, 0) + 50;
+
+		const changeCalculator = change();
 
 		const ema20 = ema()
 			.id(0)
@@ -85,7 +127,7 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 			.accessor(d => d.ema20);
 
 		const ema50 = ema()
-			.id(2)
+			.id(1)
 			.options({ windowSize: 50 })
 			.merge((d, c) => {
 				d.ema50 = c;
@@ -93,7 +135,7 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 			.accessor(d => d.ema50);
 
 		const ema100 = ema()
-			.id(3)
+			.id(2)
 			.options({ windowSize: 100 })
 			.merge((d, c) => {
 				d.ema100 = c;
@@ -101,7 +143,7 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 			.accessor(d => d.ema100);
 
 		const ema250 = ema()
-			.id(4)
+			.id(5)
 			.options({ windowSize: 250 })
 			.merge((d, c) => {
 				d.ema250 = c;
@@ -126,9 +168,18 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 			.merge((d, c) => {d.rsi3 = c;})
 			.accessor(d => d.rsi3);
 
+		const bb = bollingerBand()
+			.merge((d, c) => {d.bb = c;})
+			.accessor(d => d.bb);
+
 		const margin = { left: 50, right: 70, top: 10, bottom: 20 };
 
-		const calculatedData = rsi3(rsi2(rsi1(ema250(ema100(ema50(ema20(initialData)))))));
+		let calculatedData = initialData;
+		if (showEma)  calculatedData = ema250(ema100(ema50(ema20(calculatedData))));
+		if (chartType === "ohlc")  calculatedData = changeCalculator(calculatedData);
+		if (showBoll)  calculatedData = bb(calculatedData);
+		if (showRsi)  calculatedData = rsi3(rsi2(rsi1(calculatedData)))
+
 		const xScaleProvider = discontinuousTimeScaleProvider
 			.inputDateAccessor(d => d.date);
     const {
@@ -156,6 +207,10 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 			tickStrokeWidth: 1
 		} : {};
 
+		const mainChart = chartType === "candlestick" ?
+			<CandlestickSeries {...candlesAppearance} /> :
+			<OHLCSeries stroke={stroke} />;
+
 		return (
       <ChartCanvas 
         height={height}
@@ -179,11 +234,20 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 				>
 					<YAxis axisAt="right" orient="right" ticks={5} {...yGrid} />
 					<XAxis axisAt="bottom" orient="bottom" {...xGrid} />
-					<CandlestickSeries {...candlesAppearance} />
-          <LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()} />
-					<LineSeries yAccessor={ema50.accessor()} stroke={ema50.stroke()} />
-					<LineSeries yAccessor={ema100.accessor()} stroke={ema100.stroke()} />
-					<LineSeries yAccessor={ema250.accessor()} stroke={ema250.stroke()} />
+					{ mainChart }
+
+					{ showEma && (
+						<>
+							<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()} />
+							<LineSeries yAccessor={ema50.accessor()} stroke={ema50.stroke()} />
+							<LineSeries yAccessor={ema100.accessor()} stroke={ema100.stroke()} />
+							<LineSeries yAccessor={ema250.accessor()} stroke={ema250.stroke()} />
+							<CurrentCoordinate yAccessor={ema20.accessor()} fill={ema20.stroke()} />
+							<CurrentCoordinate yAccessor={ema50.accessor()} fill={ema50.stroke()} />
+							<CurrentCoordinate yAccessor={ema100.accessor()} fill={ema100.stroke()} />
+							<CurrentCoordinate yAccessor={ema250.accessor()} fill={ema250.stroke()} />
+						</>
+					)}
 
 					<EdgeIndicator
 						itemType="last"
@@ -193,34 +257,112 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 						{...appearance}
 					/>
 
-					<HoverTooltip
-						yAccessor={ema50.accessor()}
-						tooltipContent={tooltipContent([
-							{
-								label: `${ema20.type()}(${ema20.options().windowSize})`,
-								value: d => ema20.accessor()(d) && numberFormat(ema20.accessor()(d)),
-								stroke: ema20.stroke()
-							},
-							{
-								label: `${ema50.type()}(${ema50.options().windowSize})`,
-								value: d => ema50.accessor()(d) && numberFormat(ema50.accessor()(d)),
-								stroke: ema50.stroke()
-							},
-							{
-								label: `${ema100.type()}(${ema100.options().windowSize})`,
-								value: d => ema100.accessor()(d) && numberFormat(ema100.accessor()(d)),
-								stroke: ema100.stroke()
-							},
-							{
-								label: `${ema250.type()}(${ema250.options().windowSize})`,
-								value: d => ema250.accessor()(d) && numberFormat(ema250.accessor()(d)),
-								stroke: ema250.stroke()
-							}
-						])}
-						fontSize={15}
-					/>
+					{!showHover && (
+						<>
+							<OHLCTooltip origin={[-38, 0]} />
+							<MovingAverageTooltip
+								origin={[-38, 15]}
+								options={
+									showEma ? [
+										{
+											yAccessor: ema20.accessor(),
+											type: "EMA",
+											stroke: ema20.stroke(),
+											windowSize: ema20.options().windowSize,
+										},
+										{
+											yAccessor: ema50.accessor(),
+											type: "EMA",
+											stroke: ema50.stroke(),
+											windowSize: ema50.options().windowSize,
+										},
+										{
+											yAccessor: ema100.accessor(),
+											type: "EMA",
+											stroke: ema100.stroke(),
+											windowSize: ema100.options().windowSize,
+										},
+										{
+											yAccessor: ema250.accessor(),
+											type: "EMA",
+											stroke: ema250.stroke(),
+											windowSize: ema250.options().windowSize,
+										},
+									] : []}
+							/>
+						</>
+					)}
+
+
+					{ showBoll && (
+						<>
+							<BollingerSeries
+								yAccessor={d => d.bb}
+								stroke={bollStroke}
+								fill={bollStroke.fill}
+							/>
+							{ !showHover && (
+								<BollingerBandTooltip
+									origin={[-38, showEma ? 60 : 15]}
+									yAccessor={d => d.bb}
+									options={bb.options()}
+								/>
+							)}
+						</>
+					)}
+
+					{ showHover && (
+						<HoverTooltip
+							yAccessor={ema50.accessor()}
+							tooltipContent={tooltipContent([
+								{
+									label: "vol",
+									value: d => volFormat(d.volume),
+								}
+							].concat(showEma ? [
+								{
+									label: `${ema20.type()}(${ema20.options().windowSize})`,
+									value: d => ema20.accessor()(d) && numberFormat(ema20.accessor()(d)),
+									stroke: ema20.stroke()
+								},
+								{
+									label: `${ema50.type()}(${ema50.options().windowSize})`,
+									value: d => ema50.accessor()(d) && numberFormat(ema50.accessor()(d)),
+									stroke: ema50.stroke()
+								},
+								{
+									label: `${ema100.type()}(${ema100.options().windowSize})`,
+									value: d => ema100.accessor()(d) && numberFormat(ema100.accessor()(d)),
+									stroke: ema100.stroke()
+								},
+								{
+									label: `${ema250.type()}(${ema250.options().windowSize})`,
+									value: d => ema250.accessor()(d) && numberFormat(ema250.accessor()(d)),
+									stroke: ema250.stroke()
+								}
+							] : []).concat(showBoll ? [
+								{
+									label: 'Boll Bottom',
+									value: d => d.bb && numberFormat(d.bb.bottom),
+									stroke: bollStroke.bottom
+								},
+								{
+									label: 'Boll Middle',
+									value: d => d.bb && numberFormat(d.bb.middle),
+									stroke: bollStroke.middle
+								},
+								{
+									label: 'Boll Top',
+									value: d => d.bb && numberFormat(d.bb.top),
+									stroke: bollStroke.top
+								},
+							] : []))}
+							fontSize={13}
+						/>
+					)}
+					{!showHover && <CrossHairCursor />}
 				</Chart>
-				{ heights[1] && (
+				{ showVol && (
 					<Chart
 						id={2}
 						origin={(w, h) => [0, h - heights[1] - heights[2]]}
@@ -232,7 +374,7 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 						<BarSeries yAccessor={d => d.volume} {...appearance} />
 					</Chart>
 				)}
-				{ heights[2] && (
+				{ showRsi && (
 					<Chart
 						id={3}
 						yExtents={[0, 100]}
@@ -311,16 +453,19 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 	}
 }
 
-CandleStickChartWithHoverTooltip.propTypes = {
+HistoryChartCore.propTypes = {
 	data: PropTypes.array.isRequired,
 	width: PropTypes.number.isRequired,
 	ratio: PropTypes.number.isRequired,
-	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired
+	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	symbol: PropTypes.string.isRequired,
+	chartType: PropTypes.oneOf(["candlestick", "ohlc"]).isRequired,
+	showCfg: PropTypes.object.isRequired,
 };
 
-CandleStickChartWithHoverTooltip.defaultProps = {
+HistoryChartCore.defaultProps = {
 	type: "svg"
 };
-CandleStickChartWithHoverTooltip = fitWidth(CandleStickChartWithHoverTooltip);
+HistoryChartCore = fitWidth(HistoryChartCore);
 
-export default CandleStickChartWithHoverTooltip;
+export default HistoryChartCore;

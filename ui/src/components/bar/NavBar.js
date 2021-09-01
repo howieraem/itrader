@@ -15,7 +15,7 @@ const Clock = ({ date }) => (
 )
 
 const ClockMobile = ({ date }) => (
-  <div>{`${date.toLocaleTimeString()} +${0 - date.getTimezoneOffset() / 60}`}</div>
+  <div>{`${date.toLocaleTimeString()}`}</div>
 )
 
 const useStyles = makeStyles((theme) => ({

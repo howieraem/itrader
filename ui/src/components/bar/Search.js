@@ -83,7 +83,7 @@ export default function Search(props) {
           ref={params.InputProps.ref}
           inputProps={params.inputProps}
           autoFocus
-          placeholder="Search stock here"
+          placeholder="Find stock"
           classes={{
             root: classes.inputRoot,
             input: classes.inputInput,

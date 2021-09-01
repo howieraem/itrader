@@ -1,11 +1,7 @@
-
 import React from "react";
 import PropTypes from "prop-types";
-
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
-
-
 import { ChartCanvas, Chart } from "react-stockcharts";
 import {
 	BarSeries,
@@ -19,16 +15,14 @@ import {
 	MouseCoordinateX,
 	MouseCoordinateY,
 } from "react-stockcharts/lib/coordinates";
-
 import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
 import { OHLCTooltip } from "react-stockcharts/lib/tooltip";
 import { fitWidth } from "react-stockcharts/lib/helper";
 import { last } from "react-stockcharts/lib/utils";
-
 import { appearance, candlesAppearance } from "./Appearance";
 
 
-class CandleStickChartForDiscontinuousIntraDay extends React.Component {
+class MinuteChartCore extends React.Component {
 	render() {
 		const { type, data: initialData, symbol, width, ratio } = this.props;
 		const height = 450;
@@ -124,16 +118,17 @@ class CandleStickChartForDiscontinuousIntraDay extends React.Component {
 	}
 }
 
-CandleStickChartForDiscontinuousIntraDay.propTypes = {
+MinuteChartCore.propTypes = {
 	data: PropTypes.array.isRequired,
 	width: PropTypes.number.isRequired,
 	ratio: PropTypes.number.isRequired,
 	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	symbol: PropTypes.string.isRequired,
 };
 
-CandleStickChartForDiscontinuousIntraDay.defaultProps = {
+MinuteChartCore.defaultProps = {
 	type: "svg",
 };
-CandleStickChartForDiscontinuousIntraDay = fitWidth(CandleStickChartForDiscontinuousIntraDay);
+MinuteChartCore = fitWidth(MinuteChartCore);
 
-export default CandleStickChartForDiscontinuousIntraDay;
+export default MinuteChartCore;
