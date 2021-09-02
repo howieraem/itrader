@@ -4,6 +4,11 @@ import MinuteChartCore from './MinuteChartCore';
 import { getStockToday } from '../../utils/DataAPI';
 import LoadingIndicator from '../../common/LoadingIndicator';
 
+const changeScroll = () => {
+  let style = document.body.style.overflow;
+  document.body.style.overflow = style === 'hidden' ? 'auto' : 'hidden';
+}
+
 const getTimeout = (minuteInterval) => {
   const cur = new Date();
   return (minuteInterval - cur.getMinutes() % minuteInterval) * 60000 - cur.getSeconds() * 1000;
@@ -76,12 +81,15 @@ export default function MinuteChart(props) {
         {"Failed to fetch minute data. Please try refreshing the page, or check whether the stock is listed."}
       </header>
     ) : (
-      <>
+      <div
+        onMouseEnter={changeScroll}
+        onMouseLeave={changeScroll}
+      >
         <MinuteChartCore type="hybrid" data={data} symbol={symbol} />
         <div style={{ fontSize: 12, marginLeft: 5 }}>
           Due to data source limitations, minute chart can only cover a maximum of 7 days.
         </div>
-      </>
+      </div>
     ) : (
       <header className="Chart-holder">
         {"Loading chart..."}

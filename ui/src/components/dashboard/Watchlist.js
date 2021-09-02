@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
+import IconButton from "@material-ui/core/IconButton";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -113,15 +113,15 @@ export default function Watchlist(props) {
           <List component="nav" aria-label="profile watchlist">
             {pageRecords.map((row) => (
               <ListItem button key={row.i} onClick={() => handleWatchlistItemClick(row.i)}>
-                <ListItemText primary={row.symbol} />
-                <ListItemText primary={row.name} primaryTypographyProps={{ align: "left" }} />
+                <ListItemText primary={row.symbol} secondary={row.name} />
                 <ListItemSecondaryAction>
-                  <Button
-                    variant="contained"
-                    startIcon={<DeleteForeverIcon />}
+                  <IconButton
                     className={classes.removeButton}
                     onClick={() => handleRemove(row.i)}
-                  />
+                    style={{ borderRadius: 2, maxHeight: 40 }}
+                  >
+                    <DeleteForeverIcon />
+                  </IconButton>
                 </ListItemSecondaryAction>
               </ListItem>
             ))}

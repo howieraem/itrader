@@ -21,7 +21,7 @@ export default function Watchlists({ onSymbolClick }) {
   const classes = useStyles();
 
   return (
-    <Container maxWidth="xl" className={classes.container}>
+    <Container maxWidth="lg" className={classes.container}>
       <Paper className={classes.paper}>
         <Watchlist onSymbolClick={onSymbolClick} />
       </Paper>

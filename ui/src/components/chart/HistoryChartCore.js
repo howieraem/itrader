@@ -8,6 +8,7 @@ import {
 	BollingerSeries,
 	CandlestickSeries,
 	LineSeries,
+	MACDSeries,
 	OHLCSeries,
 	RSISeries,
 } from "react-stockcharts/lib/series";
@@ -16,12 +17,14 @@ import {
 	CrossHairCursor,
 	CurrentCoordinate,
 	EdgeIndicator,
+	MouseCoordinateX,
 	MouseCoordinateY
 } from "react-stockcharts/lib/coordinates";
 import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
 import {
 	BollingerBandTooltip,
 	HoverTooltip,
+	MACDTooltip,
 	MovingAverageTooltip,
 	OHLCTooltip,
 	RSITooltip,
@@ -30,13 +33,24 @@ import {
 	bollingerBand,
 	change,
 	ema,
+	macd,
 	rsi,
-	sma
+	sma,
 } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
 import { last } from "react-stockcharts/lib/utils";
 
-import { appearance, candlesAppearance, stroke, bollStroke } from "./Appearance";
+import {
+	appearance,
+	bollStroke,
+	candlesAppearance,
+	macdAppearance,
+	mouseEdgeAppearance,
+	ohlcStroke,
+	rsi1Stroke,
+	rsi2Stroke,
+	rsi3Stroke,
+} from "./Appearance";
 
 
 const dateFormat = timeFormat("%Y-%m-%d");
@@ -63,6 +77,10 @@ function tooltipContent(ys) {
 				{
 					label: "close",
 					value: currentItem.close && numberFormat(currentItem.close)
+				},
+				{
+					label: "vol",
+					value: currentItem.volume && volFormat(currentItem.volume).replace(/G/, "B")
 				}
 			]
 				.concat(
@@ -76,6 +94,75 @@ function tooltipContent(ys) {
 		};
 	};
 }
+
+const changeCalc = change();
+
+const ema20 = ema()
+	.id(0)
+	.options({ windowSize: 20 })
+	.merge((d, c) => {
+		d.ema20 = c;
+	})
+	.accessor(d => d.ema20);
+
+const ema50 = ema()
+	.id(1)
+	.options({ windowSize: 50 })
+	.merge((d, c) => {
+		d.ema50 = c;
+	})
+	.accessor(d => d.ema50);
+
+const ema100 = ema()
+	.id(2)
+	.options({ windowSize: 100 })
+	.merge((d, c) => {
+		d.ema100 = c;
+	})
+	.accessor(d => d.ema100);
+
+const ema250 = ema()
+	.id(5)
+	.options({ windowSize: 250 })
+	.merge((d, c) => {
+		d.ema250 = c;
+	})
+	.accessor(d => d.ema250);
+
+const macdCalc = macd()
+	.options({
+		fast: 12,
+		slow: 26,
+		signal: 9,
+	})
+	.merge((d, c) => {d.macd = c;})
+	.accessor(d => d.macd);
+
+const rsi1 = rsi()
+	.id(0)
+	.options({ windowSize: 7 })
+	.merge((d, c) => {d.rsi1 = c;})
+	.accessor(d => d.rsi1);
+
+const rsi2 = rsi()
+	.id(1)
+	.options({ windowSize: 14 })
+	.merge((d, c) => {d.rsi2 = c;})
+	.accessor(d => d.rsi2);
+
+const rsi3 = rsi()
+	.id(2)
+	.options({ windowSize: 21 })
+	.merge((d, c) => {d.rsi3 = c;})
+	.accessor(d => d.rsi3);
+
+const bb = bollingerBand()
+	.merge((d, c) => {d.bb = c;})
+	.accessor(d => d.bb);
+
+const xScaleProvider = discontinuousTimeScaleProvider.inputDateAccessor(d => d.date);
+
+const margin = { left: 50, right: 70, top: 10, bottom: 20 };
 
 class HistoryChartCore extends React.Component {
 	render() {
@@ -96,7 +183,8 @@ class HistoryChartCore extends React.Component {
 			showVol,
 			showMacd,
 			showRsi,
-			showHover
+			showHover,
+			showGrid,
 		} = showCfg;
 
 		if (initialData.length === 1) {
@@ -111,77 +199,18 @@ class HistoryChartCore extends React.Component {
 		const heights = [
 			300,	// main chart
 			100 * (showVol | 0),
-			// 100 * (showMacd | 0),
+			100 * (showMacd | 0),
 			100 * (showRsi | 0),
 		];
 		const height = heights.reduce((a, b) => a + b, 0) + 50;
 
-		const changeCalculator = change();
-
-		const ema20 = ema()
-			.id(0)
-			.options({ windowSize: 20 })
-			.merge((d, c) => {
-				d.ema20 = c;
-			})
-			.accessor(d => d.ema20);
-
-		const ema50 = ema()
-			.id(1)
-			.options({ windowSize: 50 })
-			.merge((d, c) => {
-				d.ema50 = c;
-			})
-			.accessor(d => d.ema50);
-
-		const ema100 = ema()
-			.id(2)
-			.options({ windowSize: 100 })
-			.merge((d, c) => {
-				d.ema100 = c;
-			})
-			.accessor(d => d.ema100);
-
-		const ema250 = ema()
-			.id(5)
-			.options({ windowSize: 250 })
-			.merge((d, c) => {
-				d.ema250 = c;
-			})
-			.accessor(d => d.ema250);
-
-		const rsi1 = rsi()
-			.id(0)
-			.options({ windowSize: 7 })
-			.merge((d, c) => {d.rsi1 = c;})
-			.accessor(d => d.rsi1);
-
-		const rsi2 = rsi()
-			.id(1)
-			.options({ windowSize: 14 })
-			.merge((d, c) => {d.rsi2 = c;})
-			.accessor(d => d.rsi2);
-
-		const rsi3 = rsi()
-			.id(2)
-			.options({ windowSize: 21 })
-			.merge((d, c) => {d.rsi3 = c;})
-			.accessor(d => d.rsi3);
-
-		const bb = bollingerBand()
-			.merge((d, c) => {d.bb = c;})
-			.accessor(d => d.bb);
-
-		const margin = { left: 50, right: 70, top: 10, bottom: 20 };
-
 		let calculatedData = initialData;
 		if (showEma)  calculatedData = ema250(ema100(ema50(ema20(calculatedData))));
-		if (chartType === "ohlc")  calculatedData = changeCalculator(calculatedData);
+		if (chartType === "ohlc")  calculatedData = changeCalc(calculatedData);
 		if (showBoll)  calculatedData = bb(calculatedData);
-		if (showRsi)  calculatedData = rsi3(rsi2(rsi1(calculatedData)))
+		if (showMacd)  calculatedData = macdCalc(calculatedData);
+		if (showRsi)  calculatedData = rsi3(rsi2(rsi1(calculatedData)));
 
-		const xScaleProvider = discontinuousTimeScaleProvider
-			.inputDateAccessor(d => d.date);
     const {
       data,
       xScale,
@@ -193,7 +222,6 @@ class HistoryChartCore extends React.Component {
 		const end = xAccessor(data[Math.max(0, data.length - 150)]);
 		const xExtents = [start, end];
 
-		const showGrid = true;
 		const yGrid = showGrid ? {
 			innerTickSize: -1 * (width - margin.left - margin.right),
 			tickStrokeDasharray: 'ShortDot',
@@ -209,7 +237,7 @@ class HistoryChartCore extends React.Component {
 
 		const mainChart = chartType === "candlestick" ?
 			<CandlestickSeries {...candlesAppearance} /> :
-			<OHLCSeries stroke={stroke} />;
+			<OHLCSeries stroke={ohlcStroke} />;
 
 		return (
       <ChartCanvas 
@@ -232,8 +260,8 @@ class HistoryChartCore extends React.Component {
 						d => [d.high, d.low], ema20.accessor(), ema50.accessor(), ema100.accessor(), ema250.accessor()
 					]}
 				>
-					<YAxis axisAt="right" orient="right" ticks={5} {...yGrid} />
 					<XAxis axisAt="bottom" orient="bottom" {...xGrid} />
+					<YAxis axisAt="left" orient="left" ticks={5} {...yGrid} />
 					{ mainChart }
 
 					{ showEma && (
@@ -249,6 +277,22 @@ class HistoryChartCore extends React.Component {
 						</>
 					)}
 
+					{ !showHover && (
+						<MouseCoordinateX
+							at="bottom"
+							orient="bottom"
+							displayFormat={dateFormat}
+							rectRadius={5}
+							{...mouseEdgeAppearance}
+						/>
+					)}
+
+					<MouseCoordinateY
+						at="right"
+						orient="right"
+						displayFormat={volFormat}
+						{...mouseEdgeAppearance}
+					/>
 					<EdgeIndicator
 						itemType="last"
 						orient="right"
@@ -314,12 +358,7 @@ class HistoryChartCore extends React.Component {
 					{ showHover && (
 						<HoverTooltip
 							yAccessor={ema50.accessor()}
-							tooltipContent={tooltipContent([
-								{
-									label: "vol",
-									value: d => volFormat(d.volume),
-								}
-							].concat(showEma ? [
+							tooltipContent={tooltipContent([].concat(showEma ? [
 								{
 									label: `${ema20.type()}(${ema20.options().windowSize})`,
 									value: d => ema20.accessor()(d) && numberFormat(ema20.accessor()(d)),
@@ -360,94 +399,108 @@ class HistoryChartCore extends React.Component {
 							fontSize={13}
 						/>
 					)}
-					{!showHover && <CrossHairCursor />}
 				</Chart>
+
 				{ showVol && (
 					<Chart
 						id={2}
-						origin={(w, h) => [0, h - heights[1] - heights[2]]}
+						origin={(w, h) => [0, h - heights[1] - heights[2] - heights[3]]}
 						height={heights[1]}
 						yExtents={d => d.volume}
 					>
 						<XAxis axisAt="bottom" orient="bottom" showTicks={false} />
 						<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")} />
 						<BarSeries yAccessor={d => d.volume} {...appearance} />
-					</Chart>
-				)}
-				{ showRsi && (
-					<Chart
-						id={3}
-						yExtents={[0, 100]}
-						height={heights[2]}
-						origin={(w, h) => [0, h - heights[2]]}
-					>
-						<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
-						<YAxis
-							axisAt="right"
-							orient="right"
-							tickValues={[30, 50, 70]}
-						/>
 						<MouseCoordinateY
 							at="right"
 							orient="right"
-							displayFormat={format(".2f")}
+							displayFormat={volFormat}
+							{...mouseEdgeAppearance}
+						/>
+					</Chart>
+				)}
+
+				{ showMacd && (
+					<Chart
+						id={3}
+						height={heights[2]}
+						yExtents={macdCalc.accessor()}
+						origin={(w, h) => [0, h - heights[2] - heights[3]]}
+						padding={{ top: 10, bottom: 10 }}
+					>
+						<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
+						<YAxis axisAt="right" orient="right" ticks={2} />
+						<MouseCoordinateY
+							at="right"
+							orient="right"
+							displayFormat={numberFormat}
+							{...mouseEdgeAppearance}
+						/>
+
+						<MACDSeries
+							yAccessor={d => d.macd}
+							{...macdAppearance}
+						/>
+						<MACDTooltip
+							origin={[-38, 15]}
+							yAccessor={d => d.macd}
+							options={macdCalc.options()}
+							appearance={macdAppearance}
+						/>
+					</Chart>
+				)}
+
+				{ showRsi && (
+					<Chart
+						id={4}
+						yExtents={[0, 100]}
+						height={heights[3]}
+						origin={(w, h) => [0, h - heights[3]]}
+					>
+						<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
+						<YAxis axisAt="right" orient="right" tickValues={[30, 50, 70]} />
+						<MouseCoordinateY
+							at="right"
+							orient="right"
+							displayFormat={numberFormat}
+							{...mouseEdgeAppearance}
 						/>
 
 						<RSISeries
 							yAccessor={d => d.rsi1}
-							stroke={{
-								line: "#000000",
-								top: "#B8C2CC",
-								middle: "#8795A1",
-								bottom: "#B8C2CC",
-								outsideThreshold: "#cd5b00",
-								insideThreshold: "#ff9740"
-							}}
+							stroke={rsi1Stroke}
 						/>
 						<RSISeries
 							yAccessor={d => d.rsi2}
-							stroke={{
-								line: "#000000",
-								top: "#B8C2CC",
-								middle: "#8795A1",
-								bottom: "#B8C2CC",
-								outsideThreshold: "#0051b3",
-								insideThreshold: "#529fff"
-							}}
+							stroke={rsi2Stroke}
 						/>
 						<RSISeries
 							yAccessor={d => d.rsi3}
-							stroke={{
-								line: "#000000",
-								top: "#B8C2CC",
-								middle: "#8795A1",
-								bottom: "#B8C2CC",
-								outsideThreshold: "#b300b3",
-								insideThreshold: "#ff66ff"
-							}}
+							stroke={rsi3Stroke}
 						/>
 
 						<RSITooltip
 							origin={[-38, 15]}
 							yAccessor={d => d.rsi1}
 							options={rsi1.options()}
-							labelFill={"#ff9740"}
+							labelFill={rsi1Stroke.insideThreshold}
 						/>
 						<RSITooltip
 							origin={[38, 15]}
 							yAccessor={d => d.rsi2}
 							options={rsi2.options()}
-							labelFill={"#529fff"}
+							labelFill={rsi2Stroke.insideThreshold}
 						/>
 						<RSITooltip
 							origin={[120, 15]}
 							yAccessor={d => d.rsi3}
 							options={rsi3.options()}
-							labelFill={"#ff66ff"}
+							labelFill={rsi3Stroke.insideThreshold}
 						/>
 					</Chart>
 				)}
 
+				<CrossHairCursor />
 			</ChartCanvas>
 		);
 	}
@@ -464,7 +517,7 @@ HistoryChartCore.propTypes = {
 };
 
 HistoryChartCore.defaultProps = {
-	type: "svg"
+	type: "hybrid"
 };
 HistoryChartCore = fitWidth(HistoryChartCore);
 

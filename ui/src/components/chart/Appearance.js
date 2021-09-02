@@ -6,23 +6,12 @@ export const appearance = {
 }
 
 export const candlesAppearance = {
-  // wickStroke: "#000000",
   fill: appearance.fill,
-  // stroke: "#000000",
-  // candleStrokeWidth: 1,
-  // widthRatio: 0.8,
   opacity: appearance.opacity,
 };
 
-export const stroke = d => {
+export const ohlcStroke = d => {
   return (d.absoluteChange !== undefined && d.absoluteChange !== null) ? d.absoluteChange > 0 ? G : R : "#000000";
-}
-
-export const rsiStroke = {
-  line: "#000000",
-  top: "#B8C2CC",
-  middle: "#8795A1",
-  bottom: "#B8C2CC",
 }
 
 export const bollStroke = {
@@ -31,3 +20,47 @@ export const bollStroke = {
   bottom: "#b17559",
   fill: "#b4b246"
 };
+
+export const macdAppearance = {
+  stroke: {
+    macd: "#FF0000",
+    signal: "#00F300",
+  },
+  fill: {
+    divergence: "#4682B4"
+  },
+};
+
+export const mouseEdgeAppearance = {
+  textFill: "#542605",
+  stroke: "#05233B",
+  strokeOpacity: 1,
+  strokeWidth: 3,
+  arrowWidth: 5,
+  fill: "#BCDEFA",
+};
+
+const rsiStroke = {
+  line: "#000000",
+  top: "#B8C2CC",
+  middle: "#8795A1",
+  bottom: "#B8C2CC",
+}
+
+export const rsi1Stroke = {
+  outsideThreshold: "#cd5b00",
+  insideThreshold: "#ff9740",
+  ...rsiStroke
+}
+
+export const rsi2Stroke = {
+  outsideThreshold: "#0051b3",
+  insideThreshold: "#529fff",
+  ...rsiStroke
+}
+
+export const rsi3Stroke = {
+  outsideThreshold: "#b300b3",
+  insideThreshold: "#ff66ff",
+  ...rsiStroke
+}

@@ -21,14 +21,20 @@ import { fitWidth } from "react-stockcharts/lib/helper";
 import { last } from "react-stockcharts/lib/utils";
 import { appearance, candlesAppearance } from "./Appearance";
 
+const height = 450;
+const xScaleProvider = discontinuousTimeScaleProvider.inputDateAccessor(d => d.date);
+const margin = { left: 50, right: 50, top: 10, bottom: 20 };
 
 class MinuteChartCore extends React.Component {
 	render() {
-		const { type, data: initialData, symbol, width, ratio } = this.props;
-		const height = 450;
+		const {
+			type,
+			data: initialData,
+			symbol,
+			width,
+			ratio
+		} = this.props;
 
-		const xScaleProvider = discontinuousTimeScaleProvider
-			.inputDateAccessor(d => d.date);
 		const {
 			data,
 			xScale,
@@ -40,7 +46,6 @@ class MinuteChartCore extends React.Component {
 		const end = xAccessor(data[Math.max(0, data.length - 150)]);
 		const xExtents = [start, end];
 
-		const margin = { left: 50, right: 50, top: 10, bottom: 20 };
 		const showGrid = true;
 		const yGrid = showGrid ? {
 			innerTickSize: -1 * (width - margin.left - margin.right),
@@ -74,7 +79,7 @@ class MinuteChartCore extends React.Component {
 					yExtents={[d => [d.high, d.low]]}
 				>
 					<XAxis axisAt="bottom" orient="bottom" {...xGrid} />
-					<YAxis axisAt="right" orient="right" ticks={5} {...yGrid} />
+					<YAxis axisAt="left" orient="left" ticks={5} {...yGrid} />
 
 					<MouseCoordinateX
 						rectWidth={60}
@@ -101,16 +106,22 @@ class MinuteChartCore extends React.Component {
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")} />
 
 					<MouseCoordinateY
-						at="left"
-						orient="left"
+						at="right"
+						orient="right"
 						displayFormat={format(".4s")} />
 
 					<BarSeries yAccessor={d => d.volume} {...appearance} />
 
 					<CurrentCoordinate yAccessor={d => d.volume} fill="#9B0A47" />
 
-					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
-						yAccessor={d => d.volume} displayFormat={format(".4s")} fill="#0F0F0F"/>
+					<EdgeIndicator
+						itemType="last"
+						orient="right"
+						edgeAt="right"
+						yAccessor={d => d.volume}
+						displayFormat={format(".4s")}
+						{...appearance}
+					/>
 				</Chart>
 				<CrossHairCursor />
 			</ChartCanvas>
@@ -127,7 +138,7 @@ MinuteChartCore.propTypes = {
 };
 
 MinuteChartCore.defaultProps = {
-	type: "svg",
+	type: "hybrid",
 };
 MinuteChartCore = fitWidth(MinuteChartCore);
 

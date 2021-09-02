@@ -4,6 +4,10 @@ import HistoryChartCore from './HistoryChartCore';
 import { getStockHistory } from '../../utils/DataAPI';
 import LoadingIndicator from '../../common/LoadingIndicator';
 
+const changeScroll = () => {
+  let style = document.body.style.overflow;
+  document.body.style.overflow = style === 'hidden' ? 'auto' : 'hidden';
+}
 
 export default function HistoryChart(props) {
   const { symbol, interval, latestTime, latestPrice } = props;
@@ -70,21 +74,27 @@ export default function HistoryChart(props) {
 
   return (
     data ? (
-      <HistoryChartCore
-        type="hybrid"
-        data={data}
-        symbol={symbol}
-        chartType="candlestick"
-        showCfg={{
-          showSma: false,
-          showEma: true,
-          showBoll: true,
-          showVol: false,
-          showMacd: false,
-          showRsi: true,
-          showHover: true,
-        }}
-      />
+      <div
+        onMouseEnter={changeScroll}
+        onMouseLeave={changeScroll}
+      >
+        <HistoryChartCore
+          type="hybrid"
+          data={data}
+          symbol={symbol}
+          chartType="candlestick"
+          showCfg={{
+            showSma: false,
+            showEma: true,
+            showBoll: true,
+            showVol: true,
+            showMacd: true,
+            showRsi: true,
+            showHover: true,
+            showGrid: true,
+          }}
+        />
+      </div>
     ) : (
       <header className="Chart-holder">
         {"Loading chart..."}
