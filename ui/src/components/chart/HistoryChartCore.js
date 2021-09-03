@@ -210,11 +210,11 @@ class HistoryChartCore extends React.Component {
 			symbol,
 			width,
 			ratio,
-			chartType,
 			showCfg
 		} = this.props;
 
 		const {
+			chartType,
 			showSma,
 			showEma,
 			showBoll,
@@ -635,7 +635,6 @@ HistoryChartCore.propTypes = {
 	ratio: PropTypes.number.isRequired,
 	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 	symbol: PropTypes.string.isRequired,
-	chartType: PropTypes.oneOf(["candlestick", "ohlc"]).isRequired,
 	showCfg: PropTypes.object.isRequired,
 };
 

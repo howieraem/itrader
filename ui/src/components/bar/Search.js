@@ -17,18 +17,14 @@ const useStyles = makeStyles((theme) => ({
     },
     marginRight: theme.spacing(2),
     marginLeft: 0,
-    width: '46%',
+    width: '50%',
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(3),
-      width: '28ch',
-    },
-    [theme.breakpoints.up('lg')]: {
-      marginLeft: theme.spacing(3),
-      width: '33ch',
+      width: '35ch',
     },
   },
   // searchOptions: {
-    
+  //
   // },
   inputRoot: {
     color: 'inherit',
@@ -89,7 +85,7 @@ export default function Search(props) {
             input: classes.inputInput,
           }}
           endAdornment={
-            <SearchIcon style={{ marginLeft: 10, marginRight: 5 }} />
+            <SearchIcon style={{ marginLeft: 25, marginRight: 5 }} />
           }
         />
       )}

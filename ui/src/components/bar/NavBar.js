@@ -10,14 +10,6 @@ import MenuIcon from "@material-ui/icons/Menu";
 import Search from './Search';
 import DrawerMenu from "./DrawerMenu";
 
-const Clock = ({ date }) => (
-  <div>{`${date.toDateString()} ${date.toLocaleTimeString()} UTC+${0 - date.getTimezoneOffset() / 60}`}</div>
-)
-
-const ClockMobile = ({ date }) => (
-  <div>{`${date.toLocaleTimeString()}`}</div>
-)
-
 const useStyles = makeStyles((theme) => ({
   bar: {
     backgroundColor: theme.palette.type === 'light' ?
@@ -69,22 +61,11 @@ const useStyles = makeStyles((theme) => ({
 export default function NavBar(props) {
   const { authenticated, curUser, onLogout, onSearch } = props;
   const classes = useStyles();
-  const [date, setDate] = React.useState(new Date());
   const [drawerOpen, setDrawerOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
   };
-
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      setDate(new Date());
-    }, 1000);
-  
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
 
   return (
     <div>
@@ -105,15 +86,7 @@ export default function NavBar(props) {
           </Typography>
 
           <div className={classes.grow} />
-          <Search onSearch={onSearch} /> 
-          <div className={classes.grow} />
-
-          <div className={classes.sectionDesktop}>
-            <Clock date={date} />
-          </div>
-          <div className={classes.sectionMobile}>
-            <ClockMobile date={date} />
-          </div>
+          <Search onSearch={onSearch} />
           <div className={classes.grow} />
 
           <div className={classes.sectionDesktop}>

@@ -1,11 +1,15 @@
 import './ChartHolder.css';
 import React from 'react';
+import { useTheme } from "@material-ui/core/styles";
 import HistoryChartCore from './HistoryChartCore';
 import { getStockHistory } from '../../utils/DataAPI';
 import LoadingIndicator from '../../common/LoadingIndicator';
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormGroup from "@material-ui/core/FormGroup";
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 
 const changeScroll = () => {
   let style = document.body.style.overflow;
@@ -14,9 +18,12 @@ const changeScroll = () => {
 
 export default function HistoryChart(props) {
   const { symbol, interval, latestTime, latestPrice } = props;
-  const [data, setData] = React.useState(null);
+  const chartCfgKey = `${symbol}_${interval}_chartCfg`;
+  const theme = useTheme();
 
-  const [state, setState] = React.useState({
+  const [data, setData] = React.useState(null);
+  const [state, setState] = React.useState(JSON.parse(localStorage.getItem(chartCfgKey)) || {
+    chartType: "candlestick",
     showSma: false,
     showEma: true,
     showBoll: false,
@@ -27,12 +34,20 @@ export default function HistoryChart(props) {
     showGrid: true,
   });
 
-  const handleChange = (event) => {
-    setState({ ...state, [event.target.name]: event.target.checked });
+  const handleChartTypeChange = (event) => {
+    const newState = { ...state, chartType: event.target.value };
+    setState(newState);
+    localStorage.setItem(chartCfgKey, JSON.stringify(newState));
+  };
+
+  const handleCheckboxChange = (event) => {
+    const newState = { ...state, [event.target.name]: event.target.checked };
+    setState(newState);
+    localStorage.setItem(chartCfgKey, JSON.stringify(newState));
   };
 
   React.useEffect(() => {
-    const symbolKey = symbol + "_" + interval;
+    const symbolKey = `${symbol}_${interval}`;
     const symbolCache = localStorage.getItem(symbolKey);
     if (symbolCache) {
       let data = JSON.parse(symbolCache);
@@ -42,7 +57,7 @@ export default function HistoryChart(props) {
       });
       const lastCachedDate = data[data.length - 1].date;
       const cur = new Date();
-      const isWeekend = (cur.getDate() - lastCachedDate.getDate() < 2) && (cur.getDay() === 6 || cur.getDay() === 0);
+      const isWeekend = (cur.getDate() - lastCachedDate.getDate() < 2) && (cur.getDay() % 6 === 0);
       if (isWeekend || lastCachedDate.getDate() === cur.getDate()) {
         setData(data);
         return;
@@ -92,116 +107,141 @@ export default function HistoryChart(props) {
 
   return (
     data ? (
-      <div
-        onMouseEnter={changeScroll}
-        onMouseLeave={changeScroll}
-      >
-        <FormGroup row>
+      <>
+        <FormGroup row style={{ paddingLeft: 10 }}>
+          <FormControl
+            style={{
+              minWidth: 100,
+              marginRight: theme.spacing(2),
+            }}
+          >
+            <Select
+              value={state.chartType}
+              onChange={handleChartTypeChange}
+              displayEmpty
+              style={{ fontSize: "0.8rem" }}
+            >
+              <MenuItem value="candlestick" style={{ fontSize: "0.8rem" }}>Candle Stick</MenuItem>
+              <MenuItem value="ohlc" style={{ fontSize: "0.8rem" }}>OHLC</MenuItem>
+            </Select>
+          </FormControl>
           <FormControlLabel
             control={
               <Checkbox
                 checked={state.showSma}
-                onChange={handleChange}
+                onChange={handleCheckboxChange}
                 name="showSma"
                 color="primary"
-                style={{ transform: "scale(0.8)" }}
+                style={{ transform: "scale(0.8)", padding: 3 }}
               />
             }
             label="SMA"
+            style={{ marginRight: 20 }}
           />
           <FormControlLabel
             control={
               <Checkbox
                 checked={state.showEma}
-                onChange={handleChange}
+                onChange={handleCheckboxChange}
                 name="showEma"
                 color="primary"
-                style={{ transform: "scale(0.8)" }}
+                style={{ transform: "scale(0.8)", padding: 3 }}
               />
             }
             label="EMA"
+            style={{ marginRight: 20 }}
           />
           <FormControlLabel
             control={
               <Checkbox
                 checked={state.showBoll}
-                onChange={handleChange}
+                onChange={handleCheckboxChange}
                 name="showBoll"
                 color="primary"
-                style={{ transform: "scale(0.8)" }}
+                style={{ transform: "scale(0.8)", padding: 3 }}
               />
             }
             label="BOLL"
+            style={{ marginRight: 20 }}
           />
           <FormControlLabel
             control={
               <Checkbox
                 checked={state.showVol}
-                onChange={handleChange}
+                onChange={handleCheckboxChange}
                 name="showVol"
                 color="primary"
-                style={{ transform: "scale(0.8)" }}
+                style={{ transform: "scale(0.8)", padding: 3 }}
               />
             }
             label="VOL"
+            style={{ marginRight: 20 }}
           />
           <FormControlLabel
             control={
               <Checkbox
                 checked={state.showMacd}
-                onChange={handleChange}
+                onChange={handleCheckboxChange}
                 name="showMacd"
                 color="primary"
-                style={{ transform: "scale(0.8)" }}
+                style={{ transform: "scale(0.8)", padding: 3 }}
               />
             }
             label="MACD"
+            style={{ marginRight: 20 }}
           />
           <FormControlLabel
             control={
               <Checkbox
                 checked={state.showRsi}
-                onChange={handleChange}
+                onChange={handleCheckboxChange}
                 name="showRsi"
                 color="primary"
-                style={{ transform: "scale(0.8)" }}
+                style={{ transform: "scale(0.8)", padding: 3 }}
               />
             }
             label="RSI"
+            style={{ marginRight: 20 }}
           />
           <FormControlLabel
             control={
               <Checkbox
                 checked={state.showHover}
-                onChange={handleChange}
+                onChange={handleCheckboxChange}
                 name="showHover"
                 color="primary"
-                style={{ transform: "scale(0.8)" }}
+                style={{ transform: "scale(0.8)", padding: 3 }}
               />
             }
             label="Hover Tool"
+            style={{ marginRight: 20 }}
           />
           <FormControlLabel
             control={
               <Checkbox
                 checked={state.showGrid}
-                onChange={handleChange}
+                onChange={handleCheckboxChange}
                 name="showGrid"
                 color="primary"
-                style={{ transform: "scale(0.8)" }}
+                style={{ transform: "scale(0.8)", padding: 3 }}
               />
             }
             label="Grid"
+            style={{ marginRight: 20 }}
           />
         </FormGroup>
-        <HistoryChartCore
-          type="hybrid"
-          data={data}
-          symbol={symbol}
-          chartType="candlestick"
-          showCfg={state}
-        />
-      </div>
+        <div
+          onMouseEnter={changeScroll}
+          onMouseLeave={changeScroll}
+        >
+          <HistoryChartCore
+            type="hybrid"
+            data={data}
+            symbol={symbol}
+            showCfg={state}
+          />
+        </div>
+      </>
     ) : (
       <header className="Chart-holder">
         {"Loading chart..."}

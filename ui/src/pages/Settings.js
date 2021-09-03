@@ -2,7 +2,6 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
-import ChartSettings from "../components/settings/ChartSettings";
 import PasswordSetting from "../components/settings/Password";
 import Profile from "../components/settings/Profile";
 
@@ -37,12 +36,6 @@ export default function Settings(props) {
           xs={12}
         >
           <PasswordSetting {...props} />
-        </Grid>
-        <Grid
-          item
-          xs={12}
-        >
-          <ChartSettings {...props} />
         </Grid>
       </Grid>
     </Container>

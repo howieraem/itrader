@@ -1,4 +1,5 @@
 import React from 'react';
+import { withWidth } from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -33,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
   title: {
     display: 'flex',
     flexDirection: 'row',
+    flexWrap: "wrap",
   },
   grow: {
     flexGrow: 1,
@@ -45,7 +47,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function TradeTable({ rowsPerPageOptions }) {
+function TradeTable({ width, rowsPerPageOptions }) {
+  const isScreenMidUp = /md|lg|xl/.test(width);
   const pageRowsOpts = rowsPerPageOptions || [5, 10, 20];
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
@@ -76,15 +79,16 @@ export default function TradeTable({ rowsPerPageOptions }) {
 
   return (
     <React.Fragment>
-      <Typography 
-        component="h2" 
-        variant="h6" 
-        color="primary" 
-        gutterBottom
-        className={classes.title}
-      >
-        Recent Trades
-        <div className={classes.grow} />
+      <div className={classes.title}>
+        <Typography
+          component="h2"
+          variant="h6"
+          color="primary"
+          gutterBottom
+          style={{ flex: 1, minWidth: 150 }}
+        >
+          Recent Trades
+        </Typography>
         <TablePagination
           component="div"
           count={numOfRecords}
@@ -93,8 +97,9 @@ export default function TradeTable({ rowsPerPageOptions }) {
           rowsPerPage={rowsPerPage}
           onChangeRowsPerPage={handleChangeRowsPerPage}   // onRowsPerPageChange for Material UI ^5
           rowsPerPageOptions={pageRowsOpts}
+          style={{ paddingLeft: 0 }}
         />
-      </Typography>
+      </div>
       {numOfRecords ? (
         <>
           <Table size="small">
@@ -102,7 +107,7 @@ export default function TradeTable({ rowsPerPageOptions }) {
               <TableRow>
                 <TableCell>Time</TableCell>
                 <TableCell>Symbol</TableCell>
-                <TableCell>Action</TableCell>
+                {isScreenMidUp && <TableCell>Action</TableCell>}
                 <TableCell align="right">Quantity</TableCell>
                 <TableCell align="right">Price (USD)</TableCell>
                 <TableCell align="right">Cash In/Out (USD)</TableCell>
@@ -114,7 +119,7 @@ export default function TradeTable({ rowsPerPageOptions }) {
                 <TableRow key={row.i} className={row.isBuy ? classes.rowBuy : classes.rowSell}>
                   <TableCell>{row.time}</TableCell>
                   <TableCell>{row.symbol}</TableCell>
-                  <TableCell>{row.action}</TableCell>
+                  {isScreenMidUp && <TableCell>{row.action}</TableCell>}
                   <TableCell align="right">{row.quantity}</TableCell>
                   <TableCell align="right">{row.price}</TableCell>
                   <TableCell align="right">{row.cashChange}</TableCell>
@@ -130,3 +135,5 @@ export default function TradeTable({ rowsPerPageOptions }) {
     </React.Fragment>
   );
 }
+
+export default withWidth()(TradeTable);
