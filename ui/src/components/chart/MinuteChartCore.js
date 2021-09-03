@@ -23,7 +23,7 @@ import { appearance, candlesAppearance } from "./Appearance";
 
 const height = 450;
 const xScaleProvider = discontinuousTimeScaleProvider.inputDateAccessor(d => d.date);
-const margin = { left: 50, right: 50, top: 10, bottom: 20 };
+const margin = { left: 50, right: 70, top: 10, bottom: 20 };
 
 class MinuteChartCore extends React.Component {
 	render() {
@@ -79,7 +79,7 @@ class MinuteChartCore extends React.Component {
 					yExtents={[d => [d.high, d.low]]}
 				>
 					<XAxis axisAt="bottom" orient="bottom" {...xGrid} />
-					<YAxis axisAt="left" orient="left" ticks={5} {...yGrid} />
+					<YAxis axisAt="right" orient="right" ticks={5} {...yGrid} />
 
 					<MouseCoordinateX
 						rectWidth={60}
@@ -103,7 +103,7 @@ class MinuteChartCore extends React.Component {
 					height={100} origin={(w, h) => [0, h - 100]}
 				>
           <XAxis axisAt="bottom" orient="bottom" showTicks={false} />
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")} />
+					<YAxis axisAt="right" orient="right" ticks={5} tickFormat={format(".2s")} />
 
 					<MouseCoordinateY
 						at="right"

@@ -15,6 +15,13 @@ const theme = createMuiTheme({
       contrastText: '#eeeeee',
     }
   },
+  overrides: {
+    MuiFormControlLabel: {
+      label: {
+        fontSize: '0.8rem',
+      }
+    }
+  }
 })
 
 export default theme;

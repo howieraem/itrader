@@ -95,10 +95,51 @@ function tooltipContent(ys) {
 	};
 }
 
-const changeCalc = change();
+const calcChange = change();
+
+const sma5 = sma()
+	.options({ windowSize: 5 })
+	.merge((d, c) => {
+		d.sma5 = c;
+	})
+	.accessor(d => d.sma5);
+
+const sma20 = sma()
+	.options({ windowSize: 20 })
+	.merge((d, c) => {
+		d.sma20 = c;
+	})
+	.accessor(d => d.sma20);
+
+const sma50 = sma()
+	.options({ windowSize: 50 })
+	.merge((d, c) => {
+		d.sma50 = c;
+	})
+	.accessor(d => d.sma50);
+
+const sma100 = sma()
+	.options({ windowSize: 100 })
+	.merge((d, c) => {
+		d.sma100 = c;
+	})
+	.accessor(d => d.sma100);
+
+const sma250 = sma()
+	.options({ windowSize: 250 })
+	.merge((d, c) => {
+		d.sma250 = c;
+	})
+	.accessor(d => d.sma250);
+
+const ema5 = ema()
+	.options({ windowSize: 5 })
+	.merge((d, c) => {
+		d.ema5 = c;
+	})
+	.accessor(d => d.ema5);
 
 const ema20 = ema()
-	.id(0)
 	.options({ windowSize: 20 })
 	.merge((d, c) => {
 		d.ema20 = c;
@@ -106,7 +147,6 @@ const ema20 = ema()
 	.accessor(d => d.ema20);
 
 const ema50 = ema()
-	.id(1)
 	.options({ windowSize: 50 })
 	.merge((d, c) => {
 		d.ema50 = c;
@@ -114,7 +154,6 @@ const ema50 = ema()
 	.accessor(d => d.ema50);
 
 const ema100 = ema()
-	.id(2)
 	.options({ windowSize: 100 })
 	.merge((d, c) => {
 		d.ema100 = c;
@@ -122,14 +161,17 @@ const ema100 = ema()
 	.accessor(d => d.ema100);
 
 const ema250 = ema()
-	.id(5)
 	.options({ windowSize: 250 })
 	.merge((d, c) => {
 		d.ema250 = c;
 	})
 	.accessor(d => d.ema250);
 
-const macdCalc = macd()
+const bb = bollingerBand()
+	.merge((d, c) => {d.bb = c;})
+	.accessor(d => d.bb);
+
+const calcMacd = macd()
 	.options({
 		fast: 12,
 		slow: 26,
@@ -155,10 +197,6 @@ const rsi3 = rsi()
 	.options({ windowSize: 21 })
 	.merge((d, c) => {d.rsi3 = c;})
 	.accessor(d => d.rsi3);
-
-const bb = bollingerBand()
-	.merge((d, c) => {d.bb = c;})
-	.accessor(d => d.bb);
 
 const xScaleProvider = discontinuousTimeScaleProvider.inputDateAccessor(d => d.date);
 
@@ -205,10 +243,11 @@ class HistoryChartCore extends React.Component {
 		const height = heights.reduce((a, b) => a + b, 0) + 50;
 
 		let calculatedData = initialData;
-		if (showEma)  calculatedData = ema250(ema100(ema50(ema20(calculatedData))));
-		if (chartType === "ohlc")  calculatedData = changeCalc(calculatedData);
+		if (chartType === "ohlc")  calculatedData = calcChange(calculatedData);
+		if (showSma)  calculatedData = sma250(sma100(sma50(sma20(sma5(calculatedData)))));
+		if (showEma)  calculatedData = ema250(ema100(ema50(ema20(ema5(calculatedData)))));
 		if (showBoll)  calculatedData = bb(calculatedData);
-		if (showMacd)  calculatedData = macdCalc(calculatedData);
+		if (showMacd)  calculatedData = calcMacd(calculatedData);
 		if (showRsi)  calculatedData = rsi3(rsi2(rsi1(calculatedData)));
 
     const {
@@ -257,19 +296,36 @@ class HistoryChartCore extends React.Component {
 					id={1}
 					height={heights[0]}
 					yExtents={[
-						d => [d.high, d.low], ema20.accessor(), ema50.accessor(), ema100.accessor(), ema250.accessor()
+						d => [d.high, d.low], sma250.accessor(), ema250.accessor(), bb.accessor()
 					]}
 				>
 					<XAxis axisAt="bottom" orient="bottom" {...xGrid} />
-					<YAxis axisAt="left" orient="left" ticks={5} {...yGrid} />
+					<YAxis axisAt="right" orient="right" ticks={5} {...yGrid} />
 					{ mainChart }
+
+					{ showSma && (
+						<>
+							<LineSeries yAccessor={sma5.accessor()} stroke={sma5.stroke()} />
+							<LineSeries yAccessor={sma20.accessor()} stroke={sma20.stroke()} />
+							<LineSeries yAccessor={sma50.accessor()} stroke={sma50.stroke()} />
+							<LineSeries yAccessor={sma100.accessor()} stroke={sma100.stroke()} />
+							<LineSeries yAccessor={sma250.accessor()} stroke={sma250.stroke()} />
+							<CurrentCoordinate yAccessor={sma5.accessor()} fill={sma5.stroke()} />
+							<CurrentCoordinate yAccessor={sma20.accessor()} fill={sma20.stroke()} />
+							<CurrentCoordinate yAccessor={sma50.accessor()} fill={sma50.stroke()} />
+							<CurrentCoordinate yAccessor={sma100.accessor()} fill={sma100.stroke()} />
+							<CurrentCoordinate yAccessor={sma250.accessor()} fill={sma250.stroke()} />
+						</>
+					)}
 
 					{ showEma && (
 						<>
+							<LineSeries yAccessor={ema5.accessor()} stroke={ema5.stroke()} />
 							<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()} />
 							<LineSeries yAccessor={ema50.accessor()} stroke={ema50.stroke()} />
 							<LineSeries yAccessor={ema100.accessor()} stroke={ema100.stroke()} />
 							<LineSeries yAccessor={ema250.accessor()} stroke={ema250.stroke()} />
+							<CurrentCoordinate yAccessor={ema5.accessor()} fill={ema5.stroke()} />
 							<CurrentCoordinate yAccessor={ema20.accessor()} fill={ema20.stroke()} />
 							<CurrentCoordinate yAccessor={ema50.accessor()} fill={ema50.stroke()} />
 							<CurrentCoordinate yAccessor={ema100.accessor()} fill={ema100.stroke()} />
@@ -307,7 +363,44 @@ class HistoryChartCore extends React.Component {
 							<MovingAverageTooltip
 								origin={[-38, 15]}
 								options={
-									showEma ? [
+									[].concat(showSma ? [
+										{
+											yAccessor: sma5.accessor(),
+											type: "SMA",
+											stroke: sma5.stroke(),
+											windowSize: sma5.options().windowSize,
+										},
+										{
+											yAccessor: sma20.accessor(),
+											type: "SMA",
+											stroke: sma20.stroke(),
+											windowSize: sma20.options().windowSize,
+										},
+										{
+											yAccessor: sma50.accessor(),
+											type: "SMA",
+											stroke: sma50.stroke(),
+											windowSize: sma50.options().windowSize,
+										},
+										{
+											yAccessor: sma100.accessor(),
+											type: "SMA",
+											stroke: sma100.stroke(),
+											windowSize: sma100.options().windowSize,
+										},
+										{
+											yAccessor: sma250.accessor(),
+											type: "SMA",
+											stroke: sma250.stroke(),
+											windowSize: sma250.options().windowSize,
+										},
+									] : []).concat(showEma ? [
+										{
+											yAccessor: ema5.accessor(),
+											type: "EMA",
+											stroke: ema5.stroke(),
+											windowSize: ema5.options().windowSize,
+										},
 										{
 											yAccessor: ema20.accessor(),
 											type: "EMA",
@@ -332,11 +425,11 @@ class HistoryChartCore extends React.Component {
 											stroke: ema250.stroke(),
 											windowSize: ema250.options().windowSize,
 										},
-									] : []}
+									] : [])
+								}
 							/>
 						</>
 					)}
-
 
 					{ showBoll && (
 						<>
@@ -347,7 +440,7 @@ class HistoryChartCore extends React.Component {
 							/>
 							{ !showHover && (
 								<BollingerBandTooltip
-									origin={[-38, showEma ? 60 : 15]}
+									origin={[-38, showSma || showEma ? 60 : 25]}
 									yAccessor={d => d.bb}
 									options={bb.options()}
 								/>
@@ -357,8 +450,38 @@ class HistoryChartCore extends React.Component {
 
 					{ showHover && (
 						<HoverTooltip
-							yAccessor={ema50.accessor()}
-							tooltipContent={tooltipContent([].concat(showEma ? [
+							tooltipContent={tooltipContent([].concat(showSma ? [
+								{
+									label: `${sma5.type()}(${sma5.options().windowSize})`,
+									value: d => sma5.accessor()(d) && numberFormat(sma5.accessor()(d)),
+									stroke: sma5.stroke()
+								},
+								{
+									label: `${sma20.type()}(${sma20.options().windowSize})`,
+									value: d => sma20.accessor()(d) && numberFormat(sma20.accessor()(d)),
+									stroke: sma20.stroke()
+								},
+								{
+									label: `${sma50.type()}(${sma50.options().windowSize})`,
+									value: d => sma50.accessor()(d) && numberFormat(sma50.accessor()(d)),
+									stroke: sma50.stroke()
+								},
+								{
+									label: `${sma100.type()}(${sma100.options().windowSize})`,
+									value: d => sma100.accessor()(d) && numberFormat(sma100.accessor()(d)),
+									stroke: sma100.stroke()
+								},
+								{
+									label: `${sma250.type()}(${sma250.options().windowSize})`,
+									value: d => sma250.accessor()(d) && numberFormat(sma250.accessor()(d)),
+									stroke: sma250.stroke()
+								}
+							] : []).concat(showEma ? [
+								{
+									label: `${ema5.type()}(${ema5.options().windowSize})`,
+									value: d => ema5.accessor()(d) && numberFormat(ema5.accessor()(d)),
+									stroke: ema5.stroke()
+								},
 								{
 									label: `${ema20.type()}(${ema20.options().windowSize})`,
 									value: d => ema20.accessor()(d) && numberFormat(ema20.accessor()(d)),
@@ -409,7 +532,7 @@ class HistoryChartCore extends React.Component {
 						yExtents={d => d.volume}
 					>
 						<XAxis axisAt="bottom" orient="bottom" showTicks={false} />
-						<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")} />
+						<YAxis axisAt="right" orient="right" ticks={5} tickFormat={format(".2s")} />
 						<BarSeries yAccessor={d => d.volume} {...appearance} />
 						<MouseCoordinateY
 							at="right"
@@ -424,12 +547,12 @@ class HistoryChartCore extends React.Component {
 					<Chart
 						id={3}
 						height={heights[2]}
-						yExtents={macdCalc.accessor()}
+						yExtents={calcMacd.accessor()}
 						origin={(w, h) => [0, h - heights[2] - heights[3]]}
 						padding={{ top: 10, bottom: 10 }}
 					>
 						<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
-						<YAxis axisAt="right" orient="right" ticks={2} />
+						<YAxis axisAt="right" orient="right" ticks={1} />
 						<MouseCoordinateY
 							at="right"
 							orient="right"
@@ -444,7 +567,7 @@ class HistoryChartCore extends React.Component {
 						<MACDTooltip
 							origin={[-38, 15]}
 							yAccessor={d => d.macd}
-							options={macdCalc.options()}
+							options={calcMacd.options()}
 							appearance={macdAppearance}
 						/>
 					</Chart>
