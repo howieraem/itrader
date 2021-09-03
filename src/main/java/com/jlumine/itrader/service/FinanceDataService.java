@@ -22,6 +22,7 @@ public class FinanceDataService {
     private static final String URL_BASIC = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=%s";
     private static final String URL_SNAPSHOT = "https://query2.finance.yahoo.com/v10/finance/quoteSummary/%s?modules=%s";
     private static final String URL_HISTORY = "https://query1.finance.yahoo.com/v7/finance/download/%s?period1=%s&period2=%s&interval=%s&events=%s&includeAdjustedClose=true";
+    private static final String URL_HISTORY_1D = URL_HISTORY + "&range=10y";
     private static final String URL_HISTORY_INTRADAY = "https://query1.finance.yahoo.com/v8/finance/chart/%s?useYfid=true&interval=%s&range=%s&includePrePost=%s";
     private static final String URL_HISTORY_ADV = "https://query1.finance.yahoo.com/v8/finance/chart/%s?useYfid=true&period1=%s&period2=%s&interval=%s&includePrePost=%s";
 
@@ -52,8 +53,7 @@ public class FinanceDataService {
 
     @Cacheable(cacheNames = "stockHistory", key = "{#symbol, #from, #to, #interval}", unless = "#result == null")
     public String getStockHistory(String symbol, String from, String to, String interval) {
-        if (interval.equals("1d"))  return forward(String.format(URL_HISTORY + "&range=10y", symbol, from, to, interval, "history"));
-        return forward(String.format(URL_HISTORY, symbol, from, to, interval, "history"));
+        return forward(String.format(interval.equals("1d") ? URL_HISTORY_1D : URL_HISTORY, symbol, from, to, interval, "history"));
     }
 
     @Cacheable(cacheNames = "stockDividend", key = "{#symbol, #from, #to}", unless = "#result == null")
