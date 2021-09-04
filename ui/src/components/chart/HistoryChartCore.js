@@ -54,46 +54,9 @@ import {
 
 
 const dateFormat = timeFormat("%Y-%m-%d");
+const mintFormat = timeFormat("%Y-%m-%d %H:%M");
 const numberFormat = format(".2f");
 const volFormat = format(".4s");
-
-function tooltipContent(ys) {
-	return ({ currentItem, xAccessor }) => {
-		return {
-			x: dateFormat(xAccessor(currentItem)),
-			y: [
-				{
-					label: "open",
-					value: currentItem.open && numberFormat(currentItem.open)
-				},
-				{
-					label: "high",
-					value: currentItem.high && numberFormat(currentItem.high)
-				},
-				{
-					label: "low",
-					value: currentItem.low && numberFormat(currentItem.low)
-				},
-				{
-					label: "close",
-					value: currentItem.close && numberFormat(currentItem.close)
-				},
-				{
-					label: "vol",
-					value: currentItem.volume && volFormat(currentItem.volume).replace(/G/, "B")
-				}
-			]
-				.concat(
-					ys.map(each => ({
-						label: each.label,
-						value: each.value(currentItem),
-						stroke: each.stroke
-					}))
-				)
-				.filter(line => line.value)
-		};
-	};
-}
 
 const calcChange = change();
 
@@ -207,11 +170,50 @@ class HistoryChartCore extends React.Component {
 		let {
 			type,
 			data: initialData,
-			symbol,
 			width,
 			ratio,
-			showCfg
+			showCfg,
+			isMinute
 		} = this.props;
+
+		const tFormat = isMinute ? mintFormat : dateFormat;
+		const tooltipContent = (ys, tFormat) => {
+			return ({ currentItem, xAccessor }) => {
+				return {
+					x: tFormat(xAccessor(currentItem)),
+					y: [
+						{
+							label: "open",
+							value: currentItem.open && numberFormat(currentItem.open)
+						},
+						{
+							label: "high",
+							value: currentItem.high && numberFormat(currentItem.high)
+						},
+						{
+							label: "low",
+							value: currentItem.low && numberFormat(currentItem.low)
+						},
+						{
+							label: "close",
+							value: currentItem.close && numberFormat(currentItem.close)
+						},
+						{
+							label: "vol",
+							value: currentItem.volume && volFormat(currentItem.volume).replace(/G/, "B")
+						}
+					]
+						.concat(
+							ys.map(each => ({
+								label: each.label,
+								value: each.value(currentItem),
+								stroke: each.stroke
+							}))
+						)
+						.filter(line => line.value)
+				};
+			};
+		}
 
 		const {
 			chartType,
@@ -285,7 +287,6 @@ class HistoryChartCore extends React.Component {
 				width={width}
 				margin={margin}
 				type={type}
-				seriesName={symbol + '_history'}
 				data={data}
 				xScale={xScale}
 				xAccessor={xAccessor}
@@ -337,7 +338,7 @@ class HistoryChartCore extends React.Component {
 						<MouseCoordinateX
 							at="bottom"
 							orient="bottom"
-							displayFormat={dateFormat}
+							displayFormat={tFormat}
 							rectRadius={5}
 							{...mouseEdgeAppearance}
 						/>
@@ -359,7 +360,7 @@ class HistoryChartCore extends React.Component {
 
 					{!showHover && (
 						<>
-							<OHLCTooltip origin={[-38, 0]} />
+							<OHLCTooltip origin={[-38, 0]} xDisplayFormat={tFormat} />
 							<MovingAverageTooltip
 								origin={[-38, 15]}
 								options={
@@ -518,7 +519,7 @@ class HistoryChartCore extends React.Component {
 									value: d => d.bb && numberFormat(d.bb.top),
 									stroke: bollStroke.top
 								},
-							] : []))}
+							] : []), tFormat)}
 							fontSize={13}
 						/>
 					)}
@@ -634,8 +635,8 @@ HistoryChartCore.propTypes = {
 	width: PropTypes.number.isRequired,
 	ratio: PropTypes.number.isRequired,
 	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
-	symbol: PropTypes.string.isRequired,
 	showCfg: PropTypes.object.isRequired,
+	isMinute: PropTypes.bool.isRequired,
 };
 
 HistoryChartCore.defaultProps = {

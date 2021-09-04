@@ -27,7 +27,7 @@ const canvasGradient = createVerticalLinearGradient([
 
 class IntradayChartCore extends React.Component {
 	render() {
-		const { data, symbol, type, width, ratio } = this.props;
+		const { data, type, width, ratio } = this.props;
 		const height = 400;
 
 		const openTime = data[0].date;
@@ -44,7 +44,12 @@ class IntradayChartCore extends React.Component {
 
     const xAccessor = d => d.date;
 		const xExtents = [closeTime, openTime];
-		const horizontalMargin = width <= 200 ? 0 : 50;
+
+		const margin = width <= 200 ? {
+			left: 0, right: 0, top: 10, bottom: 30
+		} : {
+			left: 50, right: 70, top: 10, bottom: 30
+		};
 
 		const showGrid = true;
 		const yGrid = showGrid ? {
@@ -65,8 +70,7 @@ class IntradayChartCore extends React.Component {
 				ratio={ratio}
 				width={width}
 				height={height}
-				margin={{ left: horizontalMargin, right: horizontalMargin, top: 10, bottom: 30 }}
-				seriesName={symbol + '_intraday'}
+				margin={margin}
 				data={data} 
 				type={type}
 				xAccessor={xAccessor}

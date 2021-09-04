@@ -1,11 +1,11 @@
 import './ChartHolder.css';
 import React from 'react';
-import Chart from './IntradayChartCore';
-import { getStockToday } from '../../utils/DataAPI';
+import IntradayChartCore from './IntradayChartCore';
+import { getMinuteData } from '../../utils/DataAPI';
 import LoadingIndicator from '../../common/LoadingIndicator';
 
 export default function IntradayChart(props) {
-  const { symbol, marketClosed, latestTime, latestPrice, latestVolume } = props;
+  const { symbol, marketOpen, latestTime, latestPrice, latestVolume } = props;
   const [data, setData] = React.useState(null);
   const [initialLatestTime, setInitialLatestTime] = React.useState(null);
 
@@ -21,12 +21,12 @@ export default function IntradayChart(props) {
           // recover date format
           entry.date = new Date(entry.date);
         });
-        cacheValid = (new Date() - cache[cache.length - 1].date < 58000);
+        cacheValid = (new Date() - cache[cache.length - 1].date < 58000) || !marketOpen;
       }
       if (cacheValid) {
         setData(cache);
       } else {
-        getStockToday(symbol, 1, 1).then(fetched => {
+        getMinuteData(symbol, 1, 1).then(fetched => {
           if (fetched && fetched.length) {
             if (fetched[0].open !== undefined && fetched[fetched.length - 1].date) {
               setInitialLatestTime(fetched[fetched.length - 1].date);
@@ -44,7 +44,7 @@ export default function IntradayChart(props) {
     };
     updateData();
 
-    if (!marketClosed) {
+    if (marketOpen) {
       let interval;
       // update on the minute (i.e. beginning of a minute)
       setTimeout(() => {
@@ -55,7 +55,7 @@ export default function IntradayChart(props) {
         clearInterval(interval);
       };
     }
-  }, [symbol, marketClosed, ]);
+  }, [symbol, marketOpen]);
 
   React.useEffect(() => {
     if (initialLatestTime && latestTime !== null && latestTime > initialLatestTime && latestPrice > 0 ) {
@@ -65,7 +65,7 @@ export default function IntradayChart(props) {
         close: latestPrice,
         high: latestPrice,
         low: latestPrice,
-        volume: 0   // TODO volume here is within a short period of time, not day volume
+        volume: 0   // TODO volume here is within a short period of time, not cumulative day volume
       }]);
     }
   }, [initialLatestTime, latestTime, latestPrice, latestVolume])
@@ -80,7 +80,7 @@ export default function IntradayChart(props) {
 
   return (
     data ? (
-      <Chart type="hybrid" data={data} {...props} />
+      <IntradayChartCore type="hybrid" data={data} />
     ) : (
       <header className="Chart-holder">
         {"Loading chart..."}

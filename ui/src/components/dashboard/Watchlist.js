@@ -9,6 +9,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Typography from '@material-ui/core/Typography';
 import Pagination from '@material-ui/lab/Pagination';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import { nf2, nf4, nfp } from "../../constants";
 import { getWatchlist, getWatchlistSize, removeFromWatchlist } from '../../utils/API';
 import { getStockBasicInfo } from '../../utils/DataAPI';
 
@@ -28,6 +29,10 @@ const useStyles = makeStyles((theme) => ({
   },
   grow: {
     flexGrow: 1,
+  },
+  listItemText: {
+    minWidth: 200,
+    maxWidth: 200
   }
 }));
 
@@ -64,17 +69,18 @@ export default function Watchlist(props) {
     getWatchlist(page, rowsPerPage)
     .then(records => {
       if (records && records.length) {
-        let symbols = [];
-        for (let i = 0; i < records.length; ++i) {
-          symbols.push(records[i].symbol);
-          records[i].i = i;
-        }
+        const symbols = records.map(r => r.symbol);
 
         getStockBasicInfo(symbols)
         .then(res => {
           for (let i = 0; i < res.length; ++i) {
+            records[i].i = i;
             records[i].name = res[i].displayName || res[i].longName || res[i].shortName;
             // records[i].marketClosed = (res[i].marketState !== "REGULAR");
+            const sign = res[i].regularMarketChange >= 0 ? "+" : "";
+            records[i].price = `${nf4.format(res[i].regularMarketPrice)}`;
+            records[i].change = `${sign}${nf2.format(res[i].regularMarketChange)} 
+                                 (${sign}${nfp.format(res[i].regularMarketChangePercent)}%)`;
           }
           setPageRecords(records);
         });
@@ -113,7 +119,18 @@ export default function Watchlist(props) {
           <List component="nav" aria-label="profile watchlist">
             {pageRecords.map((row) => (
               <ListItem button key={row.i} onClick={() => handleWatchlistItemClick(row.i)}>
-                <ListItemText primary={row.symbol} secondary={row.name} />
+                <ListItemText
+                  primary={row.symbol}
+                  secondary={row.name}
+                  className={classes.listItemText}
+                />
+                <div className={classes.grow} />
+                <ListItemText
+                  primary={row.price}
+                  secondary={row.change}
+                  className={classes.listItemText}
+                />
+                <div className={classes.grow} />
                 <ListItemSecondaryAction>
                   <IconButton
                     className={classes.removeButton}

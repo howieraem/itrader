@@ -9,11 +9,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Pagination from '@material-ui/lab/Pagination';
 import Typography from '@material-ui/core/Typography';
+import { nf, nf2, nf4, nfp } from "../../constants";
 
-const nf = new Intl.NumberFormat('en-US');
-export const nfp = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-export const nf2 = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2 });
-const nf4 = new Intl.NumberFormat('en-US', { minimumFractionDigits: 4 });
 
 const procPositionInfo = (position, i, curPrice, value, totValue) => {
   position.i = i;

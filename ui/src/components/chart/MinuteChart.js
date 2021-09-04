@@ -1,7 +1,8 @@
 import './ChartHolder.css';
 import React from 'react';
-import MinuteChartCore from './MinuteChartCore';
-import { getStockToday } from '../../utils/DataAPI';
+import HistoryChartCore from "./HistoryChartCore";
+import HistoryChartSettings from "./HistoryChartSettings";
+import { getMinuteData } from '../../utils/DataAPI';
 import LoadingIndicator from '../../common/LoadingIndicator';
 
 const changeScroll = () => {
@@ -16,7 +17,32 @@ const getTimeout = (minuteInterval) => {
 
 export default function MinuteChart(props) {
   const { symbol, minute, latestPrice } = props;
+  const chartCfgKey = `${symbol}_${minute}min_chartCfg`;
+
   const [data, setData] = React.useState(null);
+  const [state, setState] = React.useState(JSON.parse(localStorage.getItem(chartCfgKey)) || {
+    chartType: "candlestick",
+    showSma: false,
+    showEma: true,
+    showBoll: false,
+    showVol: true,
+    showMacd: false,
+    showRsi: false,
+    showHover: false,
+    showGrid: true,
+  });
+
+  const handleChartTypeChange = (event) => {
+    const newState = { ...state, chartType: event.target.value };
+    setState(newState);
+    localStorage.setItem(chartCfgKey, JSON.stringify(newState));
+  };
+
+  const handleCheckboxChange = (event) => {
+    const newState = { ...state, [event.target.name]: event.target.checked };
+    setState(newState);
+    localStorage.setItem(chartCfgKey, JSON.stringify(newState));
+  };
 
   React.useEffect(() => {
     const cacheKey = symbol + "_m" + minute;
@@ -31,7 +57,7 @@ export default function MinuteChart(props) {
         });
         setData(data);
       } else {
-        getStockToday(symbol, minute)
+        getMinuteData(symbol, minute)
           .then(data => {
             if (data && data.length) {
               data = data.filter(d => {
@@ -81,15 +107,27 @@ export default function MinuteChart(props) {
         {"Failed to fetch minute data. Please try refreshing the page, or check whether the stock is listed."}
       </header>
     ) : (
-      <div
-        onMouseEnter={changeScroll}
-        onMouseLeave={changeScroll}
-      >
-        <MinuteChartCore type="hybrid" data={data} symbol={symbol} />
-        <div style={{ fontSize: 12, marginLeft: 5 }}>
-          Due to data source limitations, minute chart can only cover a maximum of 7 days.
+      <>
+        <HistoryChartSettings
+          state={state}
+          handleChartTypeChange={handleChartTypeChange}
+          handleCheckboxChange={handleCheckboxChange}
+        />
+        <div
+          onMouseEnter={changeScroll}
+          onMouseLeave={changeScroll}
+        >
+          <HistoryChartCore
+            type="hybrid"
+            data={data}
+            showCfg={state}
+            isMinute={true}
+          />
+          <div style={{ fontSize: 12, marginLeft: 5 }}>
+            Due to data source limitations, minute chart can only cover a maximum of 7 days.
+          </div>
         </div>
-      </div>
+      </>
     ) : (
       <header className="Chart-holder">
         {"Loading chart..."}

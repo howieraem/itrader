@@ -148,7 +148,6 @@ export function getStockHistory(symbol, interval="w", from="0", to="9999999999")
     case 'w': interval = '1wk'; break;
     case 'm': interval = '1mo'; break;
     case 'q': interval = '3mo'; break;
-    case 'y': interval = '3mo'; break;  // TODO convert quarter to year
     default: interval = '1d'; break;
   }
   return fetch(SERVER_URL + `/stockHistory?symbol=${symbol}&from=${from}&to=${to}&interval=${interval}`)
@@ -168,7 +167,7 @@ export function getStockDividend(symbol, from="0", to="9999999999") {
     });
 }
 
-export function getStockToday(symbol, minuteInterval=1, dayRange=7, includePrePost=false) {
+export function getMinuteData(symbol, minuteInterval=1, dayRange=7, includePrePost=false) {
   // Volume data for pre/post market are missing, so `includePrePost` is false by default
   let interval;
   switch (minuteInterval) {

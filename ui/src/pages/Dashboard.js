@@ -11,8 +11,8 @@ import Cash from '../components/dashboard/Cash';
 import TotalAssets from "../components/dashboard/TotalAssets";
 import PositionRatio from "../components/dashboard/PositionRatio";
 import CurReturn from "../components/dashboard/CurReturn";
-import PortfolioTable, { nf2, nfp } from '../components/dashboard/PortfolioTable';
-import { INIT_CASH } from "../constants";
+import PortfolioTable from '../components/dashboard/PortfolioTable';
+import { INIT_CASH, nf2, nfp } from "../constants";
 import { getPortfolio } from "../utils/API";
 import { getBatchStockPrices } from "../utils/DataAPI";
 

@@ -1,15 +1,9 @@
 import './ChartHolder.css';
 import React from 'react';
-import { useTheme } from "@material-ui/core/styles";
 import HistoryChartCore from './HistoryChartCore';
+import HistoryChartSettings from "./HistoryChartSettings";
 import { getStockHistory } from '../../utils/DataAPI';
 import LoadingIndicator from '../../common/LoadingIndicator';
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormGroup from "@material-ui/core/FormGroup";
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
 
 const changeScroll = () => {
   let style = document.body.style.overflow;
@@ -19,7 +13,6 @@ const changeScroll = () => {
 export default function HistoryChart(props) {
   const { symbol, interval, latestTime, latestPrice } = props;
   const chartCfgKey = `${symbol}_${interval}_chartCfg`;
-  const theme = useTheme();
 
   const [data, setData] = React.useState(null);
   const [state, setState] = React.useState(JSON.parse(localStorage.getItem(chartCfgKey)) || {
@@ -88,7 +81,7 @@ export default function HistoryChart(props) {
   React.useEffect(() => {
     if (data && data[0].open && latestPrice > 0) {
       const lastEntry = data[data.length - 1];
-      if (lastEntry.open !== undefined && lastEntry.date.getDate() === latestTime.getDate()) {
+      if (lastEntry.open !== undefined && lastEntry.date < latestTime) {
         lastEntry.close = latestPrice;
         lastEntry.high = Math.max(lastEntry.high, latestPrice);
         lastEntry.low = Math.min(lastEntry.low, latestPrice);
@@ -108,128 +101,11 @@ export default function HistoryChart(props) {
   return (
     data ? (
       <>
-        <FormGroup row style={{ paddingLeft: 10 }}>
-          <FormControl
-            style={{
-              minWidth: 100,
-              marginRight: theme.spacing(2),
-            }}
-          >
-            <Select
-              value={state.chartType}
-              onChange={handleChartTypeChange}
-              displayEmpty
-              style={{ fontSize: "0.8rem" }}
-            >
-              <MenuItem value="candlestick" style={{ fontSize: "0.8rem" }}>Candle Stick</MenuItem>
-              <MenuItem value="ohlc" style={{ fontSize: "0.8rem" }}>OHLC</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={state.showSma}
-                onChange={handleCheckboxChange}
-                name="showSma"
-                color="primary"
-                style={{ transform: "scale(0.8)", padding: 3 }}
-              />
-            }
-            label="SMA"
-            style={{ marginRight: 20 }}
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={state.showEma}
-                onChange={handleCheckboxChange}
-                name="showEma"
-                color="primary"
-                style={{ transform: "scale(0.8)", padding: 3 }}
-              />
-            }
-            label="EMA"
-            style={{ marginRight: 20 }}
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={state.showBoll}
-                onChange={handleCheckboxChange}
-                name="showBoll"
-                color="primary"
-                style={{ transform: "scale(0.8)", padding: 3 }}
-              />
-            }
-            label="BOLL"
-            style={{ marginRight: 20 }}
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={state.showVol}
-                onChange={handleCheckboxChange}
-                name="showVol"
-                color="primary"
-                style={{ transform: "scale(0.8)", padding: 3 }}
-              />
-            }
-            label="VOL"
-            style={{ marginRight: 20 }}
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={state.showMacd}
-                onChange={handleCheckboxChange}
-                name="showMacd"
-                color="primary"
-                style={{ transform: "scale(0.8)", padding: 3 }}
-              />
-            }
-            label="MACD"
-            style={{ marginRight: 20 }}
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={state.showRsi}
-                onChange={handleCheckboxChange}
-                name="showRsi"
-                color="primary"
-                style={{ transform: "scale(0.8)", padding: 3 }}
-              />
-            }
-            label="RSI"
-            style={{ marginRight: 20 }}
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={state.showHover}
-                onChange={handleCheckboxChange}
-                name="showHover"
-                color="primary"
-                style={{ transform: "scale(0.8)", padding: 3 }}
-              />
-            }
-            label="Hover Tool"
-            style={{ marginRight: 20 }}
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={state.showGrid}
-                onChange={handleCheckboxChange}
-                name="showGrid"
-                color="primary"
-                style={{ transform: "scale(0.8)", padding: 3 }}
-              />
-            }
-            label="Grid"
-            style={{ marginRight: 20 }}
-          />
-        </FormGroup>
+        <HistoryChartSettings
+          state={state}
+          handleChartTypeChange={handleChartTypeChange}
+          handleCheckboxChange={handleCheckboxChange}
+        />
         <div
           onMouseEnter={changeScroll}
           onMouseLeave={changeScroll}
@@ -237,7 +113,6 @@ export default function HistoryChart(props) {
           <HistoryChartCore
             type="hybrid"
             data={data}
-            symbol={symbol}
             showCfg={state}
           />
         </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import { withWidth } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Hero from "../components/landing/Hero";
@@ -14,13 +15,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Landing() {
+function Landing({ width }) {
   const classes = useStyles();
+  const isScreenSmall = /xs|sm/.test(width);
   return (
     <>
       <div className={classes.heroContent}>
         <Hero />
-        <Background num={100} />
+        <Background num={isScreenSmall ? 60 : 80} />
       </div>
       <Container maxWidth="lg">
         <Feats />
@@ -29,3 +31,5 @@ export default function Landing() {
     </>
   );
 }
+
+export default withWidth()(Landing);

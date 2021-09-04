@@ -1,15 +1,16 @@
 import React from 'react';
 import { Helmet } from "react-helmet";
 import { Redirect } from 'react-router-dom';
-import { Alert } from "@material-ui/lab";
+import { withWidth } from "@material-ui/core";
+import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { Alert } from "@material-ui/lab";
 import { signup } from '../utils/API';
 import Background from '../common/Background';
 
@@ -42,9 +43,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignUp(props) {
+function SignUp(props) {
   const classes = useStyles();
-  const { authenticated, history, location } = props;
+  const { authenticated, history, location, width } = props;
   
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -120,6 +121,7 @@ export default function SignUp(props) {
       }}
     />;
   }
+  const isScreenSmall = /xs|sm/.test(width);
   return (
     <>
       <Helmet>
@@ -219,7 +221,9 @@ export default function SignUp(props) {
         </Container>
         <Grid item xs={12} style={{ minHeight: "5vh" }} />
       </Grid>
-      <Background num={100} />
+      <Background num={isScreenSmall ? 60 : 100} />
     </>
   );
 }
+
+export default withWidth()(SignUp);

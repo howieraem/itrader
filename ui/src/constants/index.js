@@ -25,3 +25,8 @@ export const MARKET_LOC = {
   "sr_market": "Saudi Arabia",
   "ccc_market": "Global",
 }
+
+export const nf = new Intl.NumberFormat('en-US');
+export const nfp = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+export const nf2 = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2 });
+export const nf4 = new Intl.NumberFormat('en-US', { minimumFractionDigits: 4 });
