@@ -1,4 +1,5 @@
 import React from 'react';
+import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from "@material-ui/core/IconButton";
@@ -9,7 +10,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Typography from '@material-ui/core/Typography';
 import Pagination from '@material-ui/lab/Pagination';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import { nf2, nf4, nfp } from "../../constants";
+import { NF2, NFP } from "../../constants";
 import { getWatchlist, getWatchlistSize, removeFromWatchlist } from '../../utils/API';
 import { getStockBasicInfo } from '../../utils/DataAPI';
 
@@ -31,8 +32,20 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   listItemText: {
-    minWidth: 200,
-    maxWidth: 200
+    minWidth: 130,
+    maxWidth: 130
+  },
+  priceRaise: {
+    color: "#00cc00"
+  },
+  priceDrop: {
+    color: "#ff0000"
+  },
+  listItemPrimary: {
+    fontSize: "0.9rem"
+  },
+  listItemSecondary: {
+    fontSize: "0.8rem"
   }
 }));
 
@@ -41,7 +54,7 @@ export default function Watchlist(props) {
   const { onSymbolClick } = props;
 
   const [page, setPage] = React.useState(0);
-  const rowsPerPage = 10;
+  const rowsPerPage = 5;
   // const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [numOfRecords, setNumOfRecords] = React.useState(0);
   const [pageRecords, setPageRecords] = React.useState([]);
@@ -77,10 +90,10 @@ export default function Watchlist(props) {
             records[i].i = i;
             records[i].name = res[i].displayName || res[i].longName || res[i].shortName;
             // records[i].marketClosed = (res[i].marketState !== "REGULAR");
-            const sign = res[i].regularMarketChange >= 0 ? "+" : "";
-            records[i].price = `${nf4.format(res[i].regularMarketPrice)}`;
-            records[i].change = `${sign}${nf2.format(res[i].regularMarketChange)} 
-                                 (${sign}${nfp.format(res[i].regularMarketChangePercent)}%)`;
+            records[i].pos = res[i].regularMarketChange >= 0;
+            const sign = records[i].pos ? "+" : "";
+            records[i].price = `${NF2(res[i].regularMarketPrice)}`;
+            records[i].change = `${sign}${NFP(res[i].regularMarketChangePercent)}%`;
           }
           setPageRecords(records);
         });
@@ -109,8 +122,8 @@ export default function Watchlist(props) {
             variant="outlined" 
             color="primary" 
             siblingCount={0} 
-            showFirstButton 
-            showLastButton
+            // showFirstButton
+            // showLastButton
             onChange={handleChangePage}
           />
       </Typography>
@@ -123,19 +136,27 @@ export default function Watchlist(props) {
                   primary={row.symbol}
                   secondary={row.name}
                   className={classes.listItemText}
+                  classes={{
+                    primary: classes.listItemPrimary,
+                    secondary: classes.listItemSecondary
+                  }}
                 />
                 <div className={classes.grow} />
                 <ListItemText
                   primary={row.price}
                   secondary={row.change}
                   className={classes.listItemText}
+                  classes={{
+                    primary: clsx(classes.listItemPrimary, row.pos ? classes.priceRaise : classes.priceDrop),
+                    secondary: clsx(classes.listItemSecondary, row.pos ? classes.priceRaise : classes.priceDrop)
+                  }}
                 />
                 <div className={classes.grow} />
                 <ListItemSecondaryAction>
                   <IconButton
                     className={classes.removeButton}
                     onClick={() => handleRemove(row.i)}
-                    style={{ borderRadius: 2, maxHeight: 40 }}
+                    style={{ borderRadius: 2, maxHeight: 35, maxWidth: 40 }}
                   >
                     <DeleteForeverIcon />
                   </IconButton>

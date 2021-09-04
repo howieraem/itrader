@@ -43,17 +43,20 @@ export default function Routes(props) {
       <PrivateRoute
         path="/portfolio"
         authenticated={authenticated}
+        initialized={initialized}
         onSymbolClick={changeSymbol}
         component={Portfolio}
       />
       <PrivateRoute
         path="/trades"
         authenticated={authenticated}
+        initialized={initialized}
         component={Trades}
       />
       <PrivateRoute
         path="/watchlist"
         authenticated={authenticated}
+        initialized={initialized}
         onSymbolClick={changeSymbol}
         component={Watchlists}
       />

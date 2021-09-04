@@ -1,5 +1,4 @@
 import './StockView.css';
-import { format } from "d3-format";
 import React from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -16,7 +15,7 @@ import {
   removeFromWatchlist
 } from '../../utils/API';
 import { getStockBasicInfo } from '../../utils/DataAPI';
-import { MARKET_LOC } from '../../constants';
+import { MARKET_LOC, NF2, NF4, NFP, NFV } from '../../constants';
 
 const useStyles = makeStyles((theme) => ({
   watchlistButton: {
@@ -98,33 +97,20 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function roundNumber(number, places=4) {
-  if (number === undefined || number === null)  return "N/A";
-  return number.toFixed(places);
-}
-
-const numFormat = format(".4s");
-
-function formatLargeNum(number) {
-  if (number === undefined || number === null)  return "N/A";
-  return numFormat(number).replace(/G/, "B");   // Billion is a special case
-}
-
 function filterInfo(info) {
   return {
     "Market Region": MARKET_LOC[info.market] || info.market,
-    "Outstanding Shares": formatLargeNum(info.sharesOutstanding),
-    "Market Capitalization": info.marketCap ? `${info.currency.toUpperCase()} ${formatLargeNum(info.marketCap)}` : "N/A",
-    "Volume": info.regularMarketVolume || 0,
-    "Day Price Range": info.regularMarketDayRange,
-    "52-week High": roundNumber(info.fiftyTwoWeekHigh),
-    "52-week Low": roundNumber(info.fiftyTwoWeekLow),
-    "Current Year EPS": roundNumber(info.epsCurrentYear),
-    "Forward EPS": roundNumber(info.epsForward),
-    "Trailing PE": roundNumber(info.trailingPE),
-    "Forward PE": roundNumber(info.forwardPE),
-    "Book Value": roundNumber(info.bookValue),
-    "P/B Ratio": roundNumber(info.priceToBook),
+    "Outstanding Shares": NFV(info.sharesOutstanding),
+    "Market Capitalization": info.marketCap ? `${info.currency.toUpperCase()} ${NFV(info.marketCap)}` : "N/A",
+    "Volume": info.regularMarketVolume ? NFV(info.regularMarketVolume) : 0,
+    "52-week High": NF2(info.fiftyTwoWeekHigh),
+    "52-week Low": NF2(info.fiftyTwoWeekLow),
+    "Current Year EPS": NF2(info.epsCurrentYear),
+    "Forward EPS": NF2(info.epsForward),
+    "Trailing PE": NF2(info.trailingPE),
+    "Forward PE": NF2(info.forwardPE),
+    "Book Value": NF2(info.bookValue),
+    "P/B Ratio": NF2(info.priceToBook),
   };
 }
 
@@ -136,7 +122,16 @@ const Blinking = (props) => (
 
 export default function StockViewCore(props) {
   const classes = useStyles();
-  const { symbol, authenticated, marketOpen, dataTime, livePrice, change, changePercent, dayVolume } = props;
+  const {
+    symbol,
+    authenticated,
+    marketOpen,
+    dataTime,
+    livePrice,
+    change,
+    changePercent,
+    dayVolume
+  } = props;
 
   const [stockName, setStockName] = React.useState(null);
   const [basicInfo, setBasicInfo] = React.useState(null);
@@ -146,8 +141,8 @@ export default function StockViewCore(props) {
   const [watchlisted, setWatchlisted] = React.useState(false);
   const [regularMarketTime, setRegularMarketTime] = React.useState(null);
   const [regularMarketPrice, setRegularMarketPrice] = React.useState(0);
-  const [regularMarketChange, setRegularMarketChange] = React.useState(0);
-  const [regularMarketChangePercent, setRegularMarketChangePercent] = React.useState(0);
+  const [regularMarketChange, setRegularMarketChange] = React.useState("");
+  const [regularMarketChangePercent, setRegularMarketChangePercent] = React.useState("");
   const [regularMarketVolume, setRegularMarketVolume] = React.useState(0);
 
   const handleWlButtonClick = () => {
@@ -185,10 +180,10 @@ export default function StockViewCore(props) {
           setBasicInfo(filterInfo(basicInfo));
           setStockName(basicInfo.displayName || basicInfo.longName || basicInfo.shortName);
           setCurrency(basicInfo.currency.toUpperCase());
-          setRegularMarketTime(new Date(basicInfo.regularMarketTime * 1000));
-          setRegularMarketPrice(roundNumber(basicInfo.regularMarketPrice, 3));
-          setRegularMarketChange(roundNumber(basicInfo.regularMarketChange, 3));
-          setRegularMarketChangePercent(roundNumber(basicInfo.regularMarketChangePercent, 2));
+          setRegularMarketTime(new Date(basicInfo.regularMarketTime * 1000)); // TODO check if * 1000 is needed
+          setRegularMarketPrice(basicInfo.regularMarketPrice);
+          setRegularMarketChange(basicInfo.regularMarketChange);
+          setRegularMarketChangePercent(basicInfo.regularMarketChangePercent);
           setRegularMarketVolume(basicInfo.regularMarketVolume || 0);
         })
         .catch(err => { console.log(err) })
@@ -251,11 +246,12 @@ export default function StockViewCore(props) {
         <Grid item xs={4} sm={2} md={2}>
           <Blinking highlight={highlight} rise={isRising}>
             <div className={classes.symbolTitle1}>
-              { `${currency} ${livePrice || regularMarketPrice}` }
+              { `${currency} ${NF4(livePrice || regularMarketPrice)}` }
             </div>
             <div className={classes.symbolTitle2} style={{ color: priceColor }}>
               { marketOpen ? (
-                `${changeSign}${change || regularMarketChange} (${changeSign}${changePercent || regularMarketChangePercent}%)`
+                `${changeSign}${NF4(change || regularMarketChange)} 
+                (${changeSign}${NFP(changePercent || regularMarketChangePercent)}%)`
               ) : "Market closed"
               }
             </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Redirect } from "react-router-dom";
-  
+import LoadingIndicator from "./LoadingIndicator";
 
 const PrivateRoute = ({ component: Component, authenticated, initialized, ...rest }) => (
     <Route
@@ -9,7 +9,7 @@ const PrivateRoute = ({ component: Component, authenticated, initialized, ...res
         authenticated ? (
           <Component {...rest} {...props} />
         ) : !initialized ? (
-          ""
+          <LoadingIndicator />
         ) : (
           <Redirect
             to={{

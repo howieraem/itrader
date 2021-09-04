@@ -9,21 +9,21 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Pagination from '@material-ui/lab/Pagination';
 import Typography from '@material-ui/core/Typography';
-import { nf, nf2, nf4, nfp } from "../../constants";
+import { NF, NF2, NF4, NFP } from "../../constants";
 
 
 const procPositionInfo = (position, i, curPrice, value, totValue) => {
   position.i = i;
   const holdingPrice = position.holdingCost / position.quantity;
   const diff = curPrice - holdingPrice;
-  position.currentPrice = nf4.format(curPrice);
-  position.holdingPrice = nf4.format(holdingPrice);
+  position.currentPrice = NF4(curPrice);
+  position.holdingPrice = NF4(holdingPrice);
   position.positive = (diff >= 0);
-  position.pl = nf2.format(diff * position.quantity);
-  position.plPercent = nfp.format(diff / holdingPrice * 100) + '%';
-  position.value = nf2.format(value);
-  position.ratio = nfp.format(value / totValue * 100) + '%';
-  position.qty = nf.format(position.quantity);
+  position.pl = NF2(diff * position.quantity);
+  position.plPercent = NFP(diff / holdingPrice * 100) + '%';
+  position.value = NF2(value);
+  position.ratio = NFP(value / totValue * 100) + '%';
+  position.qty = NF(position.quantity);
 }
 
 
@@ -119,8 +119,8 @@ export default function PortfolioTable(props) {
             variant="outlined" 
             color="primary" 
             siblingCount={0} 
-            showFirstButton 
-            showLastButton
+            // showFirstButton
+            // showLastButton
             onChange={handleChangePage}
           />
       </Typography>

@@ -9,11 +9,11 @@ import TableRow from '@material-ui/core/TableRow';
 import TablePagination from '@material-ui/core/TablePagination';
 import Typography from '@material-ui/core/Typography';
 import { getTrades, getNumOfTrades } from '../../utils/API';
-
+import { NF, NF2 } from "../../constants";
 
 function processTimeFormat(rawTimeStr) {
   const date = new Date(rawTimeStr);
-  return `${date.toDateString()} ${date.toLocaleTimeString()} UTC+${0 - date.getTimezoneOffset() / 60}`;
+  return `${date.toDateString()} ${date.toLocaleTimeString()}` /*UTC+${0 - date.getTimezoneOffset() / 60}`*/;
 }
 
 function processTradeRecord(i, tradeRecord) {
@@ -23,10 +23,10 @@ function processTradeRecord(i, tradeRecord) {
     symbol: tradeRecord.symbol,
     isBuy: tradeRecord.buy,
     action: tradeRecord.buy ? "Buy" : "Sell",
-    quantity: tradeRecord.quantity,
-    price: tradeRecord.price,
-    cashChange: (tradeRecord.buy ? '-' : '+') + (tradeRecord.quantity * tradeRecord.price).toFixed(2),
-    cashAfter: tradeRecord.cashAfter.toFixed(2),
+    quantity: NF(tradeRecord.quantity),
+    price: NF2(tradeRecord.price),
+    cashChange: (tradeRecord.buy ? '-' : '+') + NF2(tradeRecord.quantity * tradeRecord.price),
+    cashAfter: NF2(tradeRecord.cashAfter),
   };
 }
 
@@ -107,11 +107,11 @@ function TradeTable({ width, rowsPerPageOptions }) {
               <TableRow>
                 <TableCell>Time</TableCell>
                 <TableCell>Symbol</TableCell>
-                {isScreenMidUp && <TableCell>Action</TableCell>}
+                {isScreenMidUp && <TableCell align="right">Action</TableCell>}
                 <TableCell align="right">Quantity</TableCell>
                 <TableCell align="right">Price (USD)</TableCell>
                 <TableCell align="right">Cash In/Out (USD)</TableCell>
-                <TableCell align="right">Cash After (USD)</TableCell>
+                {isScreenMidUp && <TableCell align="right">Cash After (USD)</TableCell>}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -119,11 +119,11 @@ function TradeTable({ width, rowsPerPageOptions }) {
                 <TableRow key={row.i} className={row.isBuy ? classes.rowBuy : classes.rowSell}>
                   <TableCell>{row.time}</TableCell>
                   <TableCell>{row.symbol}</TableCell>
-                  {isScreenMidUp && <TableCell>{row.action}</TableCell>}
+                  {isScreenMidUp && <TableCell align="right">{row.action}</TableCell>}
                   <TableCell align="right">{row.quantity}</TableCell>
                   <TableCell align="right">{row.price}</TableCell>
                   <TableCell align="right">{row.cashChange}</TableCell>
-                  <TableCell align="right">{row.cashAfter}</TableCell>
+                  {isScreenMidUp && <TableCell align="right">{row.cashAfter}</TableCell>}
                 </TableRow>
               ))}
             </TableBody>

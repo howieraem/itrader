@@ -5,11 +5,6 @@ import { Helmet } from "react-helmet";
 import { getMarketStates } from '../utils/DataAPI';
 import StockViewCore from "../components/stockView/StockViewCore";
 
-const roundNumber = (number, places=4) => {
-  if (number === undefined || number === null)  return "N/A";
-  return number.toFixed(places);
-}
-
 export default function StockView(props) {
   const { symbol } = props;
   const [regularMarketOpen, setRegularMarketOpen] = React.useState(false);
@@ -40,11 +35,11 @@ export default function StockView(props) {
     priceHint
     */
     const updateLiveData = (liveData) => {
-      setDataTime(new Date(liveData.time));
-      setLivePrice(roundNumber(liveData.price, 3));
-      setChange(roundNumber(liveData.change, 3));
-      setChangePercent(roundNumber(liveData.changePercent, 2));
-      setDayVolume(liveData.dayVolume);
+      setDataTime(new Date(liveData.time)); // TODO check if * 1000 is needed
+      setLivePrice(liveData.price);  // not formatting as required by plotting later
+      setChange(liveData.change);
+      setChangePercent(liveData.changePercent);
+      setDayVolume(liveData.dayVolume);  // not formatting as required by plotting later
     };
     if (regularMarketOpen) {
       addTicker(symbol, updateLiveData);

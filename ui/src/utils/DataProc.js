@@ -81,13 +81,13 @@ function procFinancialData(financialData) {
     if (financialDataSpecialKeys.has(key))  continue;
     const newKey = camelToSentence(key);
     if (Object.keys(financialData[key]).length === 0) {
-      res[newKey] = "(None)";
+      res[newKey] = "N/A";
       continue;
     }
     if (financialData[key].fmt !== undefined) {
       res[newKey] = financialData[key].fmt;
     } else {
-      res[newKey] = financialData[key].replace("none", "(None)");
+      res[newKey] = financialData[key].replace("none", "N/A");
     }
   }
   return res;
@@ -125,7 +125,7 @@ function procOtherStats(otherStats) {
     const newKey = otherStatsKeys[key];
     const val = otherStats[key];
     if (Object.keys(val).length === 0) {
-      res[newKey] = "(None)";
+      res[newKey] = "N/A";
       continue;
     }
     if (val.fmt !== undefined) {

@@ -63,7 +63,7 @@ export function getBatchStockPrices(symbols) {
                       // if (marketState === "PRE")  price = quote.preMarketPrice;
                       // else if (marketState === "POST" || marketClosed)  price = quote.postMarketPrice;
                       // else  price quote.regularMarketPrice;
-                      return (quote.regularMarketPrice / rate).toFixed(4);
+                      return quote.regularMarketPrice / rate;
                    })
       );
       return resolve(Promise.all(promises));

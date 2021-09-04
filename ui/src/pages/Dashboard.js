@@ -12,7 +12,7 @@ import TotalAssets from "../components/dashboard/TotalAssets";
 import PositionRatio from "../components/dashboard/PositionRatio";
 import CurReturn from "../components/dashboard/CurReturn";
 import PortfolioTable from '../components/dashboard/PortfolioTable';
-import { INIT_CASH, nf2, nfp } from "../constants";
+import { INIT_CASH, NF2, NFP } from "../constants";
 import { getPortfolio } from "../utils/API";
 import { getBatchStockPrices } from "../utils/DataAPI";
 
@@ -104,19 +104,19 @@ export default function Dashboard(props) {
             { portfolioLoaded ? (
                 <>
                   <Grid item xs={6} md={3}>
-                    <TotalAssets total={"USD " + nf2.format(totalValue)} />
+                    <TotalAssets total={"USD " + NF2(totalValue)} />
                   </Grid>
                   <Grid item xs={6} md={3}>
                     <CurReturn
-                      percentage={nfp.format((totalValue / INIT_CASH - 1) * 100) + '%'}
+                      percentage={NFP((totalValue / INIT_CASH - 1) * 100) + '%'}
                       positive={totalValue >= INIT_CASH}
                     />
                   </Grid>
                   <Grid item xs={6} md={3}>
-                    <Cash cash={"USD " + nf2.format(cash)} />
+                    <Cash cash={"USD " + NF2(cash)} />
                   </Grid>
                   <Grid item xs={6} md={3}>
-                    <PositionRatio percentage={nfp.format(portfolioValue / totalValue * 100) + '%'} />
+                    <PositionRatio percentage={NFP(portfolioValue / totalValue * 100) + '%'} />
                   </Grid>
 
                   <Grid item xs={12}>
