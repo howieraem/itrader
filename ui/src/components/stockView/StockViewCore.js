@@ -180,7 +180,7 @@ export default function StockViewCore(props) {
           setBasicInfo(filterInfo(basicInfo));
           setStockName(basicInfo.displayName || basicInfo.longName || basicInfo.shortName);
           setCurrency(basicInfo.currency.toUpperCase());
-          setRegularMarketTime(new Date(basicInfo.regularMarketTime * 1000)); // TODO check if * 1000 is needed
+          setRegularMarketTime(new Date(basicInfo.regularMarketTime * 1000));
           setRegularMarketPrice(basicInfo.regularMarketPrice);
           setRegularMarketChange(basicInfo.regularMarketChange);
           setRegularMarketChangePercent(basicInfo.regularMarketChangePercent);

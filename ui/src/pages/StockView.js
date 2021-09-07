@@ -35,7 +35,7 @@ export default function StockView(props) {
     priceHint
     */
     const updateLiveData = (liveData) => {
-      setDataTime(new Date(liveData.time)); // TODO check if * 1000 is needed
+      setDataTime(new Date(liveData.time)); // different from StockViewCore, no need to multiply 1000 here
       setLivePrice(liveData.price);  // not formatting as required by plotting later
       setChange(liveData.change);
       setChangePercent(liveData.changePercent);
