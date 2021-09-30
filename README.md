@@ -1,6 +1,8 @@
 # ITrader Project
 
-A paper trading system built with Spring Boot and React.js. Data from Yahoo Finance are used.
+A paper trading system built with Spring Boot and React.js. Data from Yahoo Finance are used.  
+
+[Live version](http://itrader.s3-website-ap-southeast-1.amazonaws.com/)
 
 MySQL and Redis details can be edited in `application.properties`.
 
